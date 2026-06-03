@@ -1,0 +1,7 @@
+node_modules/
+pages-dist/
+test-results/
+playwright-report/
+generated-sprites/
+jarramplas-output/
+.DS_Store
