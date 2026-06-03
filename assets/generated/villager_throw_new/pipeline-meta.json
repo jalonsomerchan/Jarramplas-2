@@ -1,0 +1,219 @@
+{
+  "target": "npc",
+  "mode": "throw",
+  "prompt": "2x3 varied Spanish village neighbor throw poses with turnips, solid magenta background",
+  "role": "",
+  "input": "/Users/jorgealonso/.codex/generated_images/019e8e4b-d62d-79d1-97bb-5b87a834cfe6/ig_01a8d5b7a5733d86016a205561396081919a7b5c2c939c0d2b.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 200,
+  "rows": 2,
+  "cols": 3,
+  "cell_size": 128,
+  "fit_scale": 0.92,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "feet",
+  "shared_scale": true,
+  "component_mode": "all",
+  "component_padding": 4,
+  "min_component_area": 1,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "villager-1",
+    "villager-2",
+    "villager-3",
+    "villager-4",
+    "villager-5",
+    "villager-6"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        107,
+        76,
+        433,
+        467
+      ],
+      "edge_touch": false,
+      "output_size": [
+        96,
+        116
+      ],
+      "paste_position": [
+        16,
+        7
+      ]
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        59,
+        76,
+        430,
+        468
+      ],
+      "edge_touch": false,
+      "output_size": [
+        110,
+        116
+      ],
+      "paste_position": [
+        9,
+        7
+      ]
+    },
+    {
+      "grid": [
+        0,
+        2
+      ],
+      "source_box": [
+        1024,
+        0,
+        1536,
+        512
+      ],
+      "component_mode": "all",
+      "component_count": 2,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        41,
+        71,
+        392,
+        467
+      ],
+      "edge_touch": false,
+      "output_size": [
+        104,
+        117
+      ],
+      "paste_position": [
+        12,
+        6
+      ]
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        84,
+        35,
+        447,
+        424
+      ],
+      "edge_touch": false,
+      "output_size": [
+        107,
+        115
+      ],
+      "paste_position": [
+        10,
+        8
+      ]
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        46,
+        35,
+        380,
+        424
+      ],
+      "edge_touch": false,
+      "output_size": [
+        99,
+        115
+      ],
+      "paste_position": [
+        14,
+        8
+      ]
+    },
+    {
+      "grid": [
+        1,
+        2
+      ],
+      "source_box": [
+        1024,
+        512,
+        1536,
+        1024
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        25,
+        39,
+        381,
+        424
+      ],
+      "edge_touch": false,
+      "output_size": [
+        105,
+        114
+      ],
+      "paste_position": [
+        11,
+        9
+      ]
+    }
+  ],
+  "edge_touch_frames": []
+}

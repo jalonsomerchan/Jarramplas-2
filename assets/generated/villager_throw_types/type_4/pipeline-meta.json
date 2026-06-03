@@ -1,0 +1,224 @@
+{
+  "target": "npc",
+  "mode": "throw",
+  "prompt": "animated young man villager throw sheet 2x3",
+  "role": "",
+  "input": "/Users/jorgealonso/.codex/generated_images/019e8e4b-d62d-79d1-97bb-5b87a834cfe6/ig_01a8d5b7a5733d86016a205c90adc88191a8a4ab0bf0c33f1b.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 200,
+  "rows": 2,
+  "cols": 3,
+  "cell_size": 128,
+  "fit_scale": 0.9,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "feet",
+  "shared_scale": true,
+  "component_mode": "all",
+  "component_padding": 4,
+  "min_component_area": 1,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "villager_young_man-1",
+    "villager_young_man-2",
+    "villager_young_man-3",
+    "villager_young_man-4",
+    "villager_young_man-5",
+    "villager_young_man-6"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        134,
+        67,
+        427,
+        454
+      ],
+      "edge_touch": false,
+      "output_size": [
+        82,
+        108
+      ],
+      "paste_position": [
+        23,
+        14
+      ]
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        46,
+        78,
+        405,
+        459
+      ],
+      "edge_touch": false,
+      "output_size": [
+        100,
+        106
+      ],
+      "paste_position": [
+        14,
+        16
+      ]
+    },
+    {
+      "grid": [
+        0,
+        2
+      ],
+      "source_box": [
+        1024,
+        0,
+        1536,
+        512
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        31,
+        86,
+        347,
+        463
+      ],
+      "edge_touch": false,
+      "output_size": [
+        88,
+        105
+      ],
+      "paste_position": [
+        20,
+        17
+      ]
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "component_mode": "all",
+      "component_count": 17,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        104,
+        31,
+        504,
+        402
+      ],
+      "edge_touch": false,
+      "output_size": [
+        112,
+        103
+      ],
+      "paste_position": [
+        8,
+        19
+      ]
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "component_mode": "all",
+      "component_count": 9,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        0,
+        32,
+        411,
+        402
+      ],
+      "edge_touch": true,
+      "output_size": [
+        115,
+        103
+      ],
+      "paste_position": [
+        6,
+        19
+      ]
+    },
+    {
+      "grid": [
+        1,
+        2
+      ],
+      "source_box": [
+        1024,
+        512,
+        1536,
+        1024
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        75,
+        27,
+        310,
+        408
+      ],
+      "edge_touch": false,
+      "output_size": [
+        65,
+        106
+      ],
+      "paste_position": [
+        31,
+        16
+      ]
+    }
+  ],
+  "edge_touch_frames": [
+    [
+      1,
+      1
+    ]
+  ]
+}

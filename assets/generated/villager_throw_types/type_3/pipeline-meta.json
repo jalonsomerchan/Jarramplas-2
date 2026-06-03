@@ -1,0 +1,224 @@
+{
+  "target": "npc",
+  "mode": "throw",
+  "prompt": "animated young woman villager throw sheet 2x3",
+  "role": "",
+  "input": "/Users/jorgealonso/.codex/generated_images/019e8e4b-d62d-79d1-97bb-5b87a834cfe6/ig_01a8d5b7a5733d86016a205b9e498c8191977ce14018b0cccb.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 200,
+  "rows": 2,
+  "cols": 3,
+  "cell_size": 128,
+  "fit_scale": 0.9,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "feet",
+  "shared_scale": true,
+  "component_mode": "all",
+  "component_padding": 4,
+  "min_component_area": 1,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "villager_young_woman-1",
+    "villager_young_woman-2",
+    "villager_young_woman-3",
+    "villager_young_woman-4",
+    "villager_young_woman-5",
+    "villager_young_woman-6"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        140,
+        55,
+        379,
+        437
+      ],
+      "edge_touch": false,
+      "output_size": [
+        64,
+        103
+      ],
+      "paste_position": [
+        32,
+        19
+      ]
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        76,
+        72,
+        343,
+        441
+      ],
+      "edge_touch": false,
+      "output_size": [
+        72,
+        100
+      ],
+      "paste_position": [
+        28,
+        22
+      ]
+    },
+    {
+      "grid": [
+        0,
+        2
+      ],
+      "source_box": [
+        1024,
+        0,
+        1536,
+        512
+      ],
+      "component_mode": "all",
+      "component_count": 3,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        22,
+        73,
+        321,
+        446
+      ],
+      "edge_touch": false,
+      "output_size": [
+        81,
+        101
+      ],
+      "paste_position": [
+        23,
+        21
+      ]
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "component_mode": "all",
+      "component_count": 6,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        98,
+        32,
+        504,
+        398
+      ],
+      "edge_touch": false,
+      "output_size": [
+        110,
+        99
+      ],
+      "paste_position": [
+        9,
+        23
+      ]
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "component_mode": "all",
+      "component_count": 4,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        0,
+        35,
+        425,
+        401
+      ],
+      "edge_touch": true,
+      "output_size": [
+        115,
+        99
+      ],
+      "paste_position": [
+        6,
+        23
+      ]
+    },
+    {
+      "grid": [
+        1,
+        2
+      ],
+      "source_box": [
+        1024,
+        512,
+        1536,
+        1024
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        100,
+        16,
+        307,
+        403
+      ],
+      "edge_touch": false,
+      "output_size": [
+        56,
+        104
+      ],
+      "paste_position": [
+        36,
+        18
+      ]
+    }
+  ],
+  "edge_touch_frames": [
+    [
+      1,
+      1
+    ]
+  ]
+}

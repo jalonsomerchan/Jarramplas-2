@@ -55,6 +55,10 @@
     "assets/generated/player_walk/sheet.png",
     "assets/generated/player_throw/sheet.png",
     "assets/generated/villager_throw/sheet.png",
+    "assets/generated/villager_throw_types/type_1/sheet.png",
+    "assets/generated/villager_throw_types/type_2/sheet.png",
+    "assets/generated/villager_throw_types/type_3/sheet.png",
+    "assets/generated/villager_throw_types/type_4/sheet.png",
     "assets/generated/turnip_piles/sheet.png",
     "assets/generated/houses/sheet.png",
   ];

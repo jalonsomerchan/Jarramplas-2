@@ -1,0 +1,155 @@
+{
+  "target": "asset",
+  "mode": "single",
+  "prompt": "2x2 loose turnip piles on the ground, no baskets no boxes no containers, solid magenta background",
+  "role": "",
+  "input": "/Users/jorgealonso/.codex/generated_images/019e8e4b-d62d-79d1-97bb-5b87a834cfe6/ig_01a8d5b7a5733d86016a20552324d08191b8cc6444783fdc26.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 200,
+  "rows": 2,
+  "cols": 2,
+  "cell_size": 128,
+  "fit_scale": 0.9,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "center",
+  "shared_scale": true,
+  "component_mode": "all",
+  "component_padding": 4,
+  "min_component_area": 1,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "turnip_pile-1",
+    "turnip_pile-2",
+    "turnip_pile-3",
+    "turnip_pile-4"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "component_mode": "all",
+      "component_count": 9,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        121,
+        169,
+        525,
+        479
+      ],
+      "edge_touch": false,
+      "output_size": [
+        97,
+        74
+      ],
+      "paste_position": [
+        15,
+        27
+      ]
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        627,
+        0,
+        1254,
+        627
+      ],
+      "component_mode": "all",
+      "component_count": 9,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        33,
+        118,
+        510,
+        502
+      ],
+      "edge_touch": false,
+      "output_size": [
+        115,
+        92
+      ],
+      "paste_position": [
+        6,
+        18
+      ]
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        627,
+        627,
+        1254
+      ],
+      "component_mode": "all",
+      "component_count": 17,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        99,
+        115,
+        575,
+        437
+      ],
+      "edge_touch": false,
+      "output_size": [
+        114,
+        77
+      ],
+      "paste_position": [
+        7,
+        25
+      ]
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        627,
+        627,
+        1254,
+        1254
+      ],
+      "component_mode": "all",
+      "component_count": 8,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        57,
+        131,
+        480,
+        442
+      ],
+      "edge_touch": false,
+      "output_size": [
+        102,
+        75
+      ],
+      "paste_position": [
+        13,
+        26
+      ]
+    }
+  ],
+  "edge_touch_frames": []
+}

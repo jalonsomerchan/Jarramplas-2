@@ -1,0 +1,224 @@
+{
+  "target": "npc",
+  "mode": "throw",
+  "prompt": "animated elderly woman villager throw sheet 2x3",
+  "role": "",
+  "input": "/Users/jorgealonso/.codex/generated_images/019e8e4b-d62d-79d1-97bb-5b87a834cfe6/ig_01a8d5b7a5733d86016a205ae0b748819188dd53f668733fac.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 200,
+  "rows": 2,
+  "cols": 3,
+  "cell_size": 128,
+  "fit_scale": 0.9,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "feet",
+  "shared_scale": true,
+  "component_mode": "all",
+  "component_padding": 4,
+  "min_component_area": 1,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "villager_elder-1",
+    "villager_elder-2",
+    "villager_elder-3",
+    "villager_elder-4",
+    "villager_elder-5",
+    "villager_elder-6"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        145,
+        62,
+        369,
+        429
+      ],
+      "edge_touch": false,
+      "output_size": [
+        66,
+        108
+      ],
+      "paste_position": [
+        31,
+        14
+      ]
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "component_mode": "all",
+      "component_count": 2,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        48,
+        66,
+        335,
+        431
+      ],
+      "edge_touch": false,
+      "output_size": [
+        84,
+        107
+      ],
+      "paste_position": [
+        22,
+        15
+      ]
+    },
+    {
+      "grid": [
+        0,
+        2
+      ],
+      "source_box": [
+        1024,
+        0,
+        1536,
+        512
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        20,
+        82,
+        331,
+        434
+      ],
+      "edge_touch": false,
+      "output_size": [
+        91,
+        103
+      ],
+      "paste_position": [
+        18,
+        19
+      ]
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "component_mode": "all",
+      "component_count": 8,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        114,
+        27,
+        504,
+        366
+      ],
+      "edge_touch": false,
+      "output_size": [
+        115,
+        100
+      ],
+      "paste_position": [
+        6,
+        22
+      ]
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "component_mode": "all",
+      "component_count": 2,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        0,
+        29,
+        383,
+        371
+      ],
+      "edge_touch": true,
+      "output_size": [
+        113,
+        101
+      ],
+      "paste_position": [
+        7,
+        21
+      ]
+    },
+    {
+      "grid": [
+        1,
+        2
+      ],
+      "source_box": [
+        1024,
+        512,
+        1536,
+        1024
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        74,
+        28,
+        290,
+        377
+      ],
+      "edge_touch": false,
+      "output_size": [
+        63,
+        103
+      ],
+      "paste_position": [
+        32,
+        19
+      ]
+    }
+  ],
+  "edge_touch_frames": [
+    [
+      1,
+      1
+    ]
+  ]
+}

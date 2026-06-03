@@ -68,6 +68,9 @@ const MOBILE_CONTROL_BREAKPOINT = 760;
 const keys = new Set();
 const HOUSE_SHEET_COLS = 3;
 const HOUSE_SHEET_ROWS = 2;
+const VILLAGER_THROW_TYPE_COUNT = 4;
+const HOUSE_TOP_BLOCK_RATIO = 0.1;
+const HOUSE_BOTTOM_PASSABLE_RATIO = 0.05;
 const HOUSE_BOUNDS = [
   { l: 47 / 384, t: 31 / 384, r: 337 / 384, b: 352 / 384 },
   { l: 41 / 384, t: 41 / 384, r: 342 / 384, b: 342 / 384 },
@@ -243,9 +246,9 @@ function getHouseBlock(houseObstacle) {
   const layout = getHouseLayout(houseObstacle);
   return {
     x: layout.left + layout.drawW * 0.06,
-    y: layout.top + layout.drawH * 0.1,
+    y: layout.top + layout.drawH * HOUSE_TOP_BLOCK_RATIO,
     w: layout.drawW * 0.88,
-    h: layout.drawH * 0.8,
+    h: layout.drawH * (1 - HOUSE_TOP_BLOCK_RATIO - HOUSE_BOTTOM_PASSABLE_RATIO),
   };
 }
 
@@ -332,6 +335,7 @@ function spawnPeople(count) {
   state.people = starts.slice(0, count).map(([x, y], index) => ({
     x, y, speed: 70 + index * 3, dir: "down", walking: false,
     cooldown: 1.2 + index * 0.42, throwAnim: 0, wander: 0, vx: 0, vy: 0,
+    variant: index % VILLAGER_THROW_TYPE_COUNT,
   }));
 }
 
@@ -739,13 +743,15 @@ function drawActor(actor, type) {
   const y = actor.y - state.camera.y;
   const walkRow = { down: 0, left: 1, right: 2, up: 3 }[actor.dir] || 0;
   const walkFrame = walkRow * 4 + (actor.walking ? Math.floor(state.elapsed * 8) % 4 : 1);
+  const villagerSheet = assets.images.villagerThrowTypes?.[actor.variant] || assets.images.villagerThrow;
   if (actor.throwAnim > 0) {
     const frame = clamp(5 - Math.floor((actor.throwAnim / 0.5) * 6), 0, 5);
-    drawSpriteSheet(type === "player" ? assets.images.playerThrow : assets.images.villagerThrow, 2, 3, frame, x, y + 18, 96, 96, actor.dir === "left");
+    if (type === "player") drawSpriteSheet(assets.images.playerThrow, 2, 3, frame, x, y + 18, 96, 96, actor.dir === "left");
+    else drawSpriteSheet(villagerSheet, 2, 3, frame, x, y + 18, 84, 84, actor.dir === "left");
   } else if (type === "player") {
     drawSpriteSheet(assets.images.playerWalk, 4, 4, walkFrame, x, y + 18, 82, 82);
   } else {
-    drawSpriteSheet(assets.images.villagerThrow, 2, 3, 5, x, y + 18, 84, 84, actor.dir === "left");
+    drawSpriteSheet(villagerSheet, 2, 3, 5, x, y + 18, 84, 84, actor.dir === "left");
   }
   if (actor.hurt > 0) {
     ctx.fillStyle = "rgba(255, 80, 70, 0.25)";
@@ -972,6 +978,9 @@ async function loadAssets() {
   };
   const imageEntries = await Promise.all(Object.entries(generated).map(async ([key, path]) => [key, await loadImage(path)]));
   assets.images = Object.fromEntries(imageEntries);
+  assets.images.villagerThrowTypes = await Promise.all(
+    Array.from({ length: VILLAGER_THROW_TYPE_COUNT }, (_, index) => loadImage(`assets/generated/villager_throw_types/type_${index + 1}/sheet.png`)),
+  );
   assets.jarramplas = await Promise.all(jarramplasVariants.map((variant) => Promise.all(variant.frames.map(loadImage))));
   assets.backgrounds = await Promise.all(scenarios.map((scenario) => loadImage(scenario.path)));
 }
