@@ -59,7 +59,7 @@ const screens = {
 
 const DPR = Math.min(window.devicePixelRatio || 1, 2);
 const TILE = 48;
-const WORLD = { w: 2400, h: 1800 };
+const WORLD = { w: 3200, h: 2400 };
 const PLAYER_RADIUS = 20;
 const TURNIP_SPEED = 720;
 const CROWD_TURNIP_SPEED = 360;
@@ -121,7 +121,6 @@ const state = {
   startedAt: 0,
   ended: false,
   touchCooldown: 0,
-  pointerTarget: null,
 };
 
 function clamp(value, min, max) {
@@ -281,16 +280,32 @@ function createVillage(seedValue = 1) {
     house(2030, 1175, 365, 245, 4, 0.98),
     house(230, 1505, 390, 230, 4, 0.94),
     house(1320, 1535, 500, 245, 1, 1.0),
+    house(2450, 115, 460, 260, 0, 1.02),
+    house(2685, 490, 390, 245, 2, 0.98),
+    house(2380, 875, 500, 285, 3, 1.04),
+    house(2480, 1505, 470, 270, 1, 1.02),
+    house(1880, 1755, 520, 285, 0, 1.04),
+    house(1260, 1905, 470, 270, 4, 1.0),
+    house(620, 1900, 500, 285, 3, 1.03),
+    house(95, 1985, 430, 250, 2, 0.98),
+    house(2760, 1930, 350, 245, 4, 0.94),
     { x: 0, y: 0, w: WORLD.w, h: 36, type: "wall" },
     { x: 0, y: WORLD.h - 36, w: WORLD.w, h: 36, type: "wall" },
     { x: 0, y: 0, w: 36, h: WORLD.h, type: "wall" },
     { x: WORLD.w - 36, y: 0, w: 36, h: WORLD.h, type: "wall" },
   ];
-  for (let i = 0; i < 38; i += 1) {
+  for (let i = 0; i < 76; i += 1) {
     const x = 90 + rand() * (WORLD.w - 180);
-    const y = 420 + rand() * (WORLD.h - 720);
+    const y = 380 + rand() * (WORLD.h - 610);
     if (Math.abs(x - 1110) < 520 && Math.abs(y - 860) < 360) continue;
-    obstacles.push({ x, y, w: 30 + rand() * 30, h: 30 + rand() * 30, type: "tree" });
+    obstacles.push({
+      x,
+      y,
+      w: 38 + rand() * 42,
+      h: 46 + rand() * 52,
+      type: "tree",
+      tone: Math.floor(rand() * 3),
+    });
   }
   state.obstacles = obstacles;
   state.piles = [
@@ -300,6 +315,10 @@ function createVillage(seedValue = 1) {
     { x: 1650, y: 830, amount: 7, variant: 3 },
     { x: 610, y: 1330, amount: 8, variant: 1 },
     { x: 1880, y: 1370, amount: 7, variant: 0 },
+    { x: 2520, y: 650, amount: 8, variant: 2 },
+    { x: 2800, y: 1280, amount: 7, variant: 3 },
+    { x: 2140, y: 1900, amount: 8, variant: 1 },
+    { x: 920, y: 2060, amount: 7, variant: 0 },
   ];
 }
 
@@ -308,6 +327,7 @@ function spawnPeople(count) {
     [520, 530], [880, 1030], [1280, 780], [1540, 1080],
     [1980, 620], [430, 1020], [1050, 430], [1810, 1010],
     [720, 1510], [1430, 1460], [2090, 1120], [220, 850],
+    [2600, 860], [2850, 1420], [2220, 1760], [980, 1960],
   ];
   state.people = starts.slice(0, count).map(([x, y], index) => ({
     x, y, speed: 70 + index * 3, dir: "down", walking: false,
@@ -341,7 +361,6 @@ function startGame() {
   state.startedAt = Date.now();
   state.ended = false;
   state.touchCooldown = 0;
-  state.pointerTarget = null;
   state.joystick = { active: false, pointerId: null, x: 0, y: 0, dx: 0, dy: 0 };
   recordGameStartStats(state.gameType, state.difficulty);
   updateHud();
@@ -458,15 +477,6 @@ function updatePlayer(dt) {
   if (state.joystick.active) {
     dx += state.joystick.dx;
     dy += state.joystick.dy;
-  }
-  if (!dx && !dy && state.pointerTarget) {
-    const d = dist(p, state.pointerTarget);
-    if (d > 12) {
-      dx = state.pointerTarget.x - p.x;
-      dy = state.pointerTarget.y - p.y;
-    } else {
-      state.pointerTarget = null;
-    }
   }
   moveActor(p, dx, dy, dt);
   collectPiles();
@@ -614,32 +624,69 @@ function drawSpriteSheet(img, rows, cols, frame, x, y, w, h, flip = false) {
 function drawMap() {
   const ox = -state.camera.x;
   const oy = -state.camera.y;
-  ctx.fillStyle = "#6fa05e";
+  ctx.fillStyle = "#9f7b52";
   ctx.fillRect(0, 0, state.w, state.h);
   ctx.save();
   ctx.translate(ox, oy);
   for (let x = 0; x < WORLD.w; x += TILE) {
     for (let y = 0; y < WORLD.h; y += TILE) {
-      ctx.fillStyle = ((x / TILE + y / TILE) % 2) ? "#76aa65" : "#6ea15e";
+      const mixed = (x / TILE + y / TILE) % 3;
+      ctx.fillStyle = mixed === 0 ? "#a8845a" : (mixed === 1 ? "#967249" : "#ad8a60");
       ctx.fillRect(x, y, TILE, TILE);
+      if ((x / TILE + y / TILE) % 7 === 0) {
+        ctx.fillStyle = "rgba(92, 61, 35, 0.12)";
+        ctx.fillRect(x + 8, y + 10, TILE - 18, 3);
+        ctx.fillRect(x + 20, y + 31, TILE - 28, 2);
+      }
     }
   }
-  ctx.fillStyle = "#d1c09b";
+  ctx.fillStyle = "#b8925f";
   ctx.fillRect(0, 775, WORLD.w, 180);
   ctx.fillRect(1020, 0, 210, WORLD.h);
-  ctx.fillStyle = "#b99b73";
+  ctx.fillRect(0, 1770, WORLD.w, 170);
+  ctx.fillRect(2450, 0, 190, WORLD.h);
+  ctx.fillStyle = "#9f764a";
   ctx.fillRect(820, 570, 760, 560);
+  ctx.fillRect(2140, 650, 700, 500);
+  ctx.fillRect(560, 1710, 780, 480);
   ctx.strokeStyle = "rgba(80, 54, 34, 0.24)";
   ctx.lineWidth = 3;
   ctx.strokeRect(820, 570, 760, 560);
+  ctx.strokeRect(2140, 650, 700, 500);
+  ctx.strokeRect(560, 1710, 780, 480);
   state.obstacles.forEach((o) => {
     if (o.type === "wall") return;
     if (o.type === "tree") {
-      ctx.fillStyle = "#5c3a22";
-      ctx.fillRect(o.x + o.w * 0.4, o.y + o.h * 0.55, o.w * 0.2, o.h * 0.45);
-      ctx.fillStyle = "#2f7b43";
+      const cx = o.x + o.w / 2;
+      const baseY = o.y + o.h;
+      const crownY = o.y + o.h * 0.38;
+      const tones = [
+        ["#245f3b", "#34794c", "#5f9b50"],
+        ["#2c6c42", "#3f8750", "#6fa85b"],
+        ["#365f35", "#4c7f40", "#7a9b4d"],
+      ][o.tone || 0];
+      ctx.fillStyle = "rgba(63, 43, 25, 0.28)";
       ctx.beginPath();
-      ctx.arc(o.x + o.w / 2, o.y + o.h * 0.42, Math.max(o.w, o.h) * 0.5, 0, Math.PI * 2);
+      ctx.ellipse(cx, baseY - 4, o.w * 0.48, o.h * 0.16, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#5a351d";
+      ctx.fillRect(cx - o.w * 0.11, o.y + o.h * 0.5, o.w * 0.22, o.h * 0.46);
+      ctx.fillStyle = "#754722";
+      ctx.fillRect(cx - o.w * 0.04, o.y + o.h * 0.52, o.w * 0.08, o.h * 0.42);
+      ctx.fillStyle = tones[0];
+      ctx.beginPath();
+      ctx.ellipse(cx, crownY, o.w * 0.52, o.h * 0.36, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = tones[1];
+      ctx.beginPath();
+      ctx.arc(cx - o.w * 0.24, crownY + o.h * 0.04, o.w * 0.28, 0, Math.PI * 2);
+      ctx.arc(cx + o.w * 0.24, crownY + o.h * 0.02, o.w * 0.3, 0, Math.PI * 2);
+      ctx.arc(cx, crownY - o.h * 0.18, o.w * 0.34, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = tones[2];
+      ctx.beginPath();
+      ctx.arc(cx - o.w * 0.12, crownY - o.h * 0.18, o.w * 0.13, 0, Math.PI * 2);
+      ctx.arc(cx + o.w * 0.2, crownY - o.h * 0.05, o.w * 0.11, 0, Math.PI * 2);
       ctx.fill();
       return;
     }
@@ -1029,12 +1076,9 @@ function bindInput() {
       return;
     }
     if (state.w <= MOBILE_CONTROL_BREAKPOINT && x < 160 && y > state.h - 170) {
-      state.pointerTarget = null;
       state.joystick = { active: true, pointerId: event.pointerId, x, y, dx: 0, dy: 0 };
       canvas.setPointerCapture?.(event.pointerId);
-      return;
     }
-    state.pointerTarget = screenToWorld(x, y);
   });
   canvas.addEventListener("pointermove", (event) => {
     if (state.mode !== "game" || event.buttons !== 1) return;
@@ -1054,7 +1098,6 @@ function bindInput() {
       }
       return;
     }
-    state.pointerTarget = screenToWorld(x, y);
   });
   canvas.addEventListener("pointerup", (event) => {
     if (state.joystick.active && state.joystick.pointerId === event.pointerId) {
