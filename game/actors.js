@@ -22,7 +22,13 @@ import {
   WORLD,
 } from "./constants.js";
 import { addFloater, burst, createTurnipImpact } from "./effects.js";
-import { circleIntersectsObstacle, findFreeSpawn, moveActor } from "./physics.js";
+import {
+  circleIntersectsObstacle,
+  findFreeSpawn,
+  getTurnipBuildingCollision,
+  moveActor,
+  resolveActorCollisions,
+} from "./physics.js";
 import { state } from "./state.js";
 import { showScreen, updateHud } from "./ui.js";
 import { dist } from "./utils.js";
@@ -47,13 +53,17 @@ export function spawnPeople(count) {
     [720, 1510], [1430, 1460], [2090, 1120], [220, 850],
     [2600, 860], [2850, 1420], [2220, 1760], [980, 1960],
   ];
+  const neighborCharacterIndexes = playerVariants
+    .map((_, characterIndex) => characterIndex)
+    .filter((characterIndex) => characterIndex !== state.playerIndex);
+
   state.people = starts.slice(0, count).map(([x, y], index) => {
     const spawn = findFreeSpawn(x, y, PLAYER_RADIUS);
     return {
       x: spawn.x, y: spawn.y, speed: 70 + index * 3, dir: "down", walking: false,
       cooldown: 1.2 + index * 0.42, throwAnim: 0, wander: 0, vx: 0, vy: 0,
       variant: index % VILLAGER_THROW_TYPE_COUNT,
-      characterIndex: 1,
+      characterIndex: neighborCharacterIndexes[index % neighborCharacterIndexes.length] ?? 1,
     };
   });
 }
@@ -227,8 +237,25 @@ export function updatePeople(dt) {
 
 export function updateTurnips(dt) {
   state.turnips.forEach((t) => {
-    t.x += t.vx * dt;
-    t.y += t.vy * dt;
+    const nextX = t.x + t.vx * dt;
+    const nextY = t.y + t.vy * dt;
+    const hitX = getTurnipBuildingCollision(nextX, t.y);
+    const hitY = getTurnipBuildingCollision(t.x, nextY);
+
+    if (hitX) t.vx *= -0.78;
+    else t.x = nextX;
+
+    if (hitY) t.vy *= -0.78;
+    else t.y = nextY;
+
+    if (!hitX && !hitY && getTurnipBuildingCollision(nextX, nextY)) {
+      t.vx *= -0.78;
+      t.vy *= -0.78;
+      t.life -= 0.08;
+    } else if (hitX || hitY) {
+      t.life -= 0.08;
+    }
+
     t.spin += dt * 12;
     t.life -= dt;
     if (t.owner === "player" && dist(t, state.jarramplas) < 48) {
@@ -272,6 +299,7 @@ export function updateRuntime(dt) {
   updatePlayer(dt);
   updateJarramplas(dt);
   updatePeople(dt);
+  resolveActorCollisions();
   updateTurnips(dt);
   state.floaters.forEach((f) => {
     f.y -= dt * 46;
