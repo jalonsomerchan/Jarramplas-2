@@ -148,10 +148,11 @@ async function networkFirstStaticAsset(request) {
 }
 
 function patchGameScript(source) {
-  if (source.includes("function actorBlocked(actor, x, y, radius)")) return source;
+  let patched = source;
 
-  const helperMarker = `function findFreeSpawn(x, y, radius = PLAYER_RADIUS) {`;
-  const actorCollisionHelpers = `function getActorCollisionRadius(actor) {
+  if (!patched.includes("function actorBlocked(actor, x, y, radius)")) {
+    const helperMarker = `function findFreeSpawn(x, y, radius = PLAYER_RADIUS) {`;
+    const actorCollisionHelpers = `function getActorCollisionRadius(actor) {
   if (actor === state.jarramplas) return 26;
   if (state.people.includes(actor)) return 19;
   return PLAYER_RADIUS;
@@ -175,12 +176,22 @@ function actorBlocked(actor, x, y, radius) {
 
 `;
 
-  return source
-    .replace(helperMarker, `${actorCollisionHelpers}${helperMarker}`)
-    .replace(
-      `  if (!circleBlocked(nextX, actor.y, radius)) actor.x = nextX;\n  if (!circleBlocked(actor.x, nextY, radius)) actor.y = nextY;`,
-      `  if (!actorBlocked(actor, nextX, actor.y, radius)) actor.x = nextX;\n  if (!actorBlocked(actor, actor.x, nextY, radius)) actor.y = nextY;`
+    patched = patched
+      .replace(helperMarker, `${actorCollisionHelpers}${helperMarker}`)
+      .replace(
+        `  if (!circleBlocked(nextX, actor.y, radius)) actor.x = nextX;\n  if (!circleBlocked(actor.x, nextY, radius)) actor.y = nextY;`,
+        `  if (!actorBlocked(actor, nextX, actor.y, radius)) actor.x = nextX;\n  if (!actorBlocked(actor, actor.x, nextY, radius)) actor.y = nextY;`
+      );
+  }
+
+  if (!patched.includes('document.getElementById("finalTurnipsThrown")')) {
+    patched = patched.replace(
+      `  document.getElementById("finalJarramplasName").textContent = jarramplasVariants[state.jarramplasIndex]?.name || "Jarramplas";`,
+      `  document.getElementById("finalJarramplasName").textContent = jarramplasVariants[state.jarramplasIndex]?.name || "Jarramplas";\n  document.getElementById("finalTurnipsThrown").textContent = formatNumber(state.throws);\n  document.getElementById("finalTurnipsHit").textContent = formatNumber(state.hits);\n  document.getElementById("finalPeopleHits").textContent = formatNumber(state.peopleHits);\n  document.getElementById("finalAccuracy").textContent = `${accuracy}%`;`
     );
+  }
+
+  return patched;
 }
 
 async function patchGameScriptResponse(response) {
