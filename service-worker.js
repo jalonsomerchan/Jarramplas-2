@@ -148,10 +148,11 @@ async function networkFirstStaticAsset(request) {
 }
 
 function patchGameScript(source) {
-  if (source.includes("function actorBlocked(actor, x, y, radius)")) return source;
+  let patched = source;
 
-  const helperMarker = `function findFreeSpawn(x, y, radius = PLAYER_RADIUS) {`;
-  const actorCollisionHelpers = `function getActorCollisionRadius(actor) {
+  if (!patched.includes("function actorBlocked(actor, x, y, radius)")) {
+    const helperMarker = `function findFreeSpawn(x, y, radius = PLAYER_RADIUS) {`;
+    const actorCollisionHelpers = `function getActorCollisionRadius(actor) {
   if (actor === state.jarramplas) return 26;
   if (state.people.includes(actor)) return 19;
   return PLAYER_RADIUS;
@@ -175,12 +176,39 @@ function actorBlocked(actor, x, y, radius) {
 
 `;
 
-  return source
-    .replace(helperMarker, `${actorCollisionHelpers}${helperMarker}`)
-    .replace(
-      `  if (!circleBlocked(nextX, actor.y, radius)) actor.x = nextX;\n  if (!circleBlocked(actor.x, nextY, radius)) actor.y = nextY;`,
-      `  if (!actorBlocked(actor, nextX, actor.y, radius)) actor.x = nextX;\n  if (!actorBlocked(actor, actor.x, nextY, radius)) actor.y = nextY;`
+    patched = patched
+      .replace(helperMarker, `${actorCollisionHelpers}${helperMarker}`)
+      .replace(
+        `  if (!circleBlocked(nextX, actor.y, radius)) actor.x = nextX;\n  if (!circleBlocked(actor.x, nextY, radius)) actor.y = nextY;`,
+        `  if (!actorBlocked(actor, nextX, actor.y, radius)) actor.x = nextX;\n  if (!actorBlocked(actor, actor.x, nextY, radius)) actor.y = nextY;`
+      );
+  }
+
+  if (!patched.includes("function getTurnipBuildingCollision")) {
+    const turnipCollisionHelpers = `function getTurnipBuildingCollision(x, y, radius = 10) {
+  return state.obstacles.find((obstacle) => (
+    obstacle.type === "house" && circleIntersectsObstacle(x, y, radius, obstacle)
+  ));
+}
+
+`;
+
+    patched = patched
+      .replace(`function updateTurnips(dt) {`, `${turnipCollisionHelpers}function updateTurnips(dt) {`)
+      .replace(
+        `    t.x += t.vx * dt;\n    t.y += t.vy * dt;`,
+        `    const nextX = t.x + t.vx * dt;\n    const nextY = t.y + t.vy * dt;\n    const hitX = getTurnipBuildingCollision(nextX, t.y);\n    const hitY = getTurnipBuildingCollision(t.x, nextY);\n\n    if (hitX) t.vx *= -0.78;\n    else t.x = nextX;\n\n    if (hitY) t.vy *= -0.78;\n    else t.y = nextY;\n\n    if (!hitX && !hitY && getTurnipBuildingCollision(nextX, nextY)) {\n      t.vx *= -0.78;\n      t.vy *= -0.78;\n      t.life -= 0.08;\n    } else if (hitX || hitY) {\n      t.life -= 0.08;\n    }`
+      );
+  }
+
+  if (!patched.includes('document.getElementById("finalTurnipsThrown")')) {
+    patched = patched.replace(
+      `  document.getElementById("finalJarramplasName").textContent = jarramplasVariants[state.jarramplasIndex]?.name || "Jarramplas";`,
+      `  document.getElementById("finalJarramplasName").textContent = jarramplasVariants[state.jarramplasIndex]?.name || "Jarramplas";\n  document.getElementById("finalTurnipsThrown").textContent = formatNumber(state.throws);\n  document.getElementById("finalTurnipsHit").textContent = formatNumber(state.hits);\n  document.getElementById("finalPeopleHits").textContent = formatNumber(state.peopleHits);\n  document.getElementById("finalAccuracy").textContent = \`\${accuracy}%\`;`
     );
+  }
+
+  return patched;
 }
 
 async function patchGameScriptResponse(response) {
