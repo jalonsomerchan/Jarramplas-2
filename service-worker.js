@@ -93,6 +93,10 @@ function requestPathname(request) {
   return requestUrl(request).pathname;
 }
 
+function isGameScript(request) {
+  return requestPathname(request).endsWith("/game.js");
+}
+
 function isStaticAsset(request) {
   const pathname = requestPathname(request);
   return pathname.endsWith(".js")
@@ -143,6 +147,68 @@ async function networkFirstStaticAsset(request) {
   }
 }
 
+function patchGameScript(source) {
+  if (source.includes("function actorBlocked(actor, x, y, radius)")) return source;
+
+  const helperMarker = `function findFreeSpawn(x, y, radius = PLAYER_RADIUS) {`;
+  const actorCollisionHelpers = `function getActorCollisionRadius(actor) {
+  if (actor === state.jarramplas) return 26;
+  if (state.people.includes(actor)) return 19;
+  return PLAYER_RADIUS;
+}
+
+function getSolidActors(excludedActor) {
+  return [state.player, state.jarramplas, ...state.people]
+    .filter((actor) => actor && actor !== excludedActor);
+}
+
+function circleBlockedByActors(x, y, radius, excludedActor) {
+  return getSolidActors(excludedActor).some((actor) => {
+    const otherRadius = getActorCollisionRadius(actor);
+    return Math.hypot(x - actor.x, y - actor.y) < radius + otherRadius;
+  });
+}
+
+function actorBlocked(actor, x, y, radius) {
+  return circleBlocked(x, y, radius) || circleBlockedByActors(x, y, radius, actor);
+}
+
+`;
+
+  return source
+    .replace(helperMarker, `${actorCollisionHelpers}${helperMarker}`)
+    .replace(
+      `  if (!circleBlocked(nextX, actor.y, radius)) actor.x = nextX;\n  if (!circleBlocked(actor.x, nextY, radius)) actor.y = nextY;`,
+      `  if (!actorBlocked(actor, nextX, actor.y, radius)) actor.x = nextX;\n  if (!actorBlocked(actor, actor.x, nextY, radius)) actor.y = nextY;`
+    );
+}
+
+async function patchGameScriptResponse(response) {
+  const source = await response.text();
+  const patched = patchGameScript(source);
+  const headers = new Headers(response.headers);
+  headers.set("Content-Type", "text/javascript; charset=utf-8");
+  return new Response(patched, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
+async function networkFirstGameScript(request) {
+  try {
+    const clean = cleanRequest(request);
+    const response = await fetch(clean, { cache: "no-cache" });
+    const patched = await patchGameScriptResponse(response);
+    await putIfOk(CORE_CACHE, request, patched);
+    return patched;
+  } catch {
+    const cached = await matchAny(request);
+    if (cached) return patchGameScriptResponse(cached);
+    throw new Error("No se pudo cargar game.js");
+  }
+}
+
 async function staleWhileRevalidateAsset(request) {
   const cached = await matchAny(request);
   const refresh = fetch(cleanRequest(request))
@@ -173,6 +239,11 @@ self.addEventListener("fetch", (event) => {
 
   if (request.mode === "navigate") {
     event.respondWith(networkFirstPage(request));
+    return;
+  }
+
+  if (isGameScript(request)) {
+    event.respondWith(networkFirstGameScript(request));
     return;
   }
 
