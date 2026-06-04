@@ -3,7 +3,7 @@
  * Keep this file dependency-free so it can run both in the page and inside the service worker via importScripts().
  */
 (function registerPwaAssets(globalScope) {
-  const APP_BUILD = "20260605-1";
+  const APP_BUILD = "20260606-1";
 
   const staticCoreAssets = [
     "./",
