@@ -108,7 +108,6 @@ export function getSpawnCollisionReport() {
     ["player", state.player],
     ["jarramplas", state.jarramplas],
     ...state.people.map((person, index) => [`neighbor-${index}`, person]),
-    ...state.bystanders.map((person, index) => [`bystander-${index}`, person]),
   ].filter(([, actor]) => actor);
 
   return actors.map(([name, actor]) => ({

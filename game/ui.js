@@ -226,6 +226,7 @@ export function bindUi({ startGame }) {
   document.getElementById("homeButton").addEventListener("click", () => showScreen("start"));
   document.getElementById("resultHomeButton")?.addEventListener("click", () => showScreen("start"));
   document.getElementById("playAgainButton")?.addEventListener("click", startGame);
+  document.getElementById("againButton")?.addEventListener("click", () => showScreen("type"));
   document.getElementById("acceptChallengeButton").addEventListener("click", () => {
     if (state.activeChallenge) state.difficulty = state.activeChallenge.difficulty;
     state.gameType = "timed";

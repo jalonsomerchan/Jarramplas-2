@@ -49,7 +49,7 @@ function getPlayerMaxTurnips() {
 }
 
 function getPlayerInitialTurnips(gameType) {
-  return Math.min(gameType.turnips || getPlayerMaxTurnips(), getPlayerMaxTurnips());
+  return gameType.turnips || getPlayerMaxTurnips();
 }
 
 export function damagePlayer(amount, x, y, label = null) {
@@ -211,6 +211,10 @@ export function endGame(reason) {
   document.getElementById("finalSummary").textContent = `${state.hits} impactos a Jarramplas · ${accuracy}% precisión · ${Math.max(0, Math.round(state.life))} vida`;
   document.getElementById("finalScenarioName").textContent = scenarios[state.scenarioIndex]?.name || "Piornal";
   document.getElementById("finalJarramplasName").textContent = jarramplasVariants[state.jarramplasIndex]?.name || "Jarramplas";
+  document.getElementById("finalTurnipsThrown").textContent = formatNumber(state.throws);
+  document.getElementById("finalTurnipsHit").textContent = formatNumber(state.hits);
+  document.getElementById("finalPeopleHits").textContent = formatNumber(state.peopleHits);
+  document.getElementById("finalAccuracy").textContent = `${accuracy}%`;
   document.getElementById("finalHighlights").innerHTML = `
     <div><strong>${formatNumber(state.throws)}</strong><span>Nabos lanzados</span></div>
     <div><strong>${formatNumber(state.peopleHits)}</strong><span>Golpes recibidos</span></div>
