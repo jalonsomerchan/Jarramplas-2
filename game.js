@@ -22,174 +22,51 @@ import {
   saveRecord,
 } from "./storage.js";
 
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-const hud = document.getElementById("hud");
-const scoreEl = document.getElementById("score");
-const timeEl = document.getElementById("time");
-const comboEl = document.getElementById("combo");
-const recordEl = document.getElementById("record");
-const loadingScreen = document.getElementById("loading");
-const loadingBar = document.getElementById("loadingBar");
-const playButton = document.getElementById("playButton");
-const playerNameInput = document.getElementById("playerNameInput");
-const jarramplasCountdownEl = document.getElementById("jarramplasCountdown");
-const gameVersionEl = document.getElementById("gameVersion");
-const characterOptions = document.getElementById("characterOptions");
-const scenarioOptions = document.getElementById("scenarioOptions");
-const jarramplasOptions = document.getElementById("jarramplasOptions");
-const statsGrid = document.getElementById("statsGrid");
-const statsDetails = document.getElementById("statsDetails");
-const statsLeaderboardStatus = document.getElementById("statsLeaderboardStatus");
-const statsLeaderboard = document.getElementById("statsLeaderboard");
-const statsLeaderboardType = document.getElementById("statsLeaderboardType");
-const statsLeaderboardDifficulty = document.getElementById("statsLeaderboardDifficulty");
-
-const screens = {
-  start: document.getElementById("start"),
-  challenge: document.getElementById("challenge"),
-  type: document.getElementById("type"),
-  characterSelect: document.getElementById("characterSelect"),
-  select: document.getElementById("select"),
-  scenario: document.getElementById("scenario"),
-  jarramplasSelect: document.getElementById("jarramplasSelect"),
-  tutorial: document.getElementById("tutorial"),
-  stats: document.getElementById("stats"),
-  about: document.getElementById("about"),
-  pause: document.getElementById("pause"),
-  result: document.getElementById("result"),
-};
-
-const DPR = Math.min(window.devicePixelRatio || 1, 2);
-const TILE = 48;
-const WORLD = { w: 3200, h: 2400 };
-const PLAYER_RADIUS = 20;
-const TURNIP_SPEED = 720;
-const CROWD_TURNIP_SPEED = 360;
-const PLAYER_MAX_TURNIPS = 14;
-const MOBILE_CONTROL_BREAKPOINT = 760;
-const keys = new Set();
-const HOUSE_SHEET_COLS = 3;
-const HOUSE_SHEET_ROWS = 2;
-const FOUNTAIN_SHEET_COLS = 3;
-const VILLAGER_THROW_TYPE_COUNT = 4;
-const HOUSE_TOP_BLOCK_RATIO = 0.1;
-const HOUSE_BOTTOM_PASSABLE_RATIO = 0.05;
-const HOUSE_BOUNDS = [
-  { l: 47 / 384, t: 31 / 384, r: 337 / 384, b: 352 / 384 },
-  { l: 41 / 384, t: 41 / 384, r: 342 / 384, b: 342 / 384 },
-  { l: 102 / 384, t: 43 / 384, r: 282 / 384, b: 340 / 384 },
-  { l: 24 / 384, t: 56 / 384, r: 359 / 384, b: 327 / 384 },
-  { l: 32 / 384, t: 53 / 384, r: 351 / 384, b: 331 / 384 },
-  { l: 15 / 384, t: 70 / 384, r: 368 / 384, b: 314 / 384 },
-];
-
-const scenarioLayouts = {
-  "plaza-eras": {
-    ground: ["#a8845a", "#967249", "#ad8a60"],
-    paths: "#b8925f",
-    plazas: [
-      { x: 800, y: 540, w: 840, h: 620, color: "#a5794d" },
-      { x: 520, y: 1680, w: 840, h: 500, color: "#9c7047" },
-      { x: 2140, y: 650, w: 700, h: 500, color: "#a1784e" },
-    ],
-    fountain: { x: 1220, y: 1030, w: 345, h: 420, variant: 0 },
-    spawn: { player: [1160, 1720], jarramplas: [1760, 820], target: [1450, 900] },
-    houses: [
-      [55, 70, 430, 245, 0, 1.04], [555, 88, 500, 270, 1, 1.05],
-      [1140, 82, 360, 245, 2, 1.0], [1620, 90, 470, 270, 3, 1.02],
-      [2050, 132, 350, 230, 4, 0.95], [2450, 115, 460, 260, 0, 1.02],
-      [85, 1035, 420, 265, 2, 1.0], [555, 1230, 500, 285, 1, 1.05],
-      [1580, 1205, 500, 285, 0, 1.06], [2380, 875, 500, 285, 3, 1.04],
-      [1880, 1755, 520, 285, 0, 1.04], [620, 1900, 500, 285, 3, 1.03],
-    ],
-  },
-  "puerta-iglesia": {
-    ground: ["#b7b2a6", "#a9a397", "#c4beb0"],
-    paths: "#d4d0c4",
-    plazas: [
-      { x: 620, y: 500, w: 1020, h: 720, color: "#c8c3b6" },
-      { x: 160, y: 1350, w: 780, h: 270, color: "#bfb9ad" },
-      { x: 1880, y: 620, w: 760, h: 560, color: "#b8b1a5" },
-    ],
-    fountain: { x: 1210, y: 940, w: 385, h: 315, variant: 1 },
-    spawn: { player: [780, 1320], jarramplas: [1760, 760], target: [1500, 900] },
-    houses: [
-      [40, 60, 620, 310, 4, 1.1], [700, 70, 620, 300, 5, 1.08],
-      [1350, 85, 560, 300, 1, 1.05], [1950, 115, 480, 270, 2, 1.0],
-      [2520, 120, 510, 285, 3, 1.02], [90, 990, 480, 275, 0, 1.0],
-      [1710, 1260, 600, 320, 5, 1.06], [2400, 1330, 520, 290, 4, 1.0],
-      [400, 1850, 560, 315, 1, 1.06], [1120, 1880, 560, 300, 2, 1.0],
-      [2040, 1840, 610, 320, 3, 1.06],
-    ],
-  },
-  "plaza-ayuntamiento": {
-    ground: ["#9d9488", "#8d857a", "#aaa196"],
-    paths: "#b9b2a8",
-    plazas: [
-      { x: 660, y: 500, w: 1180, h: 740, color: "#b6afa4" },
-      { x: 2040, y: 560, w: 760, h: 610, color: "#a8a095" },
-      { x: 500, y: 1680, w: 900, h: 470, color: "#a59d92" },
-    ],
-    fountain: { x: 1240, y: 940, w: 350, h: 310, variant: 2 },
-    spawn: { player: [820, 1380], jarramplas: [1780, 820], target: [1520, 900] },
-    houses: [
-      [35, 80, 470, 255, 1, 1.02], [540, 72, 520, 285, 0, 1.03],
-      [1110, 68, 520, 285, 3, 1.04], [1685, 82, 520, 285, 4, 1.02],
-      [2250, 88, 590, 310, 5, 1.06], [120, 1120, 460, 270, 2, 0.98],
-      [1880, 1210, 520, 280, 1, 1.0], [2460, 1225, 500, 275, 0, 1.0],
-      [100, 1900, 520, 285, 4, 1.0], [740, 1900, 540, 300, 3, 1.03],
-      [1480, 1860, 550, 295, 2, 1.02], [2260, 1865, 550, 300, 5, 1.03],
-    ],
-  },
-};
-
-const assets = {
-  loaded: 0,
-  total: 0,
-  images: {},
-  jarramplas: [],
-  backgrounds: [],
-};
-
-const state = {
-  mode: "loading",
-  gameType: "timed",
-  difficulty: "day19Morning",
-  playerIndex: 0,
-  scenarioIndex: 0,
-  jarramplasIndex: 0,
-  tutorialNextScreen: "type",
-  activeChallenge: null,
-  w: 0,
-  h: 0,
-  camera: { x: 0, y: 0 },
-  player: null,
-  jarramplas: null,
-  people: [],
-  piles: [],
-  turnips: [],
-  impacts: [],
-  floaters: [],
-  particles: [],
-  obstacles: [],
-  joystick: { active: false, pointerId: null, x: 0, y: 0, dx: 0, dy: 0 },
-  score: 0,
-  combo: 1,
-  comboHits: 0,
-  life: 100,
-  timeLeft: 60,
-  turnipsLeft: PLAYER_MAX_TURNIPS,
-  jarramplasHealth: 100,
-  throws: 0,
-  hits: 0,
-  peopleHits: 0,
-  elapsed: 0,
-  last: 0,
-  startedAt: 0,
-  ended: false,
-  touchCooldown: 0,
-};
+import {
+  canvas,
+  ctx,
+  hud,
+  scoreEl,
+  timeEl,
+  comboEl,
+  recordEl,
+  loadingScreen,
+  loadingBar,
+  playButton,
+  playerNameInput,
+  jarramplasCountdownEl,
+  gameVersionEl,
+  characterOptions,
+  scenarioOptions,
+  jarramplasOptions,
+  statsGrid,
+  statsDetails,
+  statsLeaderboardStatus,
+  statsLeaderboard,
+  statsLeaderboardType,
+  statsLeaderboardDifficulty,
+  screens,
+} from "./game/dom.js";
+import {
+  DPR,
+  TILE,
+  WORLD,
+  PLAYER_RADIUS,
+  TURNIP_SPEED,
+  CROWD_TURNIP_SPEED,
+  PLAYER_MAX_TURNIPS,
+  MOBILE_CONTROL_BREAKPOINT,
+  keys,
+  HOUSE_SHEET_COLS,
+  HOUSE_SHEET_ROWS,
+  FOUNTAIN_SHEET_COLS,
+  VILLAGER_THROW_TYPE_COUNT,
+  HOUSE_TOP_BLOCK_RATIO,
+  HOUSE_BOTTOM_PASSABLE_RATIO,
+  HOUSE_BOUNDS,
+} from "./game/constants.js";
+import { scenarioLayouts } from "./game/scenario-layouts.js";
+import { assets, state } from "./game/state.js";
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
