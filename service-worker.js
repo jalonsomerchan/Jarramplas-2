@@ -187,7 +187,7 @@ function actorBlocked(actor, x, y, radius) {
   if (!patched.includes('document.getElementById("finalTurnipsThrown")')) {
     patched = patched.replace(
       `  document.getElementById("finalJarramplasName").textContent = jarramplasVariants[state.jarramplasIndex]?.name || "Jarramplas";`,
-      `  document.getElementById("finalJarramplasName").textContent = jarramplasVariants[state.jarramplasIndex]?.name || "Jarramplas";\n  document.getElementById("finalTurnipsThrown").textContent = formatNumber(state.throws);\n  document.getElementById("finalTurnipsHit").textContent = formatNumber(state.hits);\n  document.getElementById("finalPeopleHits").textContent = formatNumber(state.peopleHits);\n  document.getElementById("finalAccuracy").textContent = `${accuracy}%`;`
+      `  document.getElementById("finalJarramplasName").textContent = jarramplasVariants[state.jarramplasIndex]?.name || "Jarramplas";\n  document.getElementById("finalTurnipsThrown").textContent = formatNumber(state.throws);\n  document.getElementById("finalTurnipsHit").textContent = formatNumber(state.hits);\n  document.getElementById("finalPeopleHits").textContent = formatNumber(state.peopleHits);\n  document.getElementById("finalAccuracy").textContent = \`${accuracy}%\`;`
     );
   }
 
