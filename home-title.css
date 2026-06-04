@@ -1,3 +1,4 @@
+/* This file must exist because index.html links it. Keep title-specific styles here. */
 .home-brand-title {
   display: flex;
   align-items: flex-end;
@@ -11,10 +12,7 @@
   line-height: 0.82;
   letter-spacing: -0.05em;
   text-transform: uppercase;
-  text-shadow:
-    0 4px 0 #64180f,
-    0 9px 0 rgba(63, 18, 12, 0.72),
-    0 18px 32px rgba(0, 0, 0, 0.78);
+  text-shadow: 0 4px 0 #64180f, 0 9px 0 rgba(63, 18, 12, 0.72), 0 18px 32px rgba(0, 0, 0, 0.78);
   transform: rotate(-1.5deg);
 }
 
@@ -33,11 +31,7 @@
   font-weight: 900;
   line-height: 0.66;
   letter-spacing: -0.12em;
-  text-shadow:
-    0 4px 0 #7f1d14,
-    0 8px 0 #34110c,
-    0 0 18px rgba(242, 187, 61, 0.7),
-    0 18px 40px rgba(0, 0, 0, 0.82);
+  text-shadow: 0 4px 0 #7f1d14, 0 8px 0 #34110c, 0 0 18px rgba(242, 187, 61, 0.7), 0 18px 40px rgba(0, 0, 0, 0.82);
   transform-origin: 50% 72%;
   animation: titleNumberBounce 1.35s cubic-bezier(.2, .85, .22, 1.2) infinite;
 }
@@ -72,43 +66,20 @@
 }
 
 @keyframes titleImpact {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-
-  45% {
-    transform: translateY(-1px) rotate(-0.6deg);
-  }
-
-  52% {
-    transform: translateY(1px) rotate(0.5deg);
-  }
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  45% { transform: translateY(-1px) rotate(-0.6deg); }
+  52% { transform: translateY(1px) rotate(0.5deg); }
 }
 
 @keyframes titleNumberBounce {
-  0%, 100% {
-    transform: translateY(0) rotate(4deg) scale(1);
-  }
-
-  38% {
-    transform: translateY(-10px) rotate(-5deg) scale(1.08);
-  }
-
-  58% {
-    transform: translateY(2px) rotate(6deg) scale(0.98);
-  }
+  0%, 100% { transform: translateY(0) rotate(4deg) scale(1); }
+  38% { transform: translateY(-10px) rotate(-5deg) scale(1.08); }
+  58% { transform: translateY(2px) rotate(6deg) scale(0.98); }
 }
 
 @keyframes titleNumberGlow {
-  0%, 100% {
-    opacity: 0.62;
-    transform: scale(0.94);
-  }
-
-  45% {
-    opacity: 1;
-    transform: scale(1.14);
-  }
+  0%, 100% { opacity: 0.62; transform: scale(0.94); }
+  45% { opacity: 1; transform: scale(1.14); }
 }
 
 @media (prefers-reduced-motion: reduce) {
