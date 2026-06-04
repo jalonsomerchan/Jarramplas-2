@@ -317,7 +317,7 @@ export function render() {
   const fountainEntities = state.obstacles
     .filter((obstacle) => obstacle.type === "fountain")
     .map((obstacle) => ({ kind: "fountain", ref: obstacle, depth: obstacle.y }));
-  const actorEntities = [state.jarramplas, ...state.people, state.player]
+  const actorEntities = [state.jarramplas, ...state.people, ...state.bystanders, state.player]
     .filter(Boolean)
     .map((actor) => ({ kind: "actor", ref: actor, depth: actor.y }));
   [...houseEntities, ...fountainEntities, ...actorEntities].sort((a, b) => a.depth - b.depth).forEach((entity) => {

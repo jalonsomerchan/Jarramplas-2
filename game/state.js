@@ -23,6 +23,7 @@ export const state = {
   player: null,
   jarramplas: null,
   people: [],
+  bystanders: [],
   piles: [],
   turnips: [],
   impacts: [],
