@@ -22,6 +22,19 @@
     "./assets/icons/apple-touch-icon.png",
     "./assets/icons/icon-192.png",
     "./assets/icons/icon-512.png",
+    "./game/dom.js",
+    "./game/constants.js",
+    "./game/state.js",
+    "./game/scenario-layouts.js",
+    "./game/utils.js",
+    "./game/physics.js",
+    "./game/world.js",
+    "./game/effects.js",
+    "./game/assets.js",
+    "./game/ui.js",
+    "./game/actors.js",
+    "./game/render.js",
+    "./game/input.js",
   ];
 
   const scenarios = [
