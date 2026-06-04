@@ -26,7 +26,7 @@ export function updateLoading() {
   if (loadingBar) loadingBar.style.width = `${pct}%`;
 }
 
-export function loadAssets() {
+export async function loadAssets() {
   const generated = {
     playerWalk: "assets/generated/player_walk/sheet.png",
     playerThrow: "assets/generated/player_throw/sheet.png",
