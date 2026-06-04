@@ -1,6 +1,7 @@
 import {
   difficultyConfig,
   gameTypeConfig,
+  getCharacterAttributes,
   jarramplasVariants,
   playerVariants,
   scenarios,
@@ -35,14 +36,31 @@ import { dist } from "./utils.js";
 import { createVillage } from "./world.js";
 import { scenarioLayouts } from "./scenario-layouts.js";
 
+function getPlayerAttributes() {
+  return getCharacterAttributes(state.playerIndex);
+}
+
+function getActorAttributes(actor) {
+  return getCharacterAttributes(actor?.characterIndex ?? state.playerIndex);
+}
+
+function getPlayerMaxTurnips() {
+  return getPlayerAttributes().maxTurnips || PLAYER_MAX_TURNIPS;
+}
+
+function getPlayerInitialTurnips(gameType) {
+  return Math.min(gameType.turnips || getPlayerMaxTurnips(), getPlayerMaxTurnips());
+}
+
 export function damagePlayer(amount, x, y, label = null) {
   if (!state.player) return;
-  const damage = Math.max(0, amount);
+  const damage = Math.max(0, amount * (getPlayerAttributes().damageTaken || 1));
   state.life -= damage;
   state.peopleHits += 1;
   state.comboHits = 0;
   state.player.hurt = 0.25;
-  addFloater(label || `-${damage} vida`, x ?? state.player.x, y ?? state.player.y - 70, "#ff7369");
+  const damageLabel = label?.startsWith("-") ? `-${Math.round(damage)} vida` : label;
+  addFloater(damageLabel || `-${Math.round(damage)} vida`, x ?? state.player.x, y ?? state.player.y - 70, "#ff7369");
   burst(x ?? state.player.x, y ?? state.player.y, "#ff7369");
 }
 
@@ -62,12 +80,14 @@ function getNeighborCharacterIndexes() {
 
 function createPersonActor(x, y, index, characterIndexes, options = {}) {
   const spawn = findFreeSpawn(x, y, PLAYER_RADIUS);
+  const characterIndex = characterIndexes[index % characterIndexes.length] ?? 1;
+  const attrs = getCharacterAttributes(characterIndex);
   return {
     x: spawn.x,
     y: spawn.y,
     homeX: spawn.x,
     homeY: spawn.y,
-    speed: options.speed ?? (70 + index * 3),
+    speed: options.speed ?? Math.round((attrs.speed || 180) * (attrs.crowdSpeedScale || 0.42)) + index * 2,
     dir: options.dir || "down",
     walking: false,
     cooldown: options.cooldown ?? (1.2 + index * 0.42),
@@ -78,7 +98,8 @@ function createPersonActor(x, y, index, characterIndexes, options = {}) {
     vx: 0,
     vy: 0,
     variant: index % VILLAGER_THROW_TYPE_COUNT,
-    characterIndex: characterIndexes[index % characterIndexes.length] ?? 1,
+    characterIndex,
+    throwForce: attrs.throwForce || 1,
   };
 }
 
@@ -115,7 +136,21 @@ export function startGame() {
   const [targetX, targetY] = layout.spawn.target;
   const playerSpawn = findFreeSpawn(playerX, playerY, PLAYER_RADIUS);
   const jarramplasSpawn = findFreeSpawn(jarramplasX, jarramplasY, PLAYER_RADIUS);
-  state.player = { x: playerSpawn.x, y: playerSpawn.y, speed: 180, dir: "down", walking: false, throwAnim: 0, hurt: 0, characterIndex: state.playerIndex };
+  const playerAttrs = getPlayerAttributes();
+  state.player = {
+    x: playerSpawn.x,
+    y: playerSpawn.y,
+    speed: playerAttrs.speed,
+    dir: "down",
+    walking: false,
+    throwAnim: 0,
+    hurt: 0,
+    characterIndex: state.playerIndex,
+    throwForce: playerAttrs.throwForce,
+    throwCooldown: playerAttrs.throwCooldown,
+    maxTurnips: playerAttrs.maxTurnips,
+    maxLife: playerAttrs.life,
+  };
   state.jarramplas = { x: jarramplasSpawn.x, y: jarramplasSpawn.y, speed: 86 * difficulty.speed, dir: "down", walking: false, targetX, targetY, frame: 0, flash: 0 };
   spawnPeople(difficulty.people);
   spawnBystanders();
@@ -126,9 +161,9 @@ export function startGame() {
   state.score = 0;
   state.combo = 1;
   state.comboHits = 0;
-  state.life = 100;
+  state.life = playerAttrs.life;
   state.timeLeft = gameType.duration || 90;
-  state.turnipsLeft = gameType.turnips || PLAYER_MAX_TURNIPS;
+  state.turnipsLeft = getPlayerInitialTurnips(gameType);
   state.jarramplasHealth = gameType.health || 100;
   state.throws = 0;
   state.hits = 0;
@@ -187,7 +222,9 @@ export function endGame(reason) {
 
 export function throwTurnip(from, target, owner) {
   const angle = Math.atan2(target.y - from.y, target.x - from.x);
-  const speed = owner === "player" ? TURNIP_SPEED : CROWD_TURNIP_SPEED;
+  const attrs = getActorAttributes(from);
+  const baseSpeed = owner === "player" ? TURNIP_SPEED : CROWD_TURNIP_SPEED;
+  const speed = baseSpeed * (attrs.throwForce || from.throwForce || 1);
   state.turnips.push({
     x: from.x,
     y: from.y - 24,
@@ -202,7 +239,7 @@ export function throwTurnip(from, target, owner) {
 export function playerThrow() {
   if (state.mode !== "game" || state.player.throwAnim > 0 || state.turnipsLeft <= 0) return;
   const target = state.jarramplas;
-  state.player.throwAnim = 0.42;
+  state.player.throwAnim = state.player.throwCooldown || getPlayerAttributes().throwCooldown || 0.42;
   state.turnipsLeft -= 1;
   state.throws += 1;
   throwTurnip(state.player, target, "player");
@@ -210,8 +247,9 @@ export function playerThrow() {
 
 export function collectPiles() {
   state.piles.forEach((pile) => {
-    if (pile.amount <= 0 || dist(state.player, pile) > 64 || state.turnipsLeft >= PLAYER_MAX_TURNIPS) return;
-    const take = Math.min(PLAYER_MAX_TURNIPS - state.turnipsLeft, pile.amount, 4);
+    const maxTurnips = getPlayerMaxTurnips();
+    if (pile.amount <= 0 || dist(state.player, pile) > 64 || state.turnipsLeft >= maxTurnips) return;
+    const take = Math.min(maxTurnips - state.turnipsLeft, pile.amount, 4);
     pile.amount -= take;
     state.turnipsLeft += take;
     addFloater(`+${take} nabos`, pile.x, pile.y - 42, "#d8f28a");
@@ -265,8 +303,9 @@ export function updatePeople(dt) {
     if (dist(person, state.jarramplas) > 170) moveActor(person, state.jarramplas.x - person.x, state.jarramplas.y - person.y, dt, 19);
     else moveActor(person, person.vx, person.vy, dt, 19);
     if (person.cooldown <= 0 && dist(person, state.player) < 620) {
-      person.cooldown = difficulty.crowdThrow * 1.85 + Math.random() * 2.1;
-      person.throwAnim = 0.5;
+      const attrs = getActorAttributes(person);
+      person.cooldown = difficulty.crowdThrow * (1.65 + (attrs.throwCooldown || 0.42)) + Math.random() * 2.1;
+      person.throwAnim = attrs.throwCooldown || 0.5;
       throwTurnip(person, state.jarramplas, "crowd");
     }
   });

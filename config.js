@@ -1,4 +1,4 @@
-export const APP_VERSION = "2.1.0";
+export const APP_VERSION = "2.2.0";
 
 export const difficultyConfig = {
   day18Evening: { label: "18 por la tarde", shareLabel: "18 de Enero por la tarde", meta: "Sin gente", people: 0, crowdThrow: 1.8, speed: 0.8 },
@@ -55,11 +55,22 @@ export const scenarios = [
   },
 ];
 
+export const defaultCharacterAttributes = {
+  speed: 180,
+  throwForce: 1,
+  maxTurnips: 14,
+  life: 100,
+  throwCooldown: 0.42,
+  damageTaken: 1,
+  crowdSpeedScale: 0.42,
+};
+
 export const playerVariants = [
   {
     id: "piornalo",
     name: "Piornalo",
     meta: "Jugador original",
+    attributes: { speed: 180, throwForce: 1, maxTurnips: 14, life: 100, throwCooldown: 0.42, damageTaken: 1, crowdSpeedScale: 0.42 },
     walk: "assets/generated/player_walk/sheet.png",
     throw: "assets/generated/player_throw/sheet.png",
     preview: "assets/generated/player_walk/preview.png",
@@ -67,7 +78,8 @@ export const playerVariants = [
   {
     id: "piornala",
     name: "Piornala",
-    meta: "Vecina",
+    meta: "Vecina equilibrada",
+    attributes: { speed: 192, throwForce: 0.95, maxTurnips: 13, life: 95, throwCooldown: 0.38, damageTaken: 1, crowdSpeedScale: 0.42 },
     walk: "assets/generated/characters/piornala_walk/sheet-transparent.png",
     throw: "assets/generated/characters/piornala_throw/sheet-transparent.png",
     preview: "assets/generated/characters/piornala_walk/down-1.png",
@@ -75,7 +87,8 @@ export const playerVariants = [
   {
     id: "nino",
     name: "Niño",
-    meta: "Ágil",
+    meta: "Muy ágil, menos resistente",
+    attributes: { speed: 225, throwForce: 0.84, maxTurnips: 10, life: 80, throwCooldown: 0.34, damageTaken: 1.18, crowdSpeedScale: 0.45 },
     walk: "assets/generated/characters/nino_walk/sheet-transparent.png",
     throw: "assets/generated/characters/nino_throw/sheet-transparent.png",
     preview: "assets/generated/characters/nino_walk/down-1.png",
@@ -83,7 +96,8 @@ export const playerVariants = [
   {
     id: "senor-mayor",
     name: "Señor Mayor",
-    meta: "Veterano",
+    meta: "Veterano, lento y fuerte",
+    attributes: { speed: 145, throwForce: 1.16, maxTurnips: 18, life: 125, throwCooldown: 0.52, damageTaken: 0.82, crowdSpeedScale: 0.38 },
     walk: "assets/generated/characters/senor_mayor_walk/sheet-transparent.png",
     throw: "assets/generated/characters/senor_mayor_throw/sheet-transparent.png",
     preview: "assets/generated/characters/senor_mayor_walk/down-1.png",
@@ -91,12 +105,20 @@ export const playerVariants = [
   {
     id: "borracho",
     name: "Borracho",
-    meta: "Tambaleante",
+    meta: "Lanzamiento potente",
+    attributes: { speed: 165, throwForce: 1.3, maxTurnips: 16, life: 110, throwCooldown: 0.58, damageTaken: 0.92, crowdSpeedScale: 0.4 },
     walk: "assets/generated/characters/borracho_walk/sheet-transparent.png",
     throw: "assets/generated/characters/borracho_throw/sheet-transparent.png",
     preview: "assets/generated/characters/borracho_walk/down-1.png",
   },
 ];
+
+export function getCharacterAttributes(index) {
+  return {
+    ...defaultCharacterAttributes,
+    ...(playerVariants[index]?.attributes || {}),
+  };
+}
 
 export const STORAGE_KEYS = {
   records: "jarramplas.records.v1",

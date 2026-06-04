@@ -2,6 +2,7 @@ import {
   APP_VERSION,
   difficultyConfig,
   gameTypeConfig,
+  getCharacterAttributes,
   jarramplasVariants,
   playerVariants,
   scenarios,
@@ -68,12 +69,18 @@ export function updateHud() {
   recordEl.textContent = `Récord ${formatNumber(getRecord(state.gameType, state.difficulty))}`;
 }
 
+function renderCharacterStats(index) {
+  const attrs = getCharacterAttributes(index);
+  return `Vel ${attrs.speed} · Tiro x${attrs.throwForce} · ${attrs.maxTurnips} nabos · ${attrs.life} vida`;
+}
+
 export function populateScenarioOptions() {
   characterOptions.innerHTML = playerVariants.map((variant, index) => (
     `<button class="character-card" type="button" data-character="${index}">
       <img src="${variant.preview}" alt="">
       <strong>${variant.name}</strong>
       <span>${variant.meta}</span>
+      <small>${renderCharacterStats(index)}</small>
     </button>`
   )).join("");
   scenarioOptions.innerHTML = scenarios.map((scenario, index) => (
