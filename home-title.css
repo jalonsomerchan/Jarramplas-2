@@ -1,0 +1,120 @@
+.home-brand-title {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(6px, 1.8vw, 10px);
+  margin: 0;
+  color: #fff6df;
+  font-family: Impact, Haettenschweiler, "Arial Black", system-ui, sans-serif;
+  font-size: clamp(36px, 12vw, 64px);
+  font-weight: 950;
+  line-height: 0.82;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  text-shadow:
+    0 4px 0 #64180f,
+    0 9px 0 rgba(63, 18, 12, 0.72),
+    0 18px 32px rgba(0, 0, 0, 0.78);
+  transform: rotate(-1.5deg);
+}
+
+.home-brand-title-text {
+  display: inline-block;
+  animation: titleImpact 2.8s ease-in-out infinite;
+}
+
+.home-brand-title-number {
+  position: relative;
+  display: inline-block;
+  color: var(--gold);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(70px, 23vw, 124px);
+  font-style: italic;
+  font-weight: 900;
+  line-height: 0.66;
+  letter-spacing: -0.12em;
+  text-shadow:
+    0 4px 0 #7f1d14,
+    0 8px 0 #34110c,
+    0 0 18px rgba(242, 187, 61, 0.7),
+    0 18px 40px rgba(0, 0, 0, 0.82);
+  transform-origin: 50% 72%;
+  animation: titleNumberBounce 1.35s cubic-bezier(.2, .85, .22, 1.2) infinite;
+}
+
+.home-brand-title-number::after {
+  content: "";
+  position: absolute;
+  inset: 8% -16% 12% -10%;
+  z-index: -1;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(217, 60, 47, 0.46), transparent 68%);
+  filter: blur(3px);
+  animation: titleNumberGlow 1.35s ease-in-out infinite;
+}
+
+.home-subtitle {
+  margin: 8px 0 2px;
+  color: #ffe08a;
+  font-family: "Trebuchet MS", system-ui, sans-serif;
+  font-size: clamp(18px, 5.8vw, 28px);
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 3px 0 rgba(100, 24, 15, 0.92), 0 12px 24px rgba(0, 0, 0, 0.68);
+}
+
+.home-brand .version-label {
+  display: inline-block;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+@keyframes titleImpact {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  45% {
+    transform: translateY(-1px) rotate(-0.6deg);
+  }
+
+  52% {
+    transform: translateY(1px) rotate(0.5deg);
+  }
+}
+
+@keyframes titleNumberBounce {
+  0%, 100% {
+    transform: translateY(0) rotate(4deg) scale(1);
+  }
+
+  38% {
+    transform: translateY(-10px) rotate(-5deg) scale(1.08);
+  }
+
+  58% {
+    transform: translateY(2px) rotate(6deg) scale(0.98);
+  }
+}
+
+@keyframes titleNumberGlow {
+  0%, 100% {
+    opacity: 0.62;
+    transform: scale(0.94);
+  }
+
+  45% {
+    opacity: 1;
+    transform: scale(1.14);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-brand-title-text,
+  .home-brand-title-number,
+  .home-brand-title-number::after {
+    animation: none;
+  }
+}
