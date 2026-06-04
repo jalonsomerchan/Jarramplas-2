@@ -1,0 +1,249 @@
+{
+  "target": "asset",
+  "mode": "sheet",
+  "prompt": "Senor Mayor Piornal villager player-compatible 2x3 throw sheet, generated with generate2dsprite workflow.",
+  "role": "",
+  "input": "assets/generated/characters/senor_mayor_throw/raw-sheet.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 200,
+  "rows": 2,
+  "cols": 3,
+  "cell_size": 128,
+  "fit_scale": 0.86,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "feet",
+  "shared_scale": true,
+  "component_mode": "largest",
+  "component_padding": 4,
+  "min_component_area": 30,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "throw-1",
+    "throw-2",
+    "throw-3",
+    "throw-4",
+    "throw-5",
+    "throw-6"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 65150,
+      "selected_component_bbox": [
+        120,
+        63,
+        418,
+        429
+      ],
+      "crop_bbox": [
+        116,
+        59,
+        422,
+        433
+      ],
+      "edge_touch": false,
+      "output_size": [
+        87,
+        107
+      ],
+      "paste_position": [
+        20,
+        13
+      ]
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 65957,
+      "selected_component_bbox": [
+        42,
+        63,
+        367,
+        433
+      ],
+      "crop_bbox": [
+        38,
+        59,
+        371,
+        437
+      ],
+      "edge_touch": false,
+      "output_size": [
+        95,
+        108
+      ],
+      "paste_position": [
+        16,
+        12
+      ]
+    },
+    {
+      "grid": [
+        0,
+        2
+      ],
+      "source_box": [
+        1024,
+        0,
+        1536,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 2,
+      "selected_component_area": 58894,
+      "selected_component_bbox": [
+        20,
+        66,
+        297,
+        429
+      ],
+      "crop_bbox": [
+        16,
+        62,
+        301,
+        433
+      ],
+      "edge_touch": false,
+      "output_size": [
+        81,
+        106
+      ],
+      "paste_position": [
+        23,
+        14
+      ]
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 57701,
+      "selected_component_bbox": [
+        146,
+        30,
+        415,
+        399
+      ],
+      "crop_bbox": [
+        142,
+        26,
+        419,
+        403
+      ],
+      "edge_touch": false,
+      "output_size": [
+        79,
+        108
+      ],
+      "paste_position": [
+        24,
+        12
+      ]
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 54860,
+      "selected_component_bbox": [
+        126,
+        28,
+        340,
+        403
+      ],
+      "crop_bbox": [
+        122,
+        24,
+        344,
+        407
+      ],
+      "edge_touch": false,
+      "output_size": [
+        63,
+        110
+      ],
+      "paste_position": [
+        32,
+        10
+      ]
+    },
+    {
+      "grid": [
+        1,
+        2
+      ],
+      "source_box": [
+        1024,
+        512,
+        1536,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 53218,
+      "selected_component_bbox": [
+        75,
+        28,
+        266,
+        403
+      ],
+      "crop_bbox": [
+        71,
+        24,
+        270,
+        407
+      ],
+      "edge_touch": false,
+      "output_size": [
+        57,
+        110
+      ],
+      "paste_position": [
+        35,
+        10
+      ]
+    }
+  ],
+  "edge_touch_frames": []
+}

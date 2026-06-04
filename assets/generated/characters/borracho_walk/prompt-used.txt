@@ -1,0 +1,1 @@
+Borracho Piornal villager player-compatible 4x4 walk sheet, generated with generate2dsprite workflow.

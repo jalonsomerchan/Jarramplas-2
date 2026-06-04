@@ -1,0 +1,249 @@
+{
+  "target": "asset",
+  "mode": "sheet",
+  "prompt": "Borracho Piornal villager player-compatible 2x3 throw sheet, generated with generate2dsprite workflow.",
+  "role": "",
+  "input": "assets/generated/characters/borracho_throw/raw-sheet.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 200,
+  "rows": 2,
+  "cols": 3,
+  "cell_size": 128,
+  "fit_scale": 0.86,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "feet",
+  "shared_scale": true,
+  "component_mode": "largest",
+  "component_padding": 4,
+  "min_component_area": 30,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "throw-1",
+    "throw-2",
+    "throw-3",
+    "throw-4",
+    "throw-5",
+    "throw-6"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 67401,
+      "selected_component_bbox": [
+        180,
+        66,
+        481,
+        445
+      ],
+      "crop_bbox": [
+        176,
+        62,
+        485,
+        449
+      ],
+      "edge_touch": false,
+      "output_size": [
+        87,
+        110
+      ],
+      "paste_position": [
+        20,
+        10
+      ]
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 67046,
+      "selected_component_bbox": [
+        50,
+        82,
+        396,
+        445
+      ],
+      "crop_bbox": [
+        46,
+        78,
+        400,
+        449
+      ],
+      "edge_touch": false,
+      "output_size": [
+        100,
+        105
+      ],
+      "paste_position": [
+        14,
+        15
+      ]
+    },
+    {
+      "grid": [
+        0,
+        2
+      ],
+      "source_box": [
+        1024,
+        0,
+        1536,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 59528,
+      "selected_component_bbox": [
+        12,
+        82,
+        354,
+        444
+      ],
+      "crop_bbox": [
+        8,
+        78,
+        358,
+        448
+      ],
+      "edge_touch": false,
+      "output_size": [
+        99,
+        105
+      ],
+      "paste_position": [
+        14,
+        15
+      ]
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 58149,
+      "selected_component_bbox": [
+        139,
+        17,
+        455,
+        386
+      ],
+      "crop_bbox": [
+        135,
+        13,
+        459,
+        390
+      ],
+      "edge_touch": false,
+      "output_size": [
+        92,
+        107
+      ],
+      "paste_position": [
+        18,
+        13
+      ]
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 2,
+      "selected_component_area": 59601,
+      "selected_component_bbox": [
+        115,
+        33,
+        369,
+        394
+      ],
+      "crop_bbox": [
+        111,
+        29,
+        373,
+        398
+      ],
+      "edge_touch": false,
+      "output_size": [
+        74,
+        104
+      ],
+      "paste_position": [
+        27,
+        16
+      ]
+    },
+    {
+      "grid": [
+        1,
+        2
+      ],
+      "source_box": [
+        1024,
+        512,
+        1536,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 54982,
+      "selected_component_bbox": [
+        30,
+        23,
+        245,
+        395
+      ],
+      "crop_bbox": [
+        26,
+        19,
+        249,
+        399
+      ],
+      "edge_touch": false,
+      "output_size": [
+        63,
+        108
+      ],
+      "paste_position": [
+        32,
+        12
+      ]
+    }
+  ],
+  "edge_touch_frames": []
+}

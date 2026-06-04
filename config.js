@@ -35,17 +35,67 @@ export const shareTextConfig = {
 };
 
 export const scenarios = [
-  { name: "Ayuntamiento", path: "assets/fondos/ayuntamiento.png" },
-  { name: "Casa de Cultura", path: "assets/fondos/casa_cultura.png" },
-  { name: "Campo de fútbol", path: "assets/fondos/campo_de_futbol.png" },
-  { name: "Estatua de Jarramplas", path: "assets/fondos/estatua_jarramplas.png" },
-  { name: "Plaza de las Eras", path: "assets/fondos/fondo2.png" },
-  { name: "Iglesia", path: "assets/fondos/iglesia2.png" },
-  { name: "Mirador", path: "assets/fondos/mirador.png" },
-  { name: "Plaza de toros", path: "assets/fondos/plaza_de_toros.png" },
-  { name: "Parada", path: "assets/fondos/parada.png" },
-  { name: "Fachada de Jarramplas", path: "assets/fondos/fachada_jarramplas.png" },
-  { name: "Nieve", path: "assets/fondos/nieve.png" },
+  {
+    id: "plaza-eras",
+    name: "Plaza de las Eras",
+    path: "assets/fondos/fondo2.png",
+    meta: "Fuente alta",
+  },
+  {
+    id: "puerta-iglesia",
+    name: "Puerta de la Iglesia",
+    path: "assets/fondos/iglesia2.png",
+    meta: "Piedra y sombra",
+  },
+  {
+    id: "plaza-ayuntamiento",
+    name: "Plaza del Ayuntamiento",
+    path: "assets/fondos/ayuntamiento.png",
+    meta: "Plaza abierta",
+  },
+];
+
+export const playerVariants = [
+  {
+    id: "piornalo",
+    name: "Piornalo",
+    meta: "Jugador original",
+    walk: "assets/generated/player_walk/sheet.png",
+    throw: "assets/generated/player_throw/sheet.png",
+    preview: "assets/generated/player_walk/preview.png",
+  },
+  {
+    id: "piornala",
+    name: "Piornala",
+    meta: "Vecina",
+    walk: "assets/generated/characters/piornala_walk/sheet-transparent.png",
+    throw: "assets/generated/characters/piornala_throw/sheet-transparent.png",
+    preview: "assets/generated/characters/piornala_walk/down-1.png",
+  },
+  {
+    id: "nino",
+    name: "Niño",
+    meta: "Ágil",
+    walk: "assets/generated/characters/nino_walk/sheet-transparent.png",
+    throw: "assets/generated/characters/nino_throw/sheet-transparent.png",
+    preview: "assets/generated/characters/nino_walk/down-1.png",
+  },
+  {
+    id: "senor-mayor",
+    name: "Señor Mayor",
+    meta: "Veterano",
+    walk: "assets/generated/characters/senor_mayor_walk/sheet-transparent.png",
+    throw: "assets/generated/characters/senor_mayor_throw/sheet-transparent.png",
+    preview: "assets/generated/characters/senor_mayor_walk/down-1.png",
+  },
+  {
+    id: "borracho",
+    name: "Borracho",
+    meta: "Tambaleante",
+    walk: "assets/generated/characters/borracho_walk/sheet-transparent.png",
+    throw: "assets/generated/characters/borracho_throw/sheet-transparent.png",
+    preview: "assets/generated/characters/borracho_walk/down-1.png",
+  },
 ];
 
 export const STORAGE_KEYS = {

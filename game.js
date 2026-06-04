@@ -3,6 +3,7 @@ import {
   difficultyConfig,
   gameTypeConfig,
   jarramplasVariants,
+  playerVariants,
   scenarios,
 } from "./config.js";
 import {
@@ -34,6 +35,7 @@ const playButton = document.getElementById("playButton");
 const playerNameInput = document.getElementById("playerNameInput");
 const jarramplasCountdownEl = document.getElementById("jarramplasCountdown");
 const gameVersionEl = document.getElementById("gameVersion");
+const characterOptions = document.getElementById("characterOptions");
 const scenarioOptions = document.getElementById("scenarioOptions");
 const jarramplasOptions = document.getElementById("jarramplasOptions");
 const statsGrid = document.getElementById("statsGrid");
@@ -47,6 +49,7 @@ const screens = {
   start: document.getElementById("start"),
   challenge: document.getElementById("challenge"),
   type: document.getElementById("type"),
+  characterSelect: document.getElementById("characterSelect"),
   select: document.getElementById("select"),
   scenario: document.getElementById("scenario"),
   jarramplasSelect: document.getElementById("jarramplasSelect"),
@@ -68,6 +71,7 @@ const MOBILE_CONTROL_BREAKPOINT = 760;
 const keys = new Set();
 const HOUSE_SHEET_COLS = 3;
 const HOUSE_SHEET_ROWS = 2;
+const FOUNTAIN_SHEET_COLS = 3;
 const VILLAGER_THROW_TYPE_COUNT = 4;
 const HOUSE_TOP_BLOCK_RATIO = 0.1;
 const HOUSE_BOTTOM_PASSABLE_RATIO = 0.05;
@@ -79,6 +83,66 @@ const HOUSE_BOUNDS = [
   { l: 32 / 384, t: 53 / 384, r: 351 / 384, b: 331 / 384 },
   { l: 15 / 384, t: 70 / 384, r: 368 / 384, b: 314 / 384 },
 ];
+
+const scenarioLayouts = {
+  "plaza-eras": {
+    ground: ["#a8845a", "#967249", "#ad8a60"],
+    paths: "#b8925f",
+    plazas: [
+      { x: 800, y: 540, w: 840, h: 620, color: "#a5794d" },
+      { x: 520, y: 1680, w: 840, h: 500, color: "#9c7047" },
+      { x: 2140, y: 650, w: 700, h: 500, color: "#a1784e" },
+    ],
+    fountain: { x: 1220, y: 1030, w: 345, h: 420, variant: 0 },
+    spawn: { player: [1160, 1720], jarramplas: [1760, 820], target: [1450, 900] },
+    houses: [
+      [55, 70, 430, 245, 0, 1.04], [555, 88, 500, 270, 1, 1.05],
+      [1140, 82, 360, 245, 2, 1.0], [1620, 90, 470, 270, 3, 1.02],
+      [2050, 132, 350, 230, 4, 0.95], [2450, 115, 460, 260, 0, 1.02],
+      [85, 1035, 420, 265, 2, 1.0], [555, 1230, 500, 285, 1, 1.05],
+      [1580, 1205, 500, 285, 0, 1.06], [2380, 875, 500, 285, 3, 1.04],
+      [1880, 1755, 520, 285, 0, 1.04], [620, 1900, 500, 285, 3, 1.03],
+    ],
+  },
+  "puerta-iglesia": {
+    ground: ["#b7b2a6", "#a9a397", "#c4beb0"],
+    paths: "#d4d0c4",
+    plazas: [
+      { x: 620, y: 500, w: 1020, h: 720, color: "#c8c3b6" },
+      { x: 160, y: 1350, w: 780, h: 270, color: "#bfb9ad" },
+      { x: 1880, y: 620, w: 760, h: 560, color: "#b8b1a5" },
+    ],
+    fountain: { x: 1210, y: 940, w: 385, h: 315, variant: 1 },
+    spawn: { player: [780, 1320], jarramplas: [1760, 760], target: [1500, 900] },
+    houses: [
+      [40, 60, 620, 310, 4, 1.1], [700, 70, 620, 300, 5, 1.08],
+      [1350, 85, 560, 300, 1, 1.05], [1950, 115, 480, 270, 2, 1.0],
+      [2520, 120, 510, 285, 3, 1.02], [90, 990, 480, 275, 0, 1.0],
+      [1710, 1260, 600, 320, 5, 1.06], [2400, 1330, 520, 290, 4, 1.0],
+      [400, 1850, 560, 315, 1, 1.06], [1120, 1880, 560, 300, 2, 1.0],
+      [2040, 1840, 610, 320, 3, 1.06],
+    ],
+  },
+  "plaza-ayuntamiento": {
+    ground: ["#9d9488", "#8d857a", "#aaa196"],
+    paths: "#b9b2a8",
+    plazas: [
+      { x: 660, y: 500, w: 1180, h: 740, color: "#b6afa4" },
+      { x: 2040, y: 560, w: 760, h: 610, color: "#a8a095" },
+      { x: 500, y: 1680, w: 900, h: 470, color: "#a59d92" },
+    ],
+    fountain: { x: 1240, y: 940, w: 350, h: 310, variant: 2 },
+    spawn: { player: [820, 1380], jarramplas: [1780, 820], target: [1520, 900] },
+    houses: [
+      [35, 80, 470, 255, 1, 1.02], [540, 72, 520, 285, 0, 1.03],
+      [1110, 68, 520, 285, 3, 1.04], [1685, 82, 520, 285, 4, 1.02],
+      [2250, 88, 590, 310, 5, 1.06], [120, 1120, 460, 270, 2, 0.98],
+      [1880, 1210, 520, 280, 1, 1.0], [2460, 1225, 500, 275, 0, 1.0],
+      [100, 1900, 520, 285, 4, 1.0], [740, 1900, 540, 300, 3, 1.03],
+      [1480, 1860, 550, 295, 2, 1.02], [2260, 1865, 550, 300, 5, 1.03],
+    ],
+  },
+};
 
 const assets = {
   loaded: 0,
@@ -92,6 +156,7 @@ const state = {
   mode: "loading",
   gameType: "timed",
   difficulty: "day19Morning",
+  playerIndex: 0,
   scenarioIndex: 0,
   jarramplasIndex: 0,
   tutorialNextScreen: "type",
@@ -199,6 +264,42 @@ function circleBlocked(x, y, r) {
   return state.obstacles.some((obstacle) => rectsIntersect(box, obstacle.block || obstacle));
 }
 
+function circleIntersectsObstacle(x, y, r, obstacle) {
+  const box = { x: x - r, y: y - r, w: r * 2, h: r * 2 };
+  return rectsIntersect(box, obstacle.block || obstacle);
+}
+
+function findFreeSpawn(x, y, radius = PLAYER_RADIUS) {
+  if (!circleBlocked(x, y, radius)) return { x, y };
+  const step = 56;
+  for (let ring = 1; ring <= 12; ring += 1) {
+    for (let dx = -ring; dx <= ring; dx += 1) {
+      for (let dy = -ring; dy <= ring; dy += 1) {
+        if (Math.max(Math.abs(dx), Math.abs(dy)) !== ring) continue;
+        const candidateX = clamp(x + dx * step, radius + 4, WORLD.w - radius - 4);
+        const candidateY = clamp(y + dy * step, radius + 4, WORLD.h - radius - 4);
+        if (!circleBlocked(candidateX, candidateY, radius)) return { x: candidateX, y: candidateY };
+      }
+    }
+  }
+  return { x: WORLD.w / 2, y: WORLD.h / 2 };
+}
+
+function getSpawnCollisionReport() {
+  const actors = [
+    ["player", state.player],
+    ["jarramplas", state.jarramplas],
+    ...state.people.map((person, index) => [`neighbor-${index}`, person]),
+  ].filter(([, actor]) => actor);
+
+  return actors.map(([name, actor]) => ({
+    name,
+    x: Math.round(actor.x),
+    y: Math.round(actor.y),
+    blocked: state.obstacles.some((obstacle) => circleIntersectsObstacle(actor.x, actor.y, PLAYER_RADIUS, obstacle)),
+  }));
+}
+
 function moveActor(actor, dx, dy, dt, radius = PLAYER_RADIUS) {
   const len = Math.hypot(dx, dy);
   if (!len) return;
@@ -268,30 +369,30 @@ function house(x, y, w, h, variant, scale = 1.12) {
   };
 }
 
+function fountain(x, y, w, h, variant) {
+  return {
+    x,
+    y,
+    w,
+    h,
+    type: "fountain",
+    variant,
+    block: {
+      x: x - w * 0.31,
+      y: y - h * 0.2,
+      w: w * 0.62,
+      h: h * 0.16,
+    },
+  };
+}
+
 function createVillage(seedValue = 1) {
   const rand = seeded(seedValue);
+  const scenario = scenarios[state.scenarioIndex] || scenarios[0];
+  const layout = scenarioLayouts[scenario.id] || scenarioLayouts["plaza-eras"];
   const obstacles = [
-    house(55, 70, 430, 245, 0, 1.04),
-    house(555, 88, 500, 270, 1, 1.05),
-    house(1140, 82, 360, 245, 2, 1.0),
-    house(1620, 90, 470, 270, 3, 1.02),
-    house(2050, 132, 350, 230, 4, 0.95),
-    house(85, 1035, 420, 265, 2, 1.0),
-    house(555, 1230, 500, 285, 1, 1.05),
-    house(1060, 1280, 520, 280, 3, 1.04),
-    house(1580, 1205, 500, 285, 0, 1.06),
-    house(2030, 1175, 365, 245, 4, 0.98),
-    house(230, 1505, 390, 230, 4, 0.94),
-    house(1320, 1535, 500, 245, 1, 1.0),
-    house(2450, 115, 460, 260, 0, 1.02),
-    house(2685, 490, 390, 245, 2, 0.98),
-    house(2380, 875, 500, 285, 3, 1.04),
-    house(2480, 1505, 470, 270, 1, 1.02),
-    house(1880, 1755, 520, 285, 0, 1.04),
-    house(1260, 1905, 470, 270, 4, 1.0),
-    house(620, 1900, 500, 285, 3, 1.03),
-    house(95, 1985, 430, 250, 2, 0.98),
-    house(2760, 1930, 350, 245, 4, 0.94),
+    ...layout.houses.map((item) => house(...item)),
+    fountain(layout.fountain.x, layout.fountain.y, layout.fountain.w, layout.fountain.h, layout.fountain.variant),
     { x: 0, y: 0, w: WORLD.w, h: 36, type: "wall" },
     { x: 0, y: WORLD.h - 36, w: WORLD.w, h: 36, type: "wall" },
     { x: 0, y: 0, w: 36, h: WORLD.h, type: "wall" },
@@ -301,6 +402,7 @@ function createVillage(seedValue = 1) {
     const x = 90 + rand() * (WORLD.w - 180);
     const y = 380 + rand() * (WORLD.h - 610);
     if (Math.abs(x - 1110) < 520 && Math.abs(y - 860) < 360) continue;
+    if (Math.abs(x - layout.fountain.x) < 360 && Math.abs(y - layout.fountain.y) < 300) continue;
     obstacles.push({
       x,
       y,
@@ -332,19 +434,30 @@ function spawnPeople(count) {
     [720, 1510], [1430, 1460], [2090, 1120], [220, 850],
     [2600, 860], [2850, 1420], [2220, 1760], [980, 1960],
   ];
-  state.people = starts.slice(0, count).map(([x, y], index) => ({
-    x, y, speed: 70 + index * 3, dir: "down", walking: false,
-    cooldown: 1.2 + index * 0.42, throwAnim: 0, wander: 0, vx: 0, vy: 0,
-    variant: index % VILLAGER_THROW_TYPE_COUNT,
-  }));
+  state.people = starts.slice(0, count).map(([x, y], index) => {
+    const spawn = findFreeSpawn(x, y, PLAYER_RADIUS);
+    return {
+      x: spawn.x, y: spawn.y, speed: 70 + index * 3, dir: "down", walking: false,
+      cooldown: 1.2 + index * 0.42, throwAnim: 0, wander: 0, vx: 0, vy: 0,
+      variant: index % VILLAGER_THROW_TYPE_COUNT,
+      characterIndex: 1,
+    };
+  });
 }
 
 function startGame() {
   const difficulty = difficultyConfig[state.difficulty] || difficultyConfig.day19Morning;
   const gameType = gameTypeConfig[state.gameType] || gameTypeConfig.timed;
   createVillage((state.scenarioIndex + 1) * 97 + (state.jarramplasIndex + 3) * 131);
-  state.player = { x: 1120, y: 1020, speed: 180, dir: "down", walking: false, throwAnim: 0, hurt: 0 };
-  state.jarramplas = { x: 1150, y: 730, speed: 86 * difficulty.speed, dir: "down", walking: false, targetX: 1450, targetY: 850, frame: 0, flash: 0 };
+  const scenario = scenarios[state.scenarioIndex] || scenarios[0];
+  const layout = scenarioLayouts[scenario.id] || scenarioLayouts["plaza-eras"];
+  const [playerX, playerY] = layout.spawn.player;
+  const [jarramplasX, jarramplasY] = layout.spawn.jarramplas;
+  const [targetX, targetY] = layout.spawn.target;
+  const playerSpawn = findFreeSpawn(playerX, playerY, PLAYER_RADIUS);
+  const jarramplasSpawn = findFreeSpawn(jarramplasX, jarramplasY, PLAYER_RADIUS);
+  state.player = { x: playerSpawn.x, y: playerSpawn.y, speed: 180, dir: "down", walking: false, throwAnim: 0, hurt: 0, characterIndex: state.playerIndex };
+  state.jarramplas = { x: jarramplasSpawn.x, y: jarramplasSpawn.y, speed: 86 * difficulty.speed, dir: "down", walking: false, targetX, targetY, frame: 0, flash: 0 };
   spawnPeople(difficulty.people);
   state.turnips = [];
   state.impacts = [];
@@ -625,17 +738,27 @@ function drawSpriteSheet(img, rows, cols, frame, x, y, w, h, flip = false) {
   return true;
 }
 
+function getCharacterAssets(index) {
+  return assets.images.playerCharacters?.[index] || assets.images.playerCharacters?.[0] || {
+    walk: assets.images.playerWalk,
+    throw: assets.images.playerThrow,
+  };
+}
+
 function drawMap() {
   const ox = -state.camera.x;
   const oy = -state.camera.y;
-  ctx.fillStyle = "#9f7b52";
+  const scenario = scenarios[state.scenarioIndex] || scenarios[0];
+  const layout = scenarioLayouts[scenario.id] || scenarioLayouts["plaza-eras"];
+  const ground = layout.ground;
+  ctx.fillStyle = ground[1];
   ctx.fillRect(0, 0, state.w, state.h);
   ctx.save();
   ctx.translate(ox, oy);
   for (let x = 0; x < WORLD.w; x += TILE) {
     for (let y = 0; y < WORLD.h; y += TILE) {
       const mixed = (x / TILE + y / TILE) % 3;
-      ctx.fillStyle = mixed === 0 ? "#a8845a" : (mixed === 1 ? "#967249" : "#ad8a60");
+      ctx.fillStyle = ground[mixed];
       ctx.fillRect(x, y, TILE, TILE);
       if ((x / TILE + y / TILE) % 7 === 0) {
         ctx.fillStyle = "rgba(92, 61, 35, 0.12)";
@@ -644,22 +767,22 @@ function drawMap() {
       }
     }
   }
-  ctx.fillStyle = "#b8925f";
+  ctx.fillStyle = layout.paths;
   ctx.fillRect(0, 775, WORLD.w, 180);
   ctx.fillRect(1020, 0, 210, WORLD.h);
   ctx.fillRect(0, 1770, WORLD.w, 170);
   ctx.fillRect(2450, 0, 190, WORLD.h);
-  ctx.fillStyle = "#9f764a";
-  ctx.fillRect(820, 570, 760, 560);
-  ctx.fillRect(2140, 650, 700, 500);
-  ctx.fillRect(560, 1710, 780, 480);
+  layout.plazas.forEach((plaza) => {
+    ctx.fillStyle = plaza.color;
+    ctx.fillRect(plaza.x, plaza.y, plaza.w, plaza.h);
+  });
   ctx.strokeStyle = "rgba(80, 54, 34, 0.24)";
   ctx.lineWidth = 3;
-  ctx.strokeRect(820, 570, 760, 560);
-  ctx.strokeRect(2140, 650, 700, 500);
-  ctx.strokeRect(560, 1710, 780, 480);
+  layout.plazas.forEach((plaza) => {
+    ctx.strokeRect(plaza.x, plaza.y, plaza.w, plaza.h);
+  });
   state.obstacles.forEach((o) => {
-    if (o.type === "wall") return;
+    if (o.type === "wall" || o.type === "fountain") return;
     if (o.type === "tree") {
       const cx = o.x + o.w / 2;
       const baseY = o.y + o.h;
@@ -696,6 +819,28 @@ function drawMap() {
     }
   });
   ctx.restore();
+}
+
+function drawFountain(fountainObstacle) {
+  const img = assets.images.fountains;
+  if (!img) return;
+  const sourceW = img.width / FOUNTAIN_SHEET_COLS;
+  const sx = (fountainObstacle.variant % FOUNTAIN_SHEET_COLS) * sourceW;
+  const x = fountainObstacle.x - state.camera.x;
+  const y = fountainObstacle.y - state.camera.y;
+  ctx.imageSmoothingEnabled = true;
+  ctx.drawImage(
+    img,
+    sx,
+    0,
+    sourceW,
+    img.height,
+    x - fountainObstacle.w / 2,
+    y - fountainObstacle.h,
+    fountainObstacle.w,
+    fountainObstacle.h,
+  );
+  ctx.imageSmoothingEnabled = false;
 }
 
 function drawHouse(houseObstacle) {
@@ -743,15 +888,14 @@ function drawActor(actor, type) {
   const y = actor.y - state.camera.y;
   const walkRow = { down: 0, left: 1, right: 2, up: 3 }[actor.dir] || 0;
   const walkFrame = walkRow * 4 + (actor.walking ? Math.floor(state.elapsed * 8) % 4 : 1);
-  const villagerSheet = assets.images.villagerThrowTypes?.[actor.variant] || assets.images.villagerThrow;
+  const character = getCharacterAssets(actor.characterIndex ?? (type === "player" ? state.playerIndex : 1));
+  const actorSize = type === "player" ? 96 : 88;
+  const walkSize = type === "player" ? 82 : 80;
   if (actor.throwAnim > 0) {
     const frame = clamp(5 - Math.floor((actor.throwAnim / 0.5) * 6), 0, 5);
-    if (type === "player") drawSpriteSheet(assets.images.playerThrow, 2, 3, frame, x, y + 18, 96, 96, actor.dir === "left");
-    else drawSpriteSheet(villagerSheet, 2, 3, frame, x, y + 18, 84, 84, actor.dir === "left");
-  } else if (type === "player") {
-    drawSpriteSheet(assets.images.playerWalk, 4, 4, walkFrame, x, y + 18, 82, 82);
+    drawSpriteSheet(character.throw, 2, 3, frame, x, y + 18, actorSize, actorSize, actor.dir === "left");
   } else {
-    drawSpriteSheet(villagerSheet, 2, 3, 5, x, y + 18, 84, 84, actor.dir === "left");
+    drawSpriteSheet(character.walk, 4, 4, walkFrame, x, y + 18, walkSize, walkSize);
   }
   if (actor.hurt > 0) {
     ctx.fillStyle = "rgba(255, 80, 70, 0.25)";
@@ -878,12 +1022,19 @@ function render() {
   const houseEntities = state.obstacles
     .filter((obstacle) => obstacle.type === "house")
     .map((obstacle) => ({ kind: "house", ref: obstacle, depth: obstacle.block.y + obstacle.block.h }));
+  const fountainEntities = state.obstacles
+    .filter((obstacle) => obstacle.type === "fountain")
+    .map((obstacle) => ({ kind: "fountain", ref: obstacle, depth: obstacle.y }));
   const actorEntities = [state.jarramplas, ...state.people, state.player]
     .filter(Boolean)
     .map((actor) => ({ kind: "actor", ref: actor, depth: actor.y }));
-  [...houseEntities, ...actorEntities].sort((a, b) => a.depth - b.depth).forEach((entity) => {
+  [...houseEntities, ...fountainEntities, ...actorEntities].sort((a, b) => a.depth - b.depth).forEach((entity) => {
     if (entity.kind === "house") {
       drawHouse(entity.ref);
+      return;
+    }
+    if (entity.kind === "fountain") {
+      drawFountain(entity.ref);
       return;
     }
     if (entity.ref === state.jarramplas) drawJarramplas();
@@ -903,8 +1054,19 @@ function loop(now) {
 }
 
 function populateScenarioOptions() {
+  characterOptions.innerHTML = playerVariants.map((variant, index) => (
+    `<button class="character-card" type="button" data-character="${index}">
+      <img src="${variant.preview}" alt="">
+      <strong>${variant.name}</strong>
+      <span>${variant.meta}</span>
+    </button>`
+  )).join("");
   scenarioOptions.innerHTML = scenarios.map((scenario, index) => (
-    `<button type="button" data-scenario="${index}">${scenario.name}<span>Pueblo abierto</span></button>`
+    `<button class="scenario-card" type="button" data-scenario="${index}">
+      <img src="${scenario.path}" alt="">
+      <strong>${scenario.name}</strong>
+      <span>${scenario.meta}</span>
+    </button>`
   )).join("");
   jarramplasOptions.innerHTML = jarramplasVariants.map((variant, index) => (
     `<button type="button" data-jarramplas="${index}">${variant.name.replace(" HD", "")}<span>Animado</span></button>`
@@ -975,9 +1137,15 @@ async function loadAssets() {
     villagerThrow: "assets/generated/villager_throw/sheet.png",
     turnipPiles: "assets/generated/turnip_piles/sheet.png",
     houses: "assets/generated/houses/sheet.png",
+    fountains: "assets/generated/fountains/sheet-transparent.png",
   };
   const imageEntries = await Promise.all(Object.entries(generated).map(async ([key, path]) => [key, await loadImage(path)]));
   assets.images = Object.fromEntries(imageEntries);
+  assets.images.playerCharacters = await Promise.all(playerVariants.map(async (variant) => ({
+    walk: await loadImage(variant.walk),
+    throw: await loadImage(variant.throw),
+    preview: await loadImage(variant.preview),
+  })));
   assets.images.villagerThrowTypes = await Promise.all(
     Array.from({ length: VILLAGER_THROW_TYPE_COUNT }, (_, index) => loadImage(`assets/generated/villager_throw_types/type_${index + 1}/sheet.png`)),
   );
@@ -1016,15 +1184,21 @@ function bindUi() {
   document.querySelectorAll("[data-game-type]").forEach((button) => {
     button.addEventListener("click", () => {
       state.gameType = button.dataset.gameType;
-      showScreen("select");
+      showScreen("characterSelect");
     });
+  });
+  characterOptions.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-character]");
+    if (!button) return;
+    state.playerIndex = Number(button.dataset.character);
+      showScreen("select");
   });
   document.querySelectorAll("[data-level]").forEach((button) => {
     button.addEventListener("click", () => {
       state.difficulty = button.dataset.level;
       state.scenarioIndex = 0;
       state.jarramplasIndex = 0;
-      startGame();
+      showScreen("scenario");
     });
   });
   scenarioOptions.addEventListener("click", (event) => {
@@ -1040,9 +1214,10 @@ function bindUi() {
     startGame();
   });
   document.getElementById("typeBackButton").addEventListener("click", () => showScreen("start"));
-  document.getElementById("backButton").addEventListener("click", () => showScreen("type"));
+  document.getElementById("characterBackButton").addEventListener("click", () => showScreen("type"));
+  document.getElementById("backButton").addEventListener("click", () => showScreen("characterSelect"));
   document.getElementById("levelBackButton").addEventListener("click", () => showScreen("select"));
-  document.getElementById("jarramplasBackButton").addEventListener("click", () => showScreen("select"));
+  document.getElementById("jarramplasBackButton").addEventListener("click", () => showScreen("scenario"));
   document.getElementById("pauseButton").addEventListener("click", () => showScreen("pause"));
   document.getElementById("resumeButton").addEventListener("click", () => {
     state.last = performance.now();
@@ -1138,4 +1313,9 @@ async function init() {
 }
 
 window.addEventListener("resize", resize);
+if (navigator.webdriver) {
+  window.__JARRAMPLAS_DEBUG__ = {
+    getSpawnCollisionReport,
+  };
+}
 init();

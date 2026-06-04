@@ -1,0 +1,254 @@
+{
+  "target": "asset",
+  "mode": "sheet",
+  "prompt": "Female Piornal villager player-compatible 2x3 throw sheet, same animation layout as main player throw sheet, generated with generate2dsprite workflow.",
+  "role": "",
+  "input": "assets/generated/characters/piornala_throw/raw-sheet.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 200,
+  "rows": 2,
+  "cols": 3,
+  "cell_size": 128,
+  "fit_scale": 0.86,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "feet",
+  "shared_scale": true,
+  "component_mode": "largest",
+  "component_padding": 4,
+  "min_component_area": 30,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "throw-1",
+    "throw-2",
+    "throw-3",
+    "throw-4",
+    "throw-5",
+    "throw-6"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 51360,
+      "selected_component_bbox": [
+        154,
+        93,
+        419,
+        449
+      ],
+      "crop_bbox": [
+        150,
+        89,
+        423,
+        453
+      ],
+      "edge_touch": false,
+      "output_size": [
+        82,
+        110
+      ],
+      "paste_position": [
+        23,
+        10
+      ]
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 49940,
+      "selected_component_bbox": [
+        94,
+        108,
+        366,
+        449
+      ],
+      "crop_bbox": [
+        90,
+        104,
+        370,
+        453
+      ],
+      "edge_touch": false,
+      "output_size": [
+        84,
+        105
+      ],
+      "paste_position": [
+        22,
+        15
+      ]
+    },
+    {
+      "grid": [
+        0,
+        2
+      ],
+      "source_box": [
+        1024,
+        0,
+        1536,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 3,
+      "selected_component_area": 47010,
+      "selected_component_bbox": [
+        2,
+        107,
+        295,
+        449
+      ],
+      "crop_bbox": [
+        0,
+        103,
+        299,
+        453
+      ],
+      "edge_touch": true,
+      "output_size": [
+        90,
+        105
+      ],
+      "paste_position": [
+        19,
+        15
+      ]
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 46793,
+      "selected_component_bbox": [
+        169,
+        48,
+        446,
+        387
+      ],
+      "crop_bbox": [
+        165,
+        44,
+        450,
+        391
+      ],
+      "edge_touch": false,
+      "output_size": [
+        86,
+        104
+      ],
+      "paste_position": [
+        21,
+        16
+      ]
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 42208,
+      "selected_component_bbox": [
+        161,
+        44,
+        335,
+        389
+      ],
+      "crop_bbox": [
+        157,
+        40,
+        339,
+        393
+      ],
+      "edge_touch": false,
+      "output_size": [
+        55,
+        106
+      ],
+      "paste_position": [
+        36,
+        14
+      ]
+    },
+    {
+      "grid": [
+        1,
+        2
+      ],
+      "source_box": [
+        1024,
+        512,
+        1536,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 41631,
+      "selected_component_bbox": [
+        55,
+        44,
+        218,
+        389
+      ],
+      "crop_bbox": [
+        51,
+        40,
+        222,
+        393
+      ],
+      "edge_touch": false,
+      "output_size": [
+        51,
+        106
+      ],
+      "paste_position": [
+        38,
+        14
+      ]
+    }
+  ],
+  "edge_touch_frames": [
+    [
+      0,
+      2
+    ]
+  ]
+}

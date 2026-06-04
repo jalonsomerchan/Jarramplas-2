@@ -1,0 +1,138 @@
+{
+  "target": "asset",
+  "mode": "sheet",
+  "prompt": "Three high-resolution clean HD top-down Spanish village stone fountain props for Plaza de las Eras, Puerta de la Iglesia, and Plaza del Ayuntamiento; large non-pixel-art transparent processing; solid magenta background; generated with generate2dsprite workflow.",
+  "role": "",
+  "input": "assets/generated/fountains/raw-sheet.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 200,
+  "rows": 1,
+  "cols": 3,
+  "cell_size": 512,
+  "fit_scale": 0.96,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "bottom",
+  "shared_scale": true,
+  "component_mode": "largest",
+  "component_padding": 10,
+  "min_component_area": 80,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "fountain-1",
+    "fountain-2",
+    "fountain-3"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        724,
+        724
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 190718,
+      "selected_component_bbox": [
+        133,
+        11,
+        612,
+        692
+      ],
+      "crop_bbox": [
+        123,
+        1,
+        622,
+        702
+      ],
+      "edge_touch": false,
+      "output_size": [
+        349,
+        491
+      ],
+      "paste_position": [
+        81,
+        11
+      ]
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        724,
+        0,
+        1448,
+        724
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 226968,
+      "selected_component_bbox": [
+        62,
+        136,
+        650,
+        638
+      ],
+      "crop_bbox": [
+        52,
+        126,
+        660,
+        648
+      ],
+      "edge_touch": false,
+      "output_size": [
+        426,
+        366
+      ],
+      "paste_position": [
+        43,
+        136
+      ]
+    },
+    {
+      "grid": [
+        0,
+        2
+      ],
+      "source_box": [
+        1448,
+        0,
+        2172,
+        724
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 221424,
+      "selected_component_bbox": [
+        56,
+        118,
+        617,
+        683
+      ],
+      "crop_bbox": [
+        46,
+        108,
+        627,
+        693
+      ],
+      "edge_touch": false,
+      "output_size": [
+        407,
+        410
+      ],
+      "paste_position": [
+        52,
+        92
+      ]
+    }
+  ],
+  "edge_touch_frames": []
+}

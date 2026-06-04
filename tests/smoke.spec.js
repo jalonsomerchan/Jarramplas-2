@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 const ignoredConsolePatterns = [
   /Firebase/i,
   /service worker/i,
+  /ERR_SOCKET_NOT_CONNECTED/i,
 ];
 
 function collectUnexpectedConsoleErrors(page) {
@@ -45,6 +46,18 @@ async function openGameTypeScreen(page) {
   await expect(page.locator("#type")).toBeVisible();
 }
 
+async function startMap(page, scenarioIndex) {
+  await page.goto("/");
+  await waitForHomeReady(page);
+  await openGameTypeScreen(page);
+  await page.locator("[data-game-type='timed']").click();
+  await page.locator("[data-character='0']").click();
+  await page.locator("[data-level='day19Morning']").click();
+  await page.locator(`[data-scenario='${scenarioIndex}']`).click();
+  await page.locator("[data-jarramplas='0']").click();
+  await expect(page.locator(".hud.is-visible")).toBeVisible({ timeout: 10_000 });
+}
+
 test("carga la pantalla inicial sin errores críticos", async ({ page }) => {
   const consoleErrors = collectUnexpectedConsoleErrors(page);
 
@@ -66,11 +79,37 @@ test("permite navegar por el flujo básico de selección", async ({ page }) => {
   await openGameTypeScreen(page);
 
   await page.locator("[data-game-type='timed']").click();
+  await expect(page.locator("#characterSelect")).toBeVisible();
+  await expect(page.locator("[data-character]")).toHaveCount(5);
+
+  await page.locator("[data-character='1']").click();
   await expect(page.locator("#select")).toBeVisible();
 
   await page.locator("[data-level='day19Morning']").click();
+  await expect(page.locator("#scenario")).toBeVisible();
+  await expect(page.locator("[data-scenario]")).toHaveCount(3);
+
+  await page.locator("[data-scenario='0']").click();
+  await expect(page.locator("#jarramplasSelect")).toBeVisible();
+
+  await page.locator("[data-jarramplas='0']").click();
   await expect(page.locator(".hud.is-visible")).toBeVisible({ timeout: 10_000 });
   await expect(page.locator("#score")).toContainText("pts");
+
+  expect(consoleErrors).toEqual([]);
+});
+
+test("nadie empieza bloqueado por obstáculos en ningún mapa", async ({ page }) => {
+  const consoleErrors = collectUnexpectedConsoleErrors(page);
+
+  for (const scenarioIndex of [0, 1, 2]) {
+    await startMap(page, scenarioIndex);
+    const report = await page.evaluate(() => window.__JARRAMPLAS_DEBUG__.getSpawnCollisionReport());
+    expect(report.filter((entry) => entry.blocked), `mapa ${scenarioIndex}: ${JSON.stringify(report)}`).toEqual([]);
+    const player = report.find((entry) => entry.name === "player");
+    const jarramplas = report.find((entry) => entry.name === "jarramplas");
+    expect(Math.hypot(player.x - jarramplas.x, player.y - jarramplas.y)).toBeGreaterThan(500);
+  }
 
   expect(consoleErrors).toEqual([]);
 });
