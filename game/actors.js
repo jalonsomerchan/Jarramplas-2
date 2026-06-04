@@ -21,6 +21,7 @@ import {
   TURNIP_SPEED,
   VILLAGER_THROW_TYPE_COUNT,
   WORLD,
+  keys,
 } from "./constants.js";
 import { addFloater, burst, createTurnipImpact } from "./effects.js";
 import {
@@ -32,7 +33,7 @@ import {
 } from "./physics.js";
 import { state } from "./state.js";
 import { showScreen, updateHud } from "./ui.js";
-import { dist } from "./utils.js";
+import { clamp, dist } from "./utils.js";
 import { createVillage } from "./world.js";
 import { scenarioLayouts } from "./scenario-layouts.js";
 
@@ -63,7 +64,6 @@ export function damagePlayer(amount, x, y, label = null) {
   addFloater(damageLabel || `-${Math.round(damage)} vida`, x ?? state.player.x, y ?? state.player.y - 70, "#ff7369");
   burst(x ?? state.player.x, y ?? state.player.y, "#ff7369");
 }
-
 
 const BYSTANDER_STARTS = [
   [300, 430], [700, 470], [990, 1240], [1360, 1280], [1700, 470], [2160, 470],
@@ -151,7 +151,17 @@ export function startGame() {
     maxTurnips: playerAttrs.maxTurnips,
     maxLife: playerAttrs.life,
   };
-  state.jarramplas = { x: jarramplasSpawn.x, y: jarramplasSpawn.y, speed: 86 * difficulty.speed, dir: "down", walking: false, targetX, targetY, frame: 0, flash: 0 };
+  state.jarramplas = {
+    x: jarramplasSpawn.x,
+    y: jarramplasSpawn.y,
+    speed: 86 * difficulty.speed,
+    dir: "down",
+    walking: false,
+    targetX,
+    targetY,
+    frame: 0,
+    flash: 0,
+  };
   spawnPeople(difficulty.people);
   spawnBystanders();
   state.turnips = [];
