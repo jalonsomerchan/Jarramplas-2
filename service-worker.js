@@ -184,6 +184,23 @@ function actorBlocked(actor, x, y, radius) {
       );
   }
 
+  if (!patched.includes("function getTurnipBuildingCollision")) {
+    const turnipCollisionHelpers = `function getTurnipBuildingCollision(x, y, radius = 10) {
+  return state.obstacles.find((obstacle) => (
+    obstacle.type === "house" && circleIntersectsObstacle(x, y, radius, obstacle)
+  ));
+}
+
+`;
+
+    patched = patched
+      .replace(`function updateTurnips(dt) {`, `${turnipCollisionHelpers}function updateTurnips(dt) {`)
+      .replace(
+        `    t.x += t.vx * dt;\n    t.y += t.vy * dt;`,
+        `    const nextX = t.x + t.vx * dt;\n    const nextY = t.y + t.vy * dt;\n    const hitX = getTurnipBuildingCollision(nextX, t.y);\n    const hitY = getTurnipBuildingCollision(t.x, nextY);\n\n    if (hitX) t.vx *= -0.78;\n    else t.x = nextX;\n\n    if (hitY) t.vy *= -0.78;\n    else t.y = nextY;\n\n    if (!hitX && !hitY && getTurnipBuildingCollision(nextX, nextY)) {\n      t.vx *= -0.78;\n      t.vy *= -0.78;\n      t.life -= 0.08;\n    } else if (hitX || hitY) {\n      t.life -= 0.08;\n    }`
+      );
+  }
+
   if (!patched.includes('document.getElementById("finalTurnipsThrown")')) {
     patched = patched.replace(
       `  document.getElementById("finalJarramplasName").textContent = jarramplasVariants[state.jarramplasIndex]?.name || "Jarramplas";`,
