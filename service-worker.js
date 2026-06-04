@@ -184,6 +184,16 @@ function actorBlocked(actor, x, y, radius) {
       );
   }
 
+  if (!patched.includes("const neighborCharacterIndexes")) {
+    patched = patched.replace(
+      `  state.people = starts.slice(0, count).map(([x, y], index) => {`,
+      `  const neighborCharacterIndexes = playerVariants\n    .map((_, characterIndex) => characterIndex)\n    .filter((characterIndex) => characterIndex !== state.playerIndex);\n  state.people = starts.slice(0, count).map(([x, y], index) => {`
+    ).replace(
+      `      characterIndex: 1,`,
+      `      characterIndex: neighborCharacterIndexes[index % neighborCharacterIndexes.length] ?? 1,`
+    );
+  }
+
   if (!patched.includes("function getTurnipBuildingCollision")) {
     const turnipCollisionHelpers = `function getTurnipBuildingCollision(x, y, radius = 10) {
   return state.obstacles.find((obstacle) => (
