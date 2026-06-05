@@ -59,19 +59,35 @@ export function drawMap() {
       }
     }
   }
+  const pathRects = layout.pathRects || [
+    { x: 0, y: 775, w: WORLD.w, h: 180 },
+    { x: 1020, y: 0, w: 210, h: WORLD.h },
+    { x: 0, y: 1770, w: WORLD.w, h: 170 },
+    { x: 2450, y: 0, w: 190, h: WORLD.h },
+  ];
   ctx.fillStyle = layout.paths;
-  ctx.fillRect(0, 775, WORLD.w, 180);
-  ctx.fillRect(1020, 0, 210, WORLD.h);
-  ctx.fillRect(0, 1770, WORLD.w, 170);
-  ctx.fillRect(2450, 0, 190, WORLD.h);
+  pathRects.forEach((path) => {
+    ctx.fillRect(path.x, path.y, path.w, path.h);
+  });
+  function drawPlazaShape(plaza, stroke = false) {
+    if (plaza.shape === "ellipse") {
+      ctx.beginPath();
+      ctx.ellipse(plaza.x + plaza.w / 2, plaza.y + plaza.h / 2, plaza.w / 2, plaza.h / 2, plaza.rotation || 0, 0, Math.PI * 2);
+      if (stroke) ctx.stroke();
+      else ctx.fill();
+      return;
+    }
+    if (stroke) ctx.strokeRect(plaza.x, plaza.y, plaza.w, plaza.h);
+    else ctx.fillRect(plaza.x, plaza.y, plaza.w, plaza.h);
+  }
   layout.plazas.forEach((plaza) => {
     ctx.fillStyle = plaza.color;
-    ctx.fillRect(plaza.x, plaza.y, plaza.w, plaza.h);
+    drawPlazaShape(plaza);
   });
   ctx.strokeStyle = "rgba(80, 54, 34, 0.24)";
   ctx.lineWidth = 3;
   layout.plazas.forEach((plaza) => {
-    ctx.strokeRect(plaza.x, plaza.y, plaza.w, plaza.h);
+    drawPlazaShape(plaza, true);
   });
   state.obstacles.forEach((o) => {
     if (o.type === "wall" || o.type === "fountain") return;

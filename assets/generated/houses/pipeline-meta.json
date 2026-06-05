@@ -1,0 +1,254 @@
+{
+  "target": "asset",
+  "mode": "sheet",
+  "prompt": "Six proportional top-down 3/4 Spanish village building props for Plaza de las Eras, white walls, terracotta roofs, clean HD hand-painted game style, consistent scale",
+  "role": "",
+  "input": "assets/generated/houses/raw-sheet.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 200,
+  "rows": 2,
+  "cols": 3,
+  "cell_size": 384,
+  "fit_scale": 0.76,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "center",
+  "shared_scale": true,
+  "component_mode": "largest",
+  "component_padding": 18,
+  "min_component_area": 80,
+  "edge_touch_margin": 10,
+  "frame_labels": [
+    "house-1",
+    "house-2",
+    "house-3",
+    "house-4",
+    "house-5",
+    "house-6"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 70896,
+      "selected_component_bbox": [
+        63,
+        156,
+        499,
+        406
+      ],
+      "crop_bbox": [
+        45,
+        138,
+        504,
+        424
+      ],
+      "edge_touch": true,
+      "output_size": [
+        291,
+        181
+      ],
+      "paste_position": [
+        46,
+        101
+      ]
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 77485,
+      "selected_component_bbox": [
+        104,
+        102,
+        447,
+        405
+      ],
+      "crop_bbox": [
+        86,
+        84,
+        465,
+        423
+      ],
+      "edge_touch": false,
+      "output_size": [
+        240,
+        215
+      ],
+      "paste_position": [
+        72,
+        84
+      ]
+    },
+    {
+      "grid": [
+        0,
+        2
+      ],
+      "source_box": [
+        1024,
+        0,
+        1536,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 46663,
+      "selected_component_bbox": [
+        139,
+        101,
+        325,
+        418
+      ],
+      "crop_bbox": [
+        121,
+        83,
+        343,
+        436
+      ],
+      "edge_touch": false,
+      "output_size": [
+        141,
+        224
+      ],
+      "paste_position": [
+        121,
+        80
+      ]
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 88871,
+      "selected_component_bbox": [
+        87,
+        68,
+        456,
+        379
+      ],
+      "crop_bbox": [
+        69,
+        50,
+        474,
+        397
+      ],
+      "edge_touch": false,
+      "output_size": [
+        257,
+        220
+      ],
+      "paste_position": [
+        63,
+        82
+      ]
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 69402,
+      "selected_component_bbox": [
+        91,
+        70,
+        447,
+        368
+      ],
+      "crop_bbox": [
+        73,
+        52,
+        465,
+        386
+      ],
+      "edge_touch": false,
+      "output_size": [
+        249,
+        212
+      ],
+      "paste_position": [
+        67,
+        86
+      ]
+    },
+    {
+      "grid": [
+        1,
+        2
+      ],
+      "source_box": [
+        1024,
+        512,
+        1536,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 73412,
+      "selected_component_bbox": [
+        32,
+        107,
+        448,
+        362
+      ],
+      "crop_bbox": [
+        14,
+        89,
+        466,
+        380
+      ],
+      "edge_touch": false,
+      "output_size": [
+        287,
+        185
+      ],
+      "paste_position": [
+        48,
+        99
+      ]
+    }
+  ],
+  "edge_touch_frames": [
+    [
+      0,
+      0
+    ]
+  ]
+}
