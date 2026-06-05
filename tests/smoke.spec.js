@@ -219,6 +219,34 @@ test("los personajes mantienen escala visual al caminar y tirar", async ({ page 
   expect(consoleErrors).toEqual([]);
 });
 
+test("los edificios mantienen una escala proporcional en todos los mapas", async ({ page }) => {
+  const consoleErrors = collectUnexpectedConsoleErrors(page);
+
+  for (const scenarioIndex of [0, 1, 2]) {
+    await startMap(page, scenarioIndex);
+    const houseSizes = await page.evaluate(() => window.__JARRAMPLAS_DEBUG__.state.obstacles
+      .filter((obstacle) => obstacle.type === "house")
+      .map((house) => ({
+        variant: house.variant,
+        visualWidth: Math.round((house.block.w / 0.88) * 10) / 10,
+        visualHeight: Math.round((house.block.h / 0.85) * 10) / 10,
+      })));
+
+    const heights = houseSizes.map((house) => house.visualHeight);
+    const widths = houseSizes.map((house) => house.visualWidth);
+    const minHeight = Math.min(...heights);
+    const maxHeight = Math.max(...heights);
+    const maxWidth = Math.max(...widths);
+
+    expect(minHeight, `mapa ${scenarioIndex}: ${JSON.stringify(houseSizes)}`).toBeGreaterThanOrEqual(165);
+    expect(maxHeight, `mapa ${scenarioIndex}: ${JSON.stringify(houseSizes)}`).toBeLessThanOrEqual(245);
+    expect(maxHeight / minHeight, `mapa ${scenarioIndex}: ${JSON.stringify(houseSizes)}`).toBeLessThanOrEqual(1.45);
+    expect(maxWidth, `mapa ${scenarioIndex}: ${JSON.stringify(houseSizes)}`).toBeLessThanOrEqual(315);
+  }
+
+  expect(consoleErrors).toEqual([]);
+});
+
 test("abre la pantalla de reto cuando llega una URL con challenge", async ({ page }) => {
   const consoleErrors = collectUnexpectedConsoleErrors(page);
 

@@ -1,6 +1,7 @@
 import { scenarios } from "../config.js";
 import {
   HOUSE_BOTTOM_PASSABLE_RATIO,
+  HOUSE_BASE_HEIGHTS,
   HOUSE_BOUNDS,
   HOUSE_TOP_BLOCK_RATIO,
   WORLD,
@@ -14,11 +15,14 @@ export function getHouseBounds(variant) {
 }
 
 export function getHouseLayout(houseObstacle) {
-  const bounds = getHouseBounds(houseObstacle.variant || 0);
+  const variant = houseObstacle.variant || 0;
+  const bounds = getHouseBounds(variant);
   const visibleW = bounds.r - bounds.l;
   const visibleH = bounds.b - bounds.t;
-  const drawW = houseObstacle.w * (houseObstacle.scale || 1);
-  const drawH = drawW * (visibleH / visibleW);
+  const baseHeight = HOUSE_BASE_HEIGHTS[variant % HOUSE_BASE_HEIGHTS.length] || HOUSE_BASE_HEIGHTS[0];
+  const scale = Math.min(1.05, Math.max(0.92, houseObstacle.scale || 1));
+  const drawH = baseHeight * scale;
+  const drawW = drawH * (visibleW / visibleH);
   const centerX = houseObstacle.x + houseObstacle.w / 2;
   const bottomY = houseObstacle.y + houseObstacle.h + 18;
   const left = centerX - drawW / 2;
