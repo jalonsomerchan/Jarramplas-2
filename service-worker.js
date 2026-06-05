@@ -93,10 +93,6 @@ function requestPathname(request) {
   return requestUrl(request).pathname;
 }
 
-function isGameScript(request) {
-  return requestPathname(request).endsWith("/game.js");
-}
-
 function isStaticAsset(request) {
   const pathname = requestPathname(request);
   return pathname.endsWith(".js")
@@ -147,106 +143,6 @@ async function networkFirstStaticAsset(request) {
   }
 }
 
-function patchGameScript(source) {
-  let patched = source;
-
-  if (!patched.includes("function actorBlocked(actor, x, y, radius)")) {
-    const helperMarker = `function findFreeSpawn(x, y, radius = PLAYER_RADIUS) {`;
-    const actorCollisionHelpers = `function getActorCollisionRadius(actor) {
-  if (actor === state.jarramplas) return 26;
-  if (state.people.includes(actor)) return 19;
-  return PLAYER_RADIUS;
-}
-
-function getSolidActors(excludedActor) {
-  return [state.player, state.jarramplas, ...state.people]
-    .filter((actor) => actor && actor !== excludedActor);
-}
-
-function circleBlockedByActors(x, y, radius, excludedActor) {
-  return getSolidActors(excludedActor).some((actor) => {
-    const otherRadius = getActorCollisionRadius(actor);
-    return Math.hypot(x - actor.x, y - actor.y) < radius + otherRadius;
-  });
-}
-
-function actorBlocked(actor, x, y, radius) {
-  return circleBlocked(x, y, radius) || circleBlockedByActors(x, y, radius, actor);
-}
-
-`;
-
-    patched = patched
-      .replace(helperMarker, `${actorCollisionHelpers}${helperMarker}`)
-      .replace(
-        `  if (!circleBlocked(nextX, actor.y, radius)) actor.x = nextX;\n  if (!circleBlocked(actor.x, nextY, radius)) actor.y = nextY;`,
-        `  if (!actorBlocked(actor, nextX, actor.y, radius)) actor.x = nextX;\n  if (!actorBlocked(actor, actor.x, nextY, radius)) actor.y = nextY;`
-      );
-  }
-
-  if (!patched.includes("const neighborCharacterIndexes")) {
-    patched = patched.replace(
-      `  state.people = starts.slice(0, count).map(([x, y], index) => {`,
-      `  const neighborCharacterIndexes = playerVariants\n    .map((_, characterIndex) => characterIndex)\n    .filter((characterIndex) => characterIndex !== state.playerIndex);\n  state.people = starts.slice(0, count).map(([x, y], index) => {`
-    ).replace(
-      `      characterIndex: 1,`,
-      `      characterIndex: neighborCharacterIndexes[index % neighborCharacterIndexes.length] ?? 1,`
-    );
-  }
-
-  if (!patched.includes("function getTurnipBuildingCollision")) {
-    const turnipCollisionHelpers = `function getTurnipBuildingCollision(x, y, radius = 10) {
-  return state.obstacles.find((obstacle) => (
-    obstacle.type === "house" && circleIntersectsObstacle(x, y, radius, obstacle)
-  ));
-}
-
-`;
-
-    patched = patched
-      .replace(`function updateTurnips(dt) {`, `${turnipCollisionHelpers}function updateTurnips(dt) {`)
-      .replace(
-        `    t.x += t.vx * dt;\n    t.y += t.vy * dt;`,
-        `    const nextX = t.x + t.vx * dt;\n    const nextY = t.y + t.vy * dt;\n    const hitX = getTurnipBuildingCollision(nextX, t.y);\n    const hitY = getTurnipBuildingCollision(t.x, nextY);\n\n    if (hitX) t.vx *= -0.78;\n    else t.x = nextX;\n\n    if (hitY) t.vy *= -0.78;\n    else t.y = nextY;\n\n    if (!hitX && !hitY && getTurnipBuildingCollision(nextX, nextY)) {\n      t.vx *= -0.78;\n      t.vy *= -0.78;\n      t.life -= 0.08;\n    } else if (hitX || hitY) {\n      t.life -= 0.08;\n    }`
-      );
-  }
-
-  if (!patched.includes('document.getElementById("finalTurnipsThrown")')) {
-    patched = patched.replace(
-      `  document.getElementById("finalJarramplasName").textContent = jarramplasVariants[state.jarramplasIndex]?.name || "Jarramplas";`,
-      `  document.getElementById("finalJarramplasName").textContent = jarramplasVariants[state.jarramplasIndex]?.name || "Jarramplas";\n  document.getElementById("finalTurnipsThrown").textContent = formatNumber(state.throws);\n  document.getElementById("finalTurnipsHit").textContent = formatNumber(state.hits);\n  document.getElementById("finalPeopleHits").textContent = formatNumber(state.peopleHits);\n  document.getElementById("finalAccuracy").textContent = \`\${accuracy}%\`;`
-    );
-  }
-
-  return patched;
-}
-
-async function patchGameScriptResponse(response) {
-  const source = await response.text();
-  const patched = patchGameScript(source);
-  const headers = new Headers(response.headers);
-  headers.set("Content-Type", "text/javascript; charset=utf-8");
-  return new Response(patched, {
-    status: response.status,
-    statusText: response.statusText,
-    headers,
-  });
-}
-
-async function networkFirstGameScript(request) {
-  try {
-    const clean = cleanRequest(request);
-    const response = await fetch(clean, { cache: "no-cache" });
-    const patched = await patchGameScriptResponse(response);
-    await putIfOk(CORE_CACHE, request, patched);
-    return patched;
-  } catch {
-    const cached = await matchAny(request);
-    if (cached) return patchGameScriptResponse(cached);
-    throw new Error("No se pudo cargar game.js");
-  }
-}
-
 async function staleWhileRevalidateAsset(request) {
   const cached = await matchAny(request);
   const refresh = fetch(cleanRequest(request))
@@ -277,11 +173,6 @@ self.addEventListener("fetch", (event) => {
 
   if (request.mode === "navigate") {
     event.respondWith(networkFirstPage(request));
-    return;
-  }
-
-  if (isGameScript(request)) {
-    event.respondWith(networkFirstGameScript(request));
     return;
   }
 
