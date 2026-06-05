@@ -238,10 +238,10 @@ test("los edificios mantienen una escala proporcional en todos los mapas", async
     const maxHeight = Math.max(...heights);
     const maxWidth = Math.max(...widths);
 
-    expect(minHeight, `mapa ${scenarioIndex}: ${JSON.stringify(houseSizes)}`).toBeGreaterThanOrEqual(165);
-    expect(maxHeight, `mapa ${scenarioIndex}: ${JSON.stringify(houseSizes)}`).toBeLessThanOrEqual(245);
-    expect(maxHeight / minHeight, `mapa ${scenarioIndex}: ${JSON.stringify(houseSizes)}`).toBeLessThanOrEqual(1.45);
-    expect(maxWidth, `mapa ${scenarioIndex}: ${JSON.stringify(houseSizes)}`).toBeLessThanOrEqual(315);
+    expect(minHeight, `mapa ${scenarioIndex}: ${JSON.stringify(houseSizes)}`).toBeGreaterThanOrEqual(250);
+    expect(maxHeight, `mapa ${scenarioIndex}: ${JSON.stringify(houseSizes)}`).toBeLessThanOrEqual(500);
+    expect(maxHeight / minHeight, `mapa ${scenarioIndex}: ${JSON.stringify(houseSizes)}`).toBeLessThanOrEqual(2.15);
+    expect(maxWidth, `mapa ${scenarioIndex}: ${JSON.stringify(houseSizes)}`).toBeLessThanOrEqual(610);
   }
 
   expect(consoleErrors).toEqual([]);

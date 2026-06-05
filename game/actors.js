@@ -72,6 +72,19 @@ const BYSTANDER_STARTS = [
   [1600, 1560], [2060, 1360], [2480, 1120], [1040, 1580], [520, 2040], [2880, 1900],
 ];
 
+function getEdgeBystanderStarts(layout) {
+  const starts = [...(layout.bystanders || [])];
+  for (let x = 360; x <= WORLD.w - 360; x += 150) {
+    starts.push([x, 515], [x, WORLD.h - 205]);
+  }
+  for (let y = 720; y <= WORLD.h - 620; y += 170) {
+    starts.push([390, y], [WORLD.w - 390, y]);
+  }
+  return starts.filter(([x, y], index) => (
+    starts.findIndex(([otherX, otherY]) => Math.hypot(x - otherX, y - otherY) < 72) === index
+  ));
+}
+
 function getNeighborCharacterIndexes() {
   return playerVariants
     .map((_, characterIndex) => characterIndex)
@@ -105,13 +118,23 @@ function createPersonActor(x, y, index, characterIndexes, options = {}) {
 
 export function spawnBystanders(count = 24) {
   const characterIndexes = getNeighborCharacterIndexes();
-  state.bystanders = BYSTANDER_STARTS.slice(0, count).map(([x, y], index) => createPersonActor(x, y, index, characterIndexes, {
+  const scenario = scenarios[state.scenarioIndex] || scenarios[0];
+  const layout = scenarioLayouts[scenario.id] || scenarioLayouts["plaza-eras"];
+  const roamingBystanders = BYSTANDER_STARTS.slice(0, count).map(([x, y], index) => createPersonActor(x, y, index, characterIndexes, {
     speed: 34 + (index % 5) * 4,
     cooldown: Number.POSITIVE_INFINITY,
     wander: 0.3 + (index % 7) * 0.2,
     lookTime: 0.8 + (index % 5) * 0.4,
     mode: index % 3 === 0 ? "watch" : "stroll",
   }));
+  const edgeBystanders = getEdgeBystanderStarts(layout).map(([x, y], index) => createPersonActor(x, y, count + index, characterIndexes, {
+    speed: 0,
+    cooldown: Number.POSITIVE_INFINITY,
+    wander: 0,
+    lookTime: Number.POSITIVE_INFINITY,
+    mode: "watch",
+  }));
+  state.bystanders = [...roamingBystanders, ...edgeBystanders];
 }
 
 export function spawnPeople(count) {

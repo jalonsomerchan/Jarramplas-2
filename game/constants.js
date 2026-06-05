@@ -13,7 +13,7 @@ export const FOUNTAIN_SHEET_COLS = 3;
 export const VILLAGER_THROW_TYPE_COUNT = 4;
 export const HOUSE_TOP_BLOCK_RATIO = 0.1;
 export const HOUSE_BOTTOM_PASSABLE_RATIO = 0.05;
-export const HOUSE_BASE_HEIGHTS = [210, 215, 185, 230, 205, 200, 195, 205, 200];
+export const HOUSE_BASE_HEIGHTS = [450, 470, 300, 430, 440, 420, 400, 425, 440];
 export const HOUSE_BOUNDS = [
   { l: 84 / 384, t: 77 / 384, r: 300 / 384, b: 307 / 384 },
   { l: 52 / 384, t: 77 / 384, r: 332 / 384, b: 306 / 384 },
