@@ -1,31 +1,34 @@
 {
   "target": "asset",
   "mode": "sheet",
-  "prompt": "Six proportional top-down 3/4 Spanish village building props for Plaza de las Eras, white walls, terracotta roofs, clean HD hand-painted game style, consistent scale",
+  "prompt": "Nine compact proportional 2D frontal pixel-art Spanish village building props matching the reference house style, including red Casa de Cultura, stone porch building, narrow stone house, no 3D",
   "role": "",
   "input": "assets/generated/houses/raw-sheet.png",
   "threshold": 100,
   "edge_threshold": 150,
   "duration": 200,
-  "rows": 2,
+  "rows": 3,
   "cols": 3,
   "cell_size": 384,
-  "fit_scale": 0.76,
+  "fit_scale": 0.7,
   "trim_border": 4,
   "edge_clean_depth": 3,
   "align": "center",
   "shared_scale": true,
   "component_mode": "largest",
-  "component_padding": 18,
-  "min_component_area": 80,
-  "edge_touch_margin": 10,
+  "component_padding": 24,
+  "min_component_area": 40,
+  "edge_touch_margin": 18,
   "frame_labels": [
     "house-1",
     "house-2",
     "house-3",
     "house-4",
     "house-5",
-    "house-6"
+    "house-6",
+    "house-7",
+    "house-8",
+    "house-9"
   ],
   "frames": [
     {
@@ -36,32 +39,32 @@
       "source_box": [
         0,
         0,
-        512,
-        512
+        418,
+        418
       ],
       "component_mode": "largest",
       "component_count": 1,
-      "selected_component_area": 70896,
+      "selected_component_area": 60257,
       "selected_component_bbox": [
-        63,
-        156,
-        499,
-        406
+        79,
+        70,
+        336,
+        348
       ],
       "crop_bbox": [
-        45,
-        138,
-        504,
-        424
+        55,
+        46,
+        360,
+        372
       ],
-      "edge_touch": true,
+      "edge_touch": false,
       "output_size": [
-        291,
-        181
+        204,
+        218
       ],
       "paste_position": [
-        46,
-        101
+        90,
+        83
       ]
     },
     {
@@ -70,34 +73,34 @@
         1
       ],
       "source_box": [
-        512,
+        418,
         0,
-        1024,
-        512
+        836,
+        418
       ],
       "component_mode": "largest",
       "component_count": 1,
-      "selected_component_area": 77485,
+      "selected_component_area": 82473,
       "selected_component_bbox": [
-        104,
-        102,
-        447,
-        405
+        30,
+        73,
+        383,
+        349
       ],
       "crop_bbox": [
-        86,
-        84,
-        465,
-        423
+        6,
+        49,
+        407,
+        373
       ],
-      "edge_touch": false,
+      "edge_touch": true,
       "output_size": [
-        240,
-        215
+        268,
+        217
       ],
       "paste_position": [
-        72,
-        84
+        58,
+        83
       ]
     },
     {
@@ -106,34 +109,34 @@
         2
       ],
       "source_box": [
-        1024,
+        836,
         0,
-        1536,
-        512
+        1254,
+        418
       ],
       "component_mode": "largest",
       "component_count": 1,
-      "selected_component_area": 46663,
+      "selected_component_area": 62016,
       "selected_component_bbox": [
-        139,
-        101,
-        325,
-        418
+        21,
+        134,
+        361,
+        339
       ],
       "crop_bbox": [
-        121,
-        83,
-        343,
-        436
+        0,
+        110,
+        385,
+        363
       ],
-      "edge_touch": false,
+      "edge_touch": true,
       "output_size": [
-        141,
-        224
+        258,
+        169
       ],
       "paste_position": [
-        121,
-        80
+        63,
+        107
       ]
     },
     {
@@ -143,33 +146,33 @@
       ],
       "source_box": [
         0,
-        512,
-        512,
-        1024
+        418,
+        418,
+        836
       ],
       "component_mode": "largest",
       "component_count": 1,
-      "selected_component_area": 88871,
+      "selected_component_area": 46802,
       "selected_component_bbox": [
-        87,
-        68,
-        456,
-        379
+        122,
+        17,
+        289,
+        330
       ],
       "crop_bbox": [
-        69,
-        50,
-        474,
-        397
+        98,
+        0,
+        313,
+        354
       ],
-      "edge_touch": false,
+      "edge_touch": true,
       "output_size": [
-        257,
-        220
+        144,
+        237
       ],
       "paste_position": [
-        63,
-        82
+        120,
+        73
       ]
     },
     {
@@ -178,34 +181,34 @@
         1
       ],
       "source_box": [
-        512,
-        512,
-        1024,
-        1024
+        418,
+        418,
+        836,
+        836
       ],
       "component_mode": "largest",
       "component_count": 1,
-      "selected_component_area": 69402,
+      "selected_component_area": 71080,
       "selected_component_bbox": [
-        91,
-        70,
-        447,
-        368
+        45,
+        61,
+        344,
+        325
       ],
       "crop_bbox": [
-        73,
-        52,
-        465,
-        386
+        21,
+        37,
+        368,
+        349
       ],
       "edge_touch": false,
       "output_size": [
-        249,
-        212
+        232,
+        209
       ],
       "paste_position": [
-        67,
-        86
+        76,
+        87
       ]
     },
     {
@@ -214,41 +217,169 @@
         2
       ],
       "source_box": [
-        1024,
-        512,
-        1536,
-        1024
+        836,
+        418,
+        1254,
+        836
       ],
       "component_mode": "largest",
       "component_count": 1,
-      "selected_component_area": 73412,
+      "selected_component_area": 52962,
       "selected_component_bbox": [
-        32,
-        107,
-        448,
-        362
+        90,
+        69,
+        326,
+        319
       ],
       "crop_bbox": [
-        14,
-        89,
-        466,
-        380
+        66,
+        45,
+        350,
+        343
       ],
       "edge_touch": false,
       "output_size": [
-        287,
-        185
+        190,
+        199
       ],
       "paste_position": [
-        48,
-        99
+        97,
+        92
+      ]
+    },
+    {
+      "grid": [
+        2,
+        0
+      ],
+      "source_box": [
+        0,
+        836,
+        418,
+        1254
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 59196,
+      "selected_component_bbox": [
+        80,
+        38,
+        352,
+        289
+      ],
+      "crop_bbox": [
+        56,
+        14,
+        376,
+        313
+      ],
+      "edge_touch": true,
+      "output_size": [
+        214,
+        200
+      ],
+      "paste_position": [
+        85,
+        92
+      ]
+    },
+    {
+      "grid": [
+        2,
+        1
+      ],
+      "source_box": [
+        418,
+        836,
+        836,
+        1254
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 59737,
+      "selected_component_bbox": [
+        41,
+        34,
+        338,
+        285
+      ],
+      "crop_bbox": [
+        17,
+        10,
+        362,
+        309
+      ],
+      "edge_touch": true,
+      "output_size": [
+        231,
+        200
+      ],
+      "paste_position": [
+        76,
+        92
+      ]
+    },
+    {
+      "grid": [
+        2,
+        2
+      ],
+      "source_box": [
+        836,
+        836,
+        1254,
+        1254
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 69220,
+      "selected_component_bbox": [
+        46,
+        29,
+        340,
+        291
+      ],
+      "crop_bbox": [
+        22,
+        5,
+        364,
+        315
+      ],
+      "edge_touch": true,
+      "output_size": [
+        229,
+        207
+      ],
+      "paste_position": [
+        77,
+        88
       ]
     }
   ],
   "edge_touch_frames": [
     [
       0,
+      1
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      1,
       0
+    ],
+    [
+      2,
+      0
+    ],
+    [
+      2,
+      1
+    ],
+    [
+      2,
+      2
     ]
   ]
 }

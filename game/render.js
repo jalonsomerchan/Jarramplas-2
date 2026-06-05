@@ -163,7 +163,7 @@ export function drawHouse(houseObstacle) {
   const sy = Math.floor(variant / HOUSE_SHEET_COLS) * sourceH + bounds.t * sourceH;
   const sw = (bounds.r - bounds.l) * sourceW;
   const sh = (bounds.b - bounds.t) * sourceH;
-  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingEnabled = false;
   ctx.drawImage(
     img,
     sx,
