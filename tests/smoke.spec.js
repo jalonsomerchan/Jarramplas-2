@@ -114,6 +114,111 @@ test("nadie empieza bloqueado por obstáculos en ningún mapa", async ({ page })
   expect(consoleErrors).toEqual([]);
 });
 
+test("los personajes mantienen escala visual al caminar y tirar", async ({ page }) => {
+  const consoleErrors = collectUnexpectedConsoleErrors(page);
+
+  await startMap(page, 0);
+
+  const measurements = await page.evaluate(async () => {
+    const debug = window.__JARRAMPLAS_DEBUG__;
+    const canvas = document.querySelector("#game");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    const frame = () => new Promise((resolve) => requestAnimationFrame(() => resolve()));
+    const characterCount = document.querySelectorAll("[data-character]").length;
+
+    function captureDiffBox(baseline, left, top, size) {
+      const current = ctx.getImageData(left, top, size, size).data;
+      let minX = size;
+      let minY = size;
+      let maxX = -1;
+      let maxY = -1;
+      for (let y = 0; y < size; y += 1) {
+        for (let x = 0; x < size; x += 1) {
+          const offset = (y * size + x) * 4;
+          const diff = Math.abs(current[offset] - baseline[offset])
+            + Math.abs(current[offset + 1] - baseline[offset + 1])
+            + Math.abs(current[offset + 2] - baseline[offset + 2]);
+          if (diff <= 45) continue;
+          minX = Math.min(minX, x);
+          minY = Math.min(minY, y);
+          maxX = Math.max(maxX, x);
+          maxY = Math.max(maxY, y);
+        }
+      }
+      return maxX < minX ? null : { w: maxX - minX + 1, h: maxY - minY + 1 };
+    }
+
+    async function measureCharacter(characterIndex, throwing) {
+      const state = debug.state;
+      state.playerIndex = characterIndex;
+      state.scenarioIndex = 0;
+      state.jarramplasIndex = 0;
+      state.difficulty = "day18Evening";
+      state.gameType = "timed";
+      debug.startGame();
+
+      Object.assign(state, {
+        mode: "pause",
+        obstacles: [],
+        piles: [],
+        people: [],
+        bystanders: [],
+        turnips: [],
+        particles: [],
+        impacts: [],
+        floaters: [],
+        jarramplas: null,
+      });
+      state.camera.x = 900;
+      state.camera.y = 720;
+      state.player.x = 1260;
+      state.player.y = 1080;
+      state.player.dir = "down";
+      state.player.walking = false;
+      state.player.throwAnim = 0;
+
+      const dpr = canvas.width / state.w;
+      const centerX = Math.round((state.player.x - state.camera.x) * dpr);
+      const centerY = Math.round((state.player.y - state.camera.y + 18) * dpr);
+      const size = Math.round(150 * dpr);
+      const left = Math.round(centerX - size / 2);
+      const top = Math.round(centerY - size);
+      const player = state.player;
+      state.player = null;
+      await frame();
+      await frame();
+      const baseline = ctx.getImageData(left, top, size, size).data.slice();
+
+      state.player = player;
+      state.player.throwAnim = throwing ? 0.25 : 0;
+      await frame();
+      await frame();
+      return captureDiffBox(baseline, left, top, size);
+    }
+
+    const results = [];
+    for (let characterIndex = 0; characterIndex < characterCount; characterIndex += 1) {
+      const idle = await measureCharacter(characterIndex, false);
+      const throwing = await measureCharacter(characterIndex, true);
+      results.push({
+        characterIndex,
+        idleHeight: idle?.h || 0,
+        throwHeight: throwing?.h || 0,
+        ratio: idle?.h && throwing?.h ? throwing.h / idle.h : 0,
+      });
+    }
+    return results;
+  });
+
+  measurements.forEach((measurement) => {
+    expect(measurement.idleHeight, JSON.stringify(measurement)).toBeGreaterThan(45);
+    expect(measurement.throwHeight, JSON.stringify(measurement)).toBeGreaterThan(45);
+    expect(measurement.ratio, JSON.stringify(measurement)).toBeGreaterThan(0.86);
+    expect(measurement.ratio, JSON.stringify(measurement)).toBeLessThan(1.14);
+  });
+  expect(consoleErrors).toEqual([]);
+});
+
 test("abre la pantalla de reto cuando llega una URL con challenge", async ({ page }) => {
   const consoleErrors = collectUnexpectedConsoleErrors(page);
 

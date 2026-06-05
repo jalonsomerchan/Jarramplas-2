@@ -13,6 +13,8 @@ import { assets, state } from "./state.js";
 import { clamp } from "./utils.js";
 import { getHouseLayout } from "./world.js";
 
+const actorSpriteMetrics = new WeakMap();
+
 export function drawSpriteSheet(img, rows, cols, frame, x, y, w, h, flip = false) {
   if (!img) return false;
   const sourceW = img.width / cols;
@@ -25,6 +27,82 @@ export function drawSpriteSheet(img, rows, cols, frame, x, y, w, h, flip = false
     ctx.drawImage(img, sx, sy, sourceW, sourceH, -x - w / 2, y - h, w, h);
   } else {
     ctx.drawImage(img, sx, sy, sourceW, sourceH, x - w / 2, y - h, w, h);
+  }
+  ctx.restore();
+  return true;
+}
+
+function getActorSpriteMetrics(img, rows, cols) {
+  if (!img) return [];
+  const cached = actorSpriteMetrics.get(img);
+  const key = `${rows}x${cols}`;
+  if (cached?.key === key) return cached.frames;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = img.width;
+  canvas.height = img.height;
+  const sourceCtx = canvas.getContext("2d", { willReadFrequently: true });
+  sourceCtx.drawImage(img, 0, 0);
+
+  const cellW = img.width / cols;
+  const cellH = img.height / rows;
+  const frames = Array.from({ length: rows * cols }, (_, index) => {
+    const sx = Math.floor((index % cols) * cellW);
+    const sy = Math.floor(Math.floor(index / cols) * cellH);
+    const sw = Math.floor(cellW);
+    const sh = Math.floor(cellH);
+    const data = sourceCtx.getImageData(sx, sy, sw, sh).data;
+    let minX = sw;
+    let minY = sh;
+    let maxX = -1;
+    let maxY = -1;
+
+    for (let py = 0; py < sh; py += 1) {
+      for (let px = 0; px < sw; px += 1) {
+        const alpha = data[((py * sw + px) * 4) + 3];
+        if (alpha <= 10) continue;
+        minX = Math.min(minX, px);
+        minY = Math.min(minY, py);
+        maxX = Math.max(maxX, px);
+        maxY = Math.max(maxY, py);
+      }
+    }
+
+    if (maxX < minX || maxY < minY) {
+      return { sx, sy, sw, sh };
+    }
+
+    const pad = 2;
+    const cropX = Math.max(0, minX - pad);
+    const cropY = Math.max(0, minY - pad);
+    const cropR = Math.min(sw, maxX + pad + 1);
+    const cropB = Math.min(sh, maxY + pad + 1);
+    return {
+      sx: sx + cropX,
+      sy: sy + cropY,
+      sw: cropR - cropX,
+      sh: cropB - cropY,
+    };
+  });
+
+  actorSpriteMetrics.set(img, { key, frames });
+  return frames;
+}
+
+function drawActorSpriteFrame(img, rows, cols, frame, x, y, targetHeight, flip = false) {
+  if (!img) return false;
+  const metrics = getActorSpriteMetrics(img, rows, cols);
+  const crop = metrics[frame] || metrics[0];
+  if (!crop) return false;
+  const drawH = targetHeight;
+  const drawW = drawH * (crop.sw / crop.sh);
+  ctx.save();
+  ctx.imageSmoothingEnabled = false;
+  if (flip) {
+    ctx.scale(-1, 1);
+    ctx.drawImage(img, crop.sx, crop.sy, crop.sw, crop.sh, -x - drawW / 2, y - drawH, drawW, drawH);
+  } else {
+    ctx.drawImage(img, crop.sx, crop.sy, crop.sw, crop.sh, x - drawW / 2, y - drawH, drawW, drawH);
   }
   ctx.restore();
   return true;
@@ -197,13 +275,12 @@ export function drawActor(actor, type) {
   const walkRow = { down: 0, left: 1, right: 2, up: 3 }[actor.dir] || 0;
   const walkFrame = walkRow * 4 + (actor.walking ? Math.floor(state.elapsed * 8) % 4 : 1);
   const character = getCharacterAssets(actor.characterIndex ?? (type === "player" ? state.playerIndex : 1));
-  const actorSize = type === "player" ? 96 : 88;
-  const walkSize = type === "player" ? 82 : 80;
+  const actorHeight = type === "player" ? 74 : 70;
   if (actor.throwAnim > 0) {
     const frame = clamp(5 - Math.floor((actor.throwAnim / 0.5) * 6), 0, 5);
-    drawSpriteSheet(character.throw, 2, 3, frame, x, y + 18, actorSize, actorSize, actor.dir === "left");
+    drawActorSpriteFrame(character.throw, 2, 3, frame, x, y + 18, actorHeight, actor.dir === "left");
   } else {
-    drawSpriteSheet(character.walk, 4, 4, walkFrame, x, y + 18, walkSize, walkSize);
+    drawActorSpriteFrame(character.walk, 4, 4, walkFrame, x, y + 18, actorHeight);
   }
   if (actor.hurt > 0) {
     ctx.fillStyle = "rgba(255, 80, 70, 0.25)";
