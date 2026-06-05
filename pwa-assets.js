@@ -3,7 +3,7 @@
  * Keep this file dependency-free so it can run both in the page and inside the service worker via importScripts().
  */
 (function registerPwaAssets(globalScope) {
-  const APP_BUILD = "20260606-1";
+  const APP_BUILD = "20260606-2";
 
   const staticCoreAssets = [
     "./",
@@ -111,35 +111,4 @@
     GAMEPLAY_ASSETS: gameplayAssets,
     ALL_ASSETS: unique([...staticCoreAssets, ...gameplayAssets]),
   };
-
-  if (globalScope.ServiceWorkerGlobalScope && globalScope instanceof globalScope.ServiceWorkerGlobalScope && !globalScope.__JARRAMPLAS_FETCH_PATCHED__) {
-    globalScope.__JARRAMPLAS_FETCH_PATCHED__ = true;
-    const originalFetch = globalScope.fetch.bind(globalScope);
-    const helpers = `function getActorCollisionRadius(actor) {\n  if (actor === state.jarramplas) return 26;\n  if (state.people.includes(actor)) return 19;\n  return PLAYER_RADIUS;\n}\n\nfunction getSolidActors(excludedActor) {\n  return [state.player, state.jarramplas, ...state.people]\n    .filter((actor) => actor && actor !== excludedActor);\n}\n\nfunction circleBlockedByActors(x, y, radius, excludedActor) {\n  return getSolidActors(excludedActor).some((actor) => {\n    const otherRadius = getActorCollisionRadius(actor);\n    return Math.hypot(x - actor.x, y - actor.y) < radius + otherRadius;\n  });\n}\n\nfunction actorBlocked(actor, x, y, radius) {\n  return circleBlocked(x, y, radius) || circleBlockedByActors(x, y, radius, actor);\n}\n\n`;
-    const resolver = `function resolveActorCollisions(iterations = 4) {\n  for (let pass = 0; pass < iterations; pass += 1) {\n    const actors = getSolidActors(null);\n    for (let i = 0; i < actors.length; i += 1) {\n      for (let j = i + 1; j < actors.length; j += 1) {\n        const a = actors[i];\n        const b = actors[j];\n        const aRadius = getActorCollisionRadius(a);\n        const bRadius = getActorCollisionRadius(b);\n        const minDistance = aRadius + bRadius;\n        let dx = b.x - a.x;\n        let dy = b.y - a.y;\n        let distance = Math.hypot(dx, dy);\n        if (distance >= minDistance) continue;\n        if (distance < 0.001) {\n          const angle = (i + 1) * 1.7 + (j + 1) * 0.9;\n          dx = Math.cos(angle);\n          dy = Math.sin(angle);\n          distance = 1;\n        }\n        const nx = dx / distance;\n        const ny = dy / distance;\n        const overlap = minDistance - distance + 0.75;\n        const aShare = a === state.jarramplas ? 0.35 : 0.5;\n        const bShare = b === state.jarramplas ? 0.35 : 0.5;\n        const aNextX = clamp(a.x - nx * overlap * aShare, aRadius + 4, WORLD.w - aRadius - 4);\n        const aNextY = clamp(a.y - ny * overlap * aShare, aRadius + 4, WORLD.h - aRadius - 4);\n        const bNextX = clamp(b.x + nx * overlap * bShare, bRadius + 4, WORLD.w - bRadius - 4);\n        const bNextY = clamp(b.y + ny * overlap * bShare, bRadius + 4, WORLD.h - bRadius - 4);\n        if (!circleBlocked(aNextX, aNextY, aRadius)) { a.x = aNextX; a.y = aNextY; }\n        if (!circleBlocked(bNextX, bNextY, bRadius)) { b.x = bNextX; b.y = bNextY; }\n      }\n    }\n  }\n}\n\n`;
-
-    function patchGameSource(source) {
-      if (source.includes("function resolveActorCollisions")) return source;
-      let patched = source;
-      if (!patched.includes("function actorBlocked(actor, x, y, radius)")) {
-        patched = patched.replace("function findFreeSpawn(x, y, radius = PLAYER_RADIUS) {", `${helpers}function findFreeSpawn(x, y, radius = PLAYER_RADIUS) {`);
-        patched = patched.replace("  if (!circleBlocked(nextX, actor.y, radius)) actor.x = nextX;\n  if (!circleBlocked(actor.x, nextY, radius)) actor.y = nextY;", "  if (!actorBlocked(actor, nextX, actor.y, radius)) actor.x = nextX;\n  if (!actorBlocked(actor, actor.x, nextY, radius)) actor.y = nextY;");
-      }
-      patched = patched.replace("function findFreeSpawn(x, y, radius = PLAYER_RADIUS) {", `${resolver}function findFreeSpawn(x, y, radius = PLAYER_RADIUS) {`);
-      return patched.replace("  updatePeople(dt);\n  updateTurnips(dt);", "  updatePeople(dt);\n  resolveActorCollisions();\n  updateTurnips(dt);");
-    }
-
-    globalScope.fetch = async function patchedFetch(input, init) {
-      const response = await originalFetch(input, init);
-      const url = new URL(typeof input === "string" ? input : input.url, globalScope.location.href);
-      if (!url.pathname.endsWith("/game.js") || !response.ok) return response;
-      const headers = new Headers(response.headers);
-      headers.set("Content-Type", "text/javascript; charset=utf-8");
-      return new Response(patchGameSource(await response.text()), {
-        status: response.status,
-        statusText: response.statusText,
-        headers,
-      });
-    };
-  }
 })(typeof self !== "undefined" ? self : window);
