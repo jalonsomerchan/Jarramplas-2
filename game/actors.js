@@ -116,6 +116,39 @@ function createPersonActor(x, y, index, characterIndexes, options = {}) {
   };
 }
 
+function createAnimalActor(kind, x, y, index) {
+  const isCat = kind === "cat";
+  const spawn = findFreeSpawn(x, y, isCat ? 11 : 14);
+  return {
+    kind,
+    x: spawn.x,
+    y: spawn.y,
+    homeX: spawn.x,
+    homeY: spawn.y,
+    speed: isCat ? 112 : 98,
+    chaseSpeed: isCat ? 265 : 235,
+    radius: isCat ? 11 : 14,
+    height: isCat ? 32 : 40,
+    biteDamage: isCat ? 6 : 9,
+    dir: index % 2 === 0 ? "left" : "right",
+    walking: false,
+    mode: "wander",
+    wander: 0.4 + index * 0.35,
+    calmTimer: 0,
+    biteCooldown: 0,
+    vx: 0,
+    vy: 0,
+  };
+}
+
+export function spawnAnimals() {
+  const starts = [
+    ["dog", 630, 705], ["cat", 1035, 650], ["dog", 1820, 780],
+    ["cat", 2350, 1010], ["dog", 860, 1585], ["cat", 2120, 1715],
+  ];
+  state.animals = starts.map(([kind, x, y], index) => createAnimalActor(kind, x, y, index));
+}
+
 export function spawnBystanders(count = 24) {
   const characterIndexes = getNeighborCharacterIndexes();
   const scenario = scenarios[state.scenarioIndex] || scenarios[0];
@@ -187,6 +220,7 @@ export function startGame() {
   };
   spawnPeople(difficulty.people);
   spawnBystanders();
+  spawnAnimals();
   state.turnips = [];
   state.impacts = [];
   state.floaters = [];
@@ -389,6 +423,42 @@ export function updateBystanders(dt) {
   });
 }
 
+export function updateAnimals(dt) {
+  state.animals.forEach((animal, index) => {
+    animal.walking = false;
+    animal.biteCooldown = Math.max(0, animal.biteCooldown - dt);
+
+    if (animal.mode === "angry") {
+      animal.calmTimer -= dt;
+      animal.speed = animal.chaseSpeed;
+      moveActor(animal, state.player.x - animal.x, state.player.y - animal.y, dt, animal.radius);
+      if (dist(animal, state.player) < animal.radius + PLAYER_RADIUS + 8 && animal.biteCooldown <= 0) {
+        animal.biteCooldown = animal.kind === "cat" ? 0.95 : 1.15;
+        damagePlayer(animal.biteDamage, state.player.x, state.player.y - 64, animal.kind === "cat" ? "-6 vida" : "-9 vida");
+        addFloater(animal.kind === "cat" ? "¡Arañazo!" : "¡Mordisco!", animal.x, animal.y - 48, "#fff6df");
+      }
+      if (animal.calmTimer <= 0 && dist(animal, state.player) > 360) {
+        animal.mode = "wander";
+        animal.speed = animal.kind === "cat" ? 112 : 98;
+      }
+      return;
+    }
+
+    animal.wander -= dt;
+    animal.speed = animal.kind === "cat" ? 112 : 98;
+    if (animal.wander <= 0) {
+      animal.wander = 1.2 + Math.random() * 2.8;
+      const angle = Math.random() * Math.PI * 2 + index * 0.35;
+      animal.vx = Math.cos(angle);
+      animal.vy = Math.sin(angle);
+    }
+
+    const distanceHome = dist(animal, { x: animal.homeX, y: animal.homeY });
+    if (distanceHome > 220) moveActor(animal, animal.homeX - animal.x, animal.homeY - animal.y, dt, animal.radius);
+    else moveActor(animal, animal.vx, animal.vy, dt, animal.radius);
+  });
+}
+
 export function updateTurnips(dt) {
   state.turnips.forEach((t) => {
     const nextX = t.x + t.vx * dt;
@@ -424,6 +494,16 @@ export function updateTurnips(dt) {
       addFloater(`+${points}`, state.jarramplas.x, state.jarramplas.y - 90, "#f2bb3d");
       createTurnipImpact(t.x, t.y, "#f2bb3d");
     } else if (t.owner === "player") {
+      const hitAnimal = state.animals.find((animal) => dist(t, animal) < animal.radius + 18);
+      if (hitAnimal) {
+        t.life = 0;
+        hitAnimal.mode = "angry";
+        hitAnimal.calmTimer = 7.5;
+        hitAnimal.biteCooldown = 0.25;
+        createTurnipImpact(t.x, t.y, hitAnimal.kind === "cat" ? "#d8a46a" : "#c88a45");
+        addFloater(hitAnimal.kind === "cat" ? "¡Miau!" : "¡Guau!", hitAnimal.x, hitAnimal.y - 48, "#fff6df");
+        return;
+      }
       const hitPerson = state.people.find((person) => dist(t, person) < 34);
       if (hitPerson) {
         t.life = 0;
@@ -454,6 +534,7 @@ export function updateRuntime(dt) {
   updateJarramplas(dt);
   updatePeople(dt);
   updateBystanders(dt);
+  updateAnimals(dt);
   resolveActorCollisions();
   updateTurnips(dt);
   state.floaters.forEach((f) => {

@@ -37,6 +37,7 @@ async function boot() {
     state,
     getSpawnCollisionReport,
     startGame,
+    updateRuntime,
   };
 
   resize();

@@ -102,8 +102,13 @@ test("permite navegar por el flujo básico de selección", async ({ page }) => {
 test("nadie empieza bloqueado por obstáculos en ningún mapa", async ({ page }) => {
   const consoleErrors = collectUnexpectedConsoleErrors(page);
 
+  await startMap(page, 0);
   for (const scenarioIndex of [0, 1, 2]) {
-    await startMap(page, scenarioIndex);
+    await page.evaluate((index) => {
+      const debug = window.__JARRAMPLAS_DEBUG__;
+      debug.state.scenarioIndex = index;
+      debug.startGame();
+    }, scenarioIndex);
     const report = await page.evaluate(() => window.__JARRAMPLAS_DEBUG__.getSpawnCollisionReport());
     expect(report.filter((entry) => entry.blocked), `mapa ${scenarioIndex}: ${JSON.stringify(report)}`).toEqual([]);
     const player = report.find((entry) => entry.name === "player");
@@ -163,6 +168,7 @@ test("los personajes mantienen escala visual al caminar y tirar", async ({ page 
         piles: [],
         people: [],
         bystanders: [],
+        animals: [],
         turnips: [],
         particles: [],
         impacts: [],
@@ -216,6 +222,53 @@ test("los personajes mantienen escala visual al caminar y tirar", async ({ page 
     expect(measurement.ratio, JSON.stringify(measurement)).toBeGreaterThan(0.86);
     expect(measurement.ratio, JSON.stringify(measurement)).toBeLessThan(1.14);
   });
+  expect(consoleErrors).toEqual([]);
+});
+
+test("perros y gatos persiguen al jugador si reciben un nabo", async ({ page }) => {
+  const consoleErrors = collectUnexpectedConsoleErrors(page);
+
+  await startMap(page, 0);
+
+  const result = await page.evaluate(() => {
+    const debug = window.__JARRAMPLAS_DEBUG__;
+    const state = debug.state;
+    const animal = state.animals[0];
+    state.mode = "game";
+    state.life = 100;
+    state.people = [];
+    state.bystanders = [];
+    state.turnips = [{
+      x: animal.x,
+      y: animal.y,
+      vx: 0,
+      vy: 0,
+      owner: "player",
+      life: 0.5,
+      spin: 0,
+    }];
+
+    debug.updateRuntime(0.016);
+    const angryMode = animal.mode;
+    const turnipConsumed = state.turnips.length === 0;
+
+    animal.x = state.player.x + 6;
+    animal.y = state.player.y;
+    animal.biteCooldown = 0;
+    debug.updateRuntime(0.12);
+
+    return {
+      animalCount: state.animals.length,
+      angryMode,
+      turnipConsumed,
+      lifeAfterBite: state.life,
+    };
+  });
+
+  expect(result.animalCount).toBeGreaterThanOrEqual(2);
+  expect(result.angryMode).toBe("angry");
+  expect(result.turnipConsumed).toBe(true);
+  expect(result.lifeAfterBite).toBeLessThan(100);
   expect(consoleErrors).toEqual([]);
 });
 

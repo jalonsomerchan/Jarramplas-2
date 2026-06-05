@@ -15,12 +15,13 @@ export function circleIntersectsObstacle(x, y, r, obstacle) {
 
 export function getActorCollisionRadius(actor) {
   if (actor === state.jarramplas) return 26;
+  if (state.animals.includes(actor)) return actor.radius || 13;
   if (state.people.includes(actor) || state.bystanders.includes(actor)) return 19;
   return PLAYER_RADIUS;
 }
 
 export function getSolidActors(excludedActor = null) {
-  return [state.player, state.jarramplas, ...state.people, ...state.bystanders]
+  return [state.player, state.jarramplas, ...state.people, ...state.bystanders, ...state.animals]
     .filter((actor) => actor && actor !== excludedActor);
 }
 
@@ -108,13 +109,14 @@ export function getSpawnCollisionReport() {
     ["player", state.player],
     ["jarramplas", state.jarramplas],
     ...state.people.map((person, index) => [`neighbor-${index}`, person]),
+    ...state.animals.map((animal, index) => [`${animal.kind}-${index}`, animal]),
   ].filter(([, actor]) => actor);
 
   return actors.map(([name, actor]) => ({
     name,
     x: Math.round(actor.x),
     y: Math.round(actor.y),
-    blocked: state.obstacles.some((obstacle) => circleIntersectsObstacle(actor.x, actor.y, PLAYER_RADIUS, obstacle)),
+    blocked: state.obstacles.some((obstacle) => circleIntersectsObstacle(actor.x, actor.y, getActorCollisionRadius(actor), obstacle)),
   }));
 }
 

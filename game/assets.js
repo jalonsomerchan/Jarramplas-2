@@ -34,6 +34,8 @@ export async function loadAssets() {
     turnipPiles: "assets/generated/turnip_piles/sheet.png",
     houses: "assets/generated/houses/sheet.png",
     fountains: "assets/generated/fountains/sheet-transparent.png",
+    dogWalk: "assets/generated/animals/dog_walk/sheet-transparent.png",
+    catWalk: "assets/generated/animals/cat_walk/sheet-transparent.png",
   };
   const imageEntries = await Promise.all(Object.entries(generated).map(async ([key, path]) => [key, await loadImage(path)]));
   assets.images = Object.fromEntries(imageEntries);

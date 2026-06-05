@@ -290,6 +290,21 @@ export function drawActor(actor, type) {
   }
 }
 
+export function drawAnimal(animal) {
+  const x = animal.x - state.camera.x;
+  const y = animal.y - state.camera.y;
+  const walkRow = { down: 0, left: 1, right: 2, up: 3 }[animal.dir] || 0;
+  const walkFrame = walkRow * 4 + (animal.walking ? Math.floor(state.elapsed * (animal.kind === "cat" ? 11 : 9)) % 4 : 1);
+  const img = animal.kind === "cat" ? assets.images.catWalk : assets.images.dogWalk;
+  drawActorSpriteFrame(img, 4, 4, walkFrame, x, y + 8, animal.height || 38);
+  if (animal.mode === "angry") {
+    ctx.fillStyle = "rgba(255, 80, 70, 0.22)";
+    ctx.beginPath();
+    ctx.arc(x, y - 14, animal.kind === "cat" ? 22 : 27, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
 export function drawJarramplas() {
   const j = state.jarramplas;
   const x = j.x - state.camera.x;
@@ -410,9 +425,9 @@ export function render() {
   const fountainEntities = state.obstacles
     .filter((obstacle) => obstacle.type === "fountain")
     .map((obstacle) => ({ kind: "fountain", ref: obstacle, depth: obstacle.y }));
-  const actorEntities = [state.jarramplas, ...state.people, ...state.bystanders, state.player]
+  const actorEntities = [state.jarramplas, ...state.people, ...state.bystanders, ...state.animals, state.player]
     .filter(Boolean)
-    .map((actor) => ({ kind: "actor", ref: actor, depth: actor.y }));
+    .map((actor) => ({ kind: state.animals.includes(actor) ? "animal" : "actor", ref: actor, depth: actor.y }));
   [...houseEntities, ...fountainEntities, ...actorEntities].sort((a, b) => a.depth - b.depth).forEach((entity) => {
     if (entity.kind === "house") {
       drawHouse(entity.ref);
@@ -422,7 +437,8 @@ export function render() {
       drawFountain(entity.ref);
       return;
     }
-    if (entity.ref === state.jarramplas) drawJarramplas();
+    if (entity.kind === "animal") drawAnimal(entity.ref);
+    else if (entity.ref === state.jarramplas) drawJarramplas();
     else drawActor(entity.ref, entity.ref === state.player ? "player" : "person");
   });
   drawTurnips();

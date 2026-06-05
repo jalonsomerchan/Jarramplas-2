@@ -24,6 +24,7 @@ export const state = {
   jarramplas: null,
   people: [],
   bystanders: [],
+  animals: [],
   piles: [],
   turnips: [],
   impacts: [],
