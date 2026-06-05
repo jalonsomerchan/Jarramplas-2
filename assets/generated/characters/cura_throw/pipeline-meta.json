@@ -1,0 +1,249 @@
+{
+  "target": "asset",
+  "mode": "sheet",
+  "prompt": "Cura de pueblo lanzando un nabo, sprite pixel art top-down, sotana negra y alzacuello blanco",
+  "role": "",
+  "input": "assets/generated/characters/cura_throw/raw-sheet.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 200,
+  "rows": 2,
+  "cols": 3,
+  "cell_size": 128,
+  "fit_scale": 0.86,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "feet",
+  "shared_scale": true,
+  "component_mode": "largest",
+  "component_padding": 4,
+  "min_component_area": 30,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "throw-1",
+    "throw-2",
+    "throw-3",
+    "throw-4",
+    "throw-5",
+    "throw-6"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 38381,
+      "selected_component_bbox": [
+        200,
+        92,
+        360,
+        419
+      ],
+      "crop_bbox": [
+        196,
+        88,
+        364,
+        423
+      ],
+      "edge_touch": false,
+      "output_size": [
+        55,
+        110
+      ],
+      "paste_position": [
+        36,
+        10
+      ]
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 42997,
+      "selected_component_bbox": [
+        95,
+        116,
+        347,
+        422
+      ],
+      "crop_bbox": [
+        91,
+        112,
+        351,
+        426
+      ],
+      "edge_touch": false,
+      "output_size": [
+        85,
+        103
+      ],
+      "paste_position": [
+        21,
+        17
+      ]
+    },
+    {
+      "grid": [
+        0,
+        2
+      ],
+      "source_box": [
+        1024,
+        0,
+        1536,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 2,
+      "selected_component_area": 35428,
+      "selected_component_bbox": [
+        49,
+        113,
+        260,
+        418
+      ],
+      "crop_bbox": [
+        45,
+        109,
+        264,
+        422
+      ],
+      "edge_touch": false,
+      "output_size": [
+        71,
+        102
+      ],
+      "paste_position": [
+        28,
+        18
+      ]
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 38194,
+      "selected_component_bbox": [
+        172,
+        65,
+        433,
+        366
+      ],
+      "crop_bbox": [
+        168,
+        61,
+        437,
+        370
+      ],
+      "edge_touch": false,
+      "output_size": [
+        88,
+        101
+      ],
+      "paste_position": [
+        20,
+        19
+      ]
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 34987,
+      "selected_component_bbox": [
+        127,
+        72,
+        319,
+        368
+      ],
+      "crop_bbox": [
+        123,
+        68,
+        323,
+        372
+      ],
+      "edge_touch": false,
+      "output_size": [
+        65,
+        99
+      ],
+      "paste_position": [
+        31,
+        21
+      ]
+    },
+    {
+      "grid": [
+        1,
+        2
+      ],
+      "source_box": [
+        1024,
+        512,
+        1536,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 37032,
+      "selected_component_bbox": [
+        87,
+        59,
+        247,
+        377
+      ],
+      "crop_bbox": [
+        83,
+        55,
+        251,
+        381
+      ],
+      "edge_touch": false,
+      "output_size": [
+        55,
+        107
+      ],
+      "paste_position": [
+        36,
+        13
+      ]
+    }
+  ],
+  "edge_touch_frames": []
+}

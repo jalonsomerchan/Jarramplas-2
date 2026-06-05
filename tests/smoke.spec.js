@@ -80,7 +80,7 @@ test("permite navegar por el flujo básico de selección", async ({ page }) => {
 
   await page.locator("[data-game-type='timed']").click();
   await expect(page.locator("#characterSelect")).toBeVisible();
-  await expect(page.locator("[data-character]")).toHaveCount(5);
+  await expect(page.locator("[data-character]")).toHaveCount(10);
 
   await page.locator("[data-character='1']").click();
   await expect(page.locator("#select")).toBeVisible();

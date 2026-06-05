@@ -1,0 +1,249 @@
+{
+  "target": "asset",
+  "mode": "sheet",
+  "prompt": "Agricultor de pueblo lanzando un nabo, pixel art top-down",
+  "role": "",
+  "input": "assets/generated/characters/agricultor_throw/raw-sheet.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 200,
+  "rows": 2,
+  "cols": 3,
+  "cell_size": 128,
+  "fit_scale": 0.86,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "feet",
+  "shared_scale": true,
+  "component_mode": "largest",
+  "component_padding": 4,
+  "min_component_area": 30,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "throw-1",
+    "throw-2",
+    "throw-3",
+    "throw-4",
+    "throw-5",
+    "throw-6"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 45556,
+      "selected_component_bbox": [
+        198,
+        91,
+        389,
+        446
+      ],
+      "crop_bbox": [
+        194,
+        87,
+        393,
+        450
+      ],
+      "edge_touch": false,
+      "output_size": [
+        60,
+        110
+      ],
+      "paste_position": [
+        34,
+        10
+      ]
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 46057,
+      "selected_component_bbox": [
+        103,
+        112,
+        326,
+        445
+      ],
+      "crop_bbox": [
+        99,
+        108,
+        330,
+        449
+      ],
+      "edge_touch": false,
+      "output_size": [
+        70,
+        103
+      ],
+      "paste_position": [
+        29,
+        17
+      ]
+    },
+    {
+      "grid": [
+        0,
+        2
+      ],
+      "source_box": [
+        1024,
+        0,
+        1536,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 50535,
+      "selected_component_bbox": [
+        18,
+        102,
+        282,
+        446
+      ],
+      "crop_bbox": [
+        14,
+        98,
+        286,
+        450
+      ],
+      "edge_touch": false,
+      "output_size": [
+        82,
+        106
+      ],
+      "paste_position": [
+        23,
+        14
+      ]
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 42993,
+      "selected_component_bbox": [
+        168,
+        61,
+        458,
+        383
+      ],
+      "crop_bbox": [
+        164,
+        57,
+        462,
+        387
+      ],
+      "edge_touch": false,
+      "output_size": [
+        90,
+        100
+      ],
+      "paste_position": [
+        19,
+        20
+      ]
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 2,
+      "selected_component_area": 43021,
+      "selected_component_bbox": [
+        113,
+        68,
+        419,
+        383
+      ],
+      "crop_bbox": [
+        109,
+        64,
+        423,
+        387
+      ],
+      "edge_touch": false,
+      "output_size": [
+        95,
+        97
+      ],
+      "paste_position": [
+        16,
+        23
+      ]
+    },
+    {
+      "grid": [
+        1,
+        2
+      ],
+      "source_box": [
+        1024,
+        512,
+        1536,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 39542,
+      "selected_component_bbox": [
+        17,
+        65,
+        271,
+        383
+      ],
+      "crop_bbox": [
+        13,
+        61,
+        275,
+        387
+      ],
+      "edge_touch": false,
+      "output_size": [
+        79,
+        98
+      ],
+      "paste_position": [
+        24,
+        22
+      ]
+    }
+  ],
+  "edge_touch_frames": []
+}
