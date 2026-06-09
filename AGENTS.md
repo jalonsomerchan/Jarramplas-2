@@ -4,7 +4,7 @@ Guia rapida para trabajar en este proyecto sin perderse.
 
 ## Que es este proyecto
 
-Este repo contiene un juego web de Jarramplas hecho con HTML, CSS y JavaScript puro sobre Canvas. No hay framework de frontend ni bundler obligatorio para desarrollo local: la app se sirve como archivos estaticos.
+Este repo contiene un juego web de Jarramplas hecho con HTML, CSS y JavaScript puro. La partida se renderiza con PixiJS sobre el canvas `#game`, sin framework de frontend ni bundler obligatorio para desarrollo local: la app se sirve como archivos estaticos.
 
 Flujo principal del juego:
 
@@ -14,7 +14,7 @@ Flujo principal del juego:
 4. Seleccion de nivel.
 5. Seleccion de mapa.
 6. Seleccion de Jarramplas.
-7. Partida en Canvas.
+7. Partida renderizada con PixiJS.
 8. Resultado, estadisticas y ranking local/Firebase si esta disponible.
 
 ## Comandos utiles
@@ -43,11 +43,24 @@ npm run build:pages
 
 Prepara la salida para GitHub Pages cuando haga falta publicar.
 
+## Documentacion del proyecto
+
+- `AGENTS.md`: guia rapida de trabajo para agentes y colaboradores.
+- `docs/file-inventory.md`: inventario de ficheros versionados y explicacion de para que sirve cada uno.
+- `docs/game-architecture.md`: guia de arquitectura recomendada para juegos HTML5/Canvas.
+- `docs/assets-guide.md`: guia de assets, sprites, fondos y rutas.
+- `docs/balance-guide.md`: guia para ajustar dificultad, ritmo y puntuacion.
+- `docs/input-guide.md`: guia de controles, teclado, puntero, tactil y ergonomia.
+- `docs/testing-guide.md`: guia de pruebas y verificacion.
+- `docs/deployment-guide.md`: guia de despliegue y GitHub Pages.
+
 ## Archivos principales
 
 - `index.html`: estructura de pantallas, botones, HUD, modales y Canvas.
 - `styles.css`: estilos de todas las pantallas, HUD, controles moviles, selectores y responsive.
 - `game.js`: logica principal del juego, carga de assets, game loop, input, colisiones, render, mapas, personajes y flujo de pantallas.
+- `game/render.js`: renderer PixiJS; dibuja mapa, sprites, actores, efectos y controles sobre el canvas.
+- `map-editor.html`: editor visual de mapas para colocar, mover, redimensionar proporcionalmente y eliminar edificios/objetos/suelos, con export/import JSON.
 - `config.js`: configuracion editable de niveles, modos, mapas, personajes jugables, variantes de Jarramplas, textos y claves de storage.
 - `storage.js`: helpers de guardado local.
 - `leaderboard.js`: ranking y persistencia remota/local.
@@ -55,9 +68,12 @@ Prepara la salida para GitHub Pages cuando haga falta publicar.
 - `analytics.js`: eventos/metricas.
 - `asset-fallbacks.js`: rutas alternativas para assets.
 - `service-worker.js`, `manifest.webmanifest`, `pwa-assets.js`: PWA, cache e iconos.
+- `vendor/pixi/pixi.min.mjs`: bundle ESM versionado de PixiJS para mantener la app estatica sin bundler.
 - `tests/smoke.spec.js`: pruebas de humo de flujo, pantallas, spawns y storage corrupto.
 - `playwright.config.js`: configuracion de Playwright y servidor de test.
 - `scripts/build-pages.mjs`: build/export para Pages.
+- `tools/map-editor.js`, `tools/map-editor.css`: logica y estilos del editor visual de mapas.
+- `maps/piornal-editor-example.json`: mapa de ejemplo en formato JSON compatible con el editor.
 
 ## Donde esta cada asset
 
@@ -67,8 +83,8 @@ Prepara la salida para GitHub Pages cuando haga falta publicar.
 - `assets/generated/player_walk/`: hoja de caminar del jugador original.
 - `assets/generated/player_throw/`: hoja de lanzar del jugador original.
 - `assets/generated/characters/`: personajes nuevos jugables/NPC con subcarpetas `*_walk` y `*_throw`.
-- `assets/generated/fountains/`: sprites de fuentes de los mapas.
-- `assets/generated/houses/`: sprites de casas.
+- `assets/generated/houses/`: casas oficiales usadas por el juego y el editor. Son las unicas casas que deben utilizarse.
+- `assets/generated/objects/`: objetos oficiales usados por el juego y el editor. Son los unicos objetos decorativos/obstaculos que deben utilizarse.
 - `assets/generated/turnip_piles/`: montones de nabos.
 - `assets/generated/villager_throw_types/`: variantes antiguas de vecinos lanzando.
 - `assets/icons/`: iconos PWA.
@@ -101,14 +117,14 @@ Editar `gameTypeConfig`:
 
 Editar `scenarios` en `config.js` para el selector visible.
 
-Editar `scenarioLayouts` en `game.js` para el mapa jugable:
+Editar `scenarioLayouts` en `game/scenario-layouts.js` para el mapa jugable:
 
 - `ground`: colores del suelo.
 - `paths`: color de caminos.
 - `plazas`: rectangulos de plaza.
-- `fountain`: posicion, tamano y variante de fuente.
 - `spawn`: punto inicial de jugador, Jarramplas y target.
 - `houses`: casas/obstaculos.
+- `objects`: objetos/obstaculos.
 
 Importante: cualquier nuevo spawn debe quedar en zona abierta. El juego usa `findFreeSpawn()` como red de seguridad, y el test `nadie empieza bloqueado por obstáculos en ningún mapa` debe seguir pasando.
 
@@ -218,11 +234,48 @@ $generate2dsprite
 Despues de cambiar un mapa:
 
 1. Anadir/actualizar la entrada en `scenarios` de `config.js`.
-2. Crear/actualizar su `scenarioLayouts[scenario.id]` en `game.js`.
-3. Ajustar `fountain`, `houses`, `plazas` y `spawn`.
+2. Crear/actualizar su `scenarioLayouts[scenario.id]` en `game/scenario-layouts.js`.
+3. Ajustar `houses`, `objects`, `plazas` y `spawn`.
 4. Comprobar colisiones. Obstaculos usan rectangulos `block`.
 5. Ejecutar `npm run test:smoke`.
 6. Probar en navegador en desktop y movil.
+
+Para anadir objetos nuevos, guardar el PNG como `assets/generated/objects/objectN.png` y ejecutar:
+
+```sh
+npm run update:objects
+```
+
+Ese comando regenera `game/object-assets.js`, `assets/generated/objects/manifest.json` y la lista PWA/cache. El juego y el editor leeran el nuevo objeto sin tocar codigo a mano.
+
+## Editor visual de mapas
+
+Abrir:
+
+```txt
+http://127.0.0.1:4173/map-editor.html
+```
+
+El editor permite:
+
+- Anadir las variantes oficiales de casas/edificios de `assets/generated/houses/` y objetos de `assets/generated/objects/` desde la paleta.
+- Anadir y editar cuadrados/rectangulos de suelo, caminos y plazas de color.
+- Mover objetos arrastrandolos en el canvas.
+- Cambiar el tamano con los tiradores de las esquinas manteniendo siempre la proporcion.
+- Editar posicion, tamano proporcional, variante, tipo, color y forma desde el panel lateral.
+- Eliminar el objeto seleccionado.
+- Importar/exportar mapas en JSON.
+
+El formato exportado sigue la estructura de `scenarioLayouts`: `ground`, `paths`, `pathRects`, `plazas`, `spawn`, `houses` y `objects`.
+Para integrar un mapa exportado en el juego, anadir su entrada a `scenarioLayouts` en `game/scenario-layouts.js` y revisar spawns/colisiones con `npm run test:smoke`.
+
+Para anadir casas nuevas, guardar el PNG como `assets/generated/houses/houseN.png` y ejecutar:
+
+```sh
+npm run update:houses
+```
+
+Ese comando regenera `game/house-assets.js`, `assets/generated/houses/manifest.json` y la lista PWA/cache. El juego y el editor leeran la nueva casa sin tocar codigo a mano.
 
 ## Logica de colisiones y spawns
 
@@ -232,7 +285,7 @@ Las colisiones principales estan en `game.js`:
 - `circleBlocked()`: comprueba si un actor circular choca con obstaculos.
 - `findFreeSpawn()`: si un punto inicial cae bloqueado, busca un punto libre alrededor.
 - `moveActor()`: movimiento con colision por eje.
-- `fountain()` y `house()`: crean obstaculos con `block`.
+- `house()` y `object()`: crean obstaculos con `block` y huella poligonal de colision.
 - `spawnPeople()`: crea vecinos y tambien usa `findFreeSpawn()`.
 - `startGame()`: crea mapa, jugador, Jarramplas, vecinos, nabos y estado inicial.
 
@@ -240,24 +293,26 @@ Si se cambia cualquier obstaculo grande, revisar spawns. El test de smoke cubre 
 
 ## Render y assets en runtime
 
-La carga de imagenes ocurre en `loadAssets()` en `game.js`.
+La carga de imagenes ocurre en `loadAssets()` y el dibujo en PixiJS se coordina desde `game/render.js`.
 
 Entidades importantes:
 
 - `assets.images.playerCharacters`: personajes jugables.
-- `assets.images.fountains`: sprites de fuentes.
 - `assets.images.houses`: casas.
+- `assets.images.objects`: objetos.
 - `assets.images.turnipPiles`: montones de nabos.
 - `assets.jarramplas`: variantes de Jarramplas.
 
 Render principal:
 
 - `drawMap()`: suelo, caminos, plazas y decoracion base.
-- `drawFountain()`: fuente.
 - `drawHouse()`: casas.
+- `drawObject()`: objetos.
 - `drawActor()`: jugador y vecinos.
 - `drawJarramplas()`: Jarramplas.
 - `render()`: ordena entidades por profundidad.
+
+PixiJS se inicializa en `initPixiRenderer()` usando el canvas existente. La app no depende de un bundler: si se actualiza PixiJS con npm, copiar el nuevo bundle ESM a `vendor/pixi/pixi.min.mjs`, revisar `pwa-assets.js`, ejecutar `npm run test:smoke` y comprobar el build de Pages.
 
 ## UI y flujo de pantallas
 
@@ -324,6 +379,7 @@ Revisar al menos:
 - Preferir editar configuracion en `config.js` antes de tocar logica.
 - Si se toca `game.js`, entender primero el flujo de `startGame()`, `update()` y `render()`.
 - Si se anaden assets, mantener rutas relativas y comprobar que cargan en local.
+- Si se anade, elimina o renombra cualquier fichero versionado, actualizar `docs/file-inventory.md` en el mismo cambio.
 - Para sprites generados, conservar `raw-sheet.png`, `raw-sheet-clean.png`, `sheet-transparent.png`, frames, GIFs y `pipeline-meta.json`.
 - Si se cambian textos largos de botones/tarjetas, revisar movil para evitar cortes.
 - Si se anaden personajes, actualizar tests que cuenten `[data-character]`.

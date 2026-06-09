@@ -2,13 +2,67 @@ import { PLAYER_RADIUS, WORLD } from "./constants.js";
 import { state } from "./state.js";
 import { clamp, rectsIntersect } from "./utils.js";
 
+function pointInPolygon(point, polygon) {
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i, i += 1) {
+    const a = polygon[i];
+    const b = polygon[j];
+    const crosses = ((a.y > point.y) !== (b.y > point.y))
+      && point.x < ((b.x - a.x) * (point.y - a.y)) / (b.y - a.y) + a.x;
+    if (crosses) inside = !inside;
+  }
+  return inside;
+}
+
+function distanceToSegmentSquared(point, a, b) {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const lengthSquared = dx * dx + dy * dy;
+  if (!lengthSquared) return (point.x - a.x) ** 2 + (point.y - a.y) ** 2;
+  const t = clamp(((point.x - a.x) * dx + (point.y - a.y) * dy) / lengthSquared, 0, 1);
+  const nearestX = a.x + t * dx;
+  const nearestY = a.y + t * dy;
+  return (point.x - nearestX) ** 2 + (point.y - nearestY) ** 2;
+}
+
+function polygonBounds(points) {
+  const xs = points.map((point) => point.x);
+  const ys = points.map((point) => point.y);
+  const minX = Math.min(...xs);
+  const minY = Math.min(...ys);
+  return {
+    x: minX,
+    y: minY,
+    w: Math.max(...xs) - minX,
+    h: Math.max(...ys) - minY,
+  };
+}
+
+function circleIntersectsPolygon(x, y, r, points) {
+  const box = { x: x - r, y: y - r, w: r * 2, h: r * 2 };
+  if (!rectsIntersect(box, polygonBounds(points))) return false;
+  const point = { x, y };
+  if (pointInPolygon(point, points)) return true;
+  const radiusSquared = r * r;
+  return points.some((current, index) => {
+    const next = points[(index + 1) % points.length];
+    return distanceToSegmentSquared(point, current, next) <= radiusSquared;
+  });
+}
+
+function circleIntersectsCollision(x, y, r, collision) {
+  if (collision?.type === "polygon") return circleIntersectsPolygon(x, y, r, collision.points || []);
+  return false;
+}
+
 export function circleBlocked(x, y, r) {
   if (x < r || y < r || x > WORLD.w - r || y > WORLD.h - r) return true;
-  const box = { x: x - r, y: y - r, w: r * 2, h: r * 2 };
-  return state.obstacles.some((obstacle) => rectsIntersect(box, obstacle.block || obstacle));
+  return state.obstacles.some((obstacle) => circleIntersectsObstacle(x, y, r, obstacle));
 }
 
 export function circleIntersectsObstacle(x, y, r, obstacle) {
+  if (obstacle.collision && circleIntersectsCollision(x, y, r, obstacle.collision)) return true;
+  if (obstacle.collision) return false;
   const box = { x: x - r, y: y - r, w: r * 2, h: r * 2 };
   return rectsIntersect(box, obstacle.block || obstacle);
 }

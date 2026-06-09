@@ -6,9 +6,10 @@ import {
   HOUSE_TOP_BLOCK_RATIO,
   WORLD,
 } from "./constants.js";
+import { houseAssets } from "./house-assets.js";
+import { objectAssets } from "./object-assets.js";
 import { scenarioLayouts } from "./scenario-layouts.js";
 import { state } from "./state.js";
-import { seeded } from "./utils.js";
 
 export function getHouseBounds(variant) {
   return HOUSE_BOUNDS[variant % HOUSE_BOUNDS.length] || HOUSE_BOUNDS[0];
@@ -17,12 +18,16 @@ export function getHouseBounds(variant) {
 export function getHouseLayout(houseObstacle) {
   const variant = houseObstacle.variant || 0;
   const bounds = getHouseBounds(variant);
-  const visibleW = bounds.r - bounds.l;
-  const visibleH = bounds.b - bounds.t;
+  const houseAsset = houseAssets[variant % houseAssets.length] || houseAssets[0];
+  const visibleW = houseAsset?.w || bounds.r - bounds.l;
+  const visibleH = houseAsset?.h || bounds.b - bounds.t;
   const baseHeight = HOUSE_BASE_HEIGHTS[variant % HOUSE_BASE_HEIGHTS.length] || HOUSE_BASE_HEIGHTS[0];
   const scale = Math.min(1.05, Math.max(0.92, houseObstacle.scale || 1));
-  const drawH = baseHeight * scale;
-  const drawW = drawH * (visibleW / visibleH);
+  const ratio = visibleW / visibleH;
+  const rawDrawH = baseHeight * scale;
+  const rawDrawW = rawDrawH * ratio;
+  const drawW = Math.min(600, rawDrawW);
+  const drawH = drawW === rawDrawW ? rawDrawH : drawW / ratio;
   const centerX = houseObstacle.x + houseObstacle.w / 2;
   const bottomY = houseObstacle.y + houseObstacle.h + 18;
   const left = centerX - drawW / 2;
@@ -40,7 +45,26 @@ export function getHouseBlock(houseObstacle) {
   };
 }
 
-export function house(x, y, w, h, variant, scale = 1.12) {
+export function getHouseCollision(houseObstacle) {
+  const layout = getHouseLayout(houseObstacle);
+  return getBuildingCollision(layout.left, layout.top, layout.drawW, layout.drawH);
+}
+
+export function getBuildingCollision(left, top, w, h) {
+  return {
+    type: "polygon",
+    points: [
+      { x: left + w * 0.14, y: top + h * 0.74 },
+      { x: left + w * 0.86, y: top + h * 0.74 },
+      { x: left + w * 0.97, y: top + h * 0.84 },
+      { x: left + w * 0.9, y: top + h * 0.96 },
+      { x: left + w * 0.1, y: top + h * 0.96 },
+      { x: left + w * 0.03, y: top + h * 0.84 },
+    ],
+  };
+}
+
+export function house(x, y, w, h, variant, scale = 1.12, z = 0) {
   const obstacle = {
     x,
     y,
@@ -49,56 +73,53 @@ export function house(x, y, w, h, variant, scale = 1.12) {
     type: "house",
     variant,
     scale,
+    z,
   };
   obstacle.block = getHouseBlock(obstacle);
+  obstacle.collision = getHouseCollision(obstacle);
   return {
     ...obstacle,
   };
 }
 
-export function fountain(x, y, w, h, variant) {
+export function object(x, y, w, h, variant = 0, scale = 1, z = 0) {
+  const asset = objectAssets[variant % Math.max(1, objectAssets.length)] || objectAssets[0];
+  const ratio = asset ? asset.w / asset.h : w / Math.max(1, h);
+  const drawH = h * Math.min(1.2, Math.max(0.6, scale || 1));
+  const drawW = drawH * ratio;
+  const left = x + w / 2 - drawW / 2;
+  const top = y + h - drawH;
   return {
     x,
     y,
     w,
     h,
-    type: "fountain",
+    type: "object",
     variant,
+    scale,
+    z,
+    draw: { x: left, y: top, w: drawW, h: drawH },
     block: {
-      x: x - w * 0.31,
-      y: y - h * 0.2,
-      w: w * 0.62,
-      h: h * 0.16,
+      x: left + drawW * 0.03,
+      y: top + drawH * 0.74,
+      w: drawW * 0.94,
+      h: drawH * 0.22,
     },
+    collision: getBuildingCollision(left, top, drawW, drawH),
   };
 }
 
 export function createVillage(seedValue = 1) {
-  const rand = seeded(seedValue);
   const scenario = scenarios[state.scenarioIndex] || scenarios[0];
   const layout = scenarioLayouts[scenario.id] || scenarioLayouts["plaza-eras"];
   const obstacles = [
     ...layout.houses.map((item) => house(...item)),
-    fountain(layout.fountain.x, layout.fountain.y, layout.fountain.w, layout.fountain.h, layout.fountain.variant),
+    ...(layout.objects || []).map((item) => object(...item)),
     { x: 0, y: 0, w: WORLD.w, h: 36, type: "wall" },
     { x: 0, y: WORLD.h - 36, w: WORLD.w, h: 36, type: "wall" },
     { x: 0, y: 0, w: 36, h: WORLD.h, type: "wall" },
     { x: WORLD.w - 36, y: 0, w: 36, h: WORLD.h, type: "wall" },
   ];
-  for (let i = 0; i < 76; i += 1) {
-    const x = 90 + rand() * (WORLD.w - 180);
-    const y = 380 + rand() * (WORLD.h - 610);
-    if (Math.abs(x - 1110) < 520 && Math.abs(y - 860) < 360) continue;
-    if (Math.abs(x - layout.fountain.x) < 360 && Math.abs(y - layout.fountain.y) < 300) continue;
-    obstacles.push({
-      x,
-      y,
-      w: 38 + rand() * 42,
-      h: 46 + rand() * 52,
-      type: "tree",
-      tone: Math.floor(rand() * 3),
-    });
-  }
   state.obstacles = obstacles;
   state.piles = [
     { x: 310, y: 560, amount: 8, variant: 0 },

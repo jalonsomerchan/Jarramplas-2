@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editor de mapas - Jarramplas</title>
+  <link rel="stylesheet" href="tools/map-editor.css">
+</head>
+<body>
+  <main class="editor-shell">
+    <aside class="sidebar">
+      <header class="brand">
+        <strong>Editor de mapas</strong>
+        <span>Jarramplas</span>
+      </header>
+
+      <section class="panel">
+        <h2>Mapa</h2>
+        <label>
+          Nombre
+          <input id="mapNameInput" type="text" autocomplete="off">
+        </label>
+        <div class="button-row">
+          <button id="loadExampleButton" type="button">Ejemplo</button>
+          <label class="file-button">
+            Importar
+            <input id="importInput" type="file" accept="application/json,.json">
+          </label>
+          <button id="exportButton" type="button">Exportar</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Edificios y objetos</h2>
+        <div class="palette" id="palette"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Suelo</h2>
+        <div class="palette terrain-palette" id="terrainPalette"></div>
+      </section>
+
+      <section class="panel selection-panel">
+        <h2>Selección</h2>
+        <div id="emptySelection" class="empty-state">Nada seleccionado</div>
+        <div id="selectionControls" class="selection-controls" hidden>
+          <label>
+            Tipo
+            <select id="typeSelect"></select>
+          </label>
+          <div class="grid-fields">
+            <label>X<input id="xInput" type="number" step="1"></label>
+            <label>Y<input id="yInput" type="number" step="1"></label>
+            <label>Ancho<input id="wInput" type="number" step="1" min="16"></label>
+            <label>Alto<input id="hInput" type="number" step="1" min="16"></label>
+          </div>
+          <label id="variantLabel">
+            Variante
+            <input id="variantInput" type="number" min="0" step="1">
+          </label>
+          <label id="scaleLabel">
+            Escala
+            <input id="scaleInput" type="number" min="0.4" max="1.6" step="0.01">
+          </label>
+          <div class="button-row layer-buttons">
+            <button id="sendBackwardButton" type="button">Bajar</button>
+            <button id="bringForwardButton" type="button">Subir</button>
+          </div>
+          <label id="colorLabel">
+            Color
+            <input id="colorInput" type="color">
+          </label>
+          <label id="shapeLabel">
+            Forma
+            <select id="shapeSelect">
+              <option value="rect">Rectángulo</option>
+              <option value="ellipse">Elipse</option>
+            </select>
+          </label>
+          <button id="deleteButton" class="danger" type="button">Eliminar</button>
+        </div>
+      </section>
+    </aside>
+
+    <section class="stage-wrap">
+      <div class="toolbar">
+        <button id="zoomOutButton" type="button">-</button>
+        <span id="zoomLabel">100%</span>
+        <button id="zoomInButton" type="button">+</button>
+        <button id="centerButton" type="button">Centrar</button>
+        <span class="status" id="statusLabel"></span>
+      </div>
+      <canvas id="editorCanvas" width="1280" height="720"></canvas>
+    </section>
+
+    <aside class="json-panel">
+      <header>
+        <h2>JSON</h2>
+        <button id="copyJsonButton" type="button">Copiar</button>
+      </header>
+      <textarea id="jsonOutput" spellcheck="false"></textarea>
+    </aside>
+  </main>
+
+  <script type="module" src="tools/map-editor.js"></script>
+</body>
+</html>

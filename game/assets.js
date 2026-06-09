@@ -1,6 +1,8 @@
 import { jarramplasVariants, playerVariants, scenarios } from "../config.js";
 import { VILLAGER_THROW_TYPE_COUNT } from "./constants.js";
 import { loadingBar } from "./dom.js";
+import { houseAssets } from "./house-assets.js";
+import { objectAssets } from "./object-assets.js";
 import { assets } from "./state.js";
 
 export function loadImage(src) {
@@ -32,13 +34,13 @@ export async function loadAssets() {
     playerThrow: "assets/generated/player_throw/sheet.png",
     villagerThrow: "assets/generated/villager_throw/sheet.png",
     turnipPiles: "assets/generated/turnip_piles/sheet.png",
-    houses: "assets/generated/houses/sheet.png",
-    fountains: "assets/generated/fountains/sheet-transparent.png",
     dogWalk: "assets/generated/animals/dog_walk/sheet-transparent.png",
     catWalk: "assets/generated/animals/cat_walk/sheet-transparent.png",
   };
   const imageEntries = await Promise.all(Object.entries(generated).map(async ([key, path]) => [key, await loadImage(path)]));
   assets.images = Object.fromEntries(imageEntries);
+  assets.images.houses = await Promise.all(houseAssets.map((house) => loadImage(house.src)));
+  assets.images.objects = await Promise.all(objectAssets.map((object) => loadImage(object.src)));
   assets.images.playerCharacters = await Promise.all(playerVariants.map(async (variant) => ({
     walk: await loadImage(variant.walk),
     throw: await loadImage(variant.throw),

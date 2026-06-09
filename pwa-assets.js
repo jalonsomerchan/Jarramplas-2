@@ -3,12 +3,17 @@
  * Keep this file dependency-free so it can run both in the page and inside the service worker via importScripts().
  */
 (function registerPwaAssets(globalScope) {
-  const APP_BUILD = "20260606-1";
+  const APP_BUILD = "20260608-editor-2";
 
   const staticCoreAssets = [
     "./",
     "./index.html",
+    "./map-editor.html",
     "./styles.css",
+    "./home-title.css",
+    "./tools/map-editor.css",
+    "./tools/map-editor.js",
+    "./maps/piornal-editor-example.json",
     "./pwa-assets.js",
     "./asset-fallbacks.js",
     "./game.js",
@@ -17,13 +22,17 @@
     "./leaderboard.js",
     "./firebase-config.js",
     "./analytics.js",
+    "./vendor/pixi/pixi.min.mjs",
     "./manifest.webmanifest",
     "./assets/portada.png",
+    "./assets/ui/home-fiesta-premium.png",
     "./assets/icons/apple-touch-icon.png",
     "./assets/icons/icon-192.png",
     "./assets/icons/icon-512.png",
     "./game/dom.js",
     "./game/constants.js",
+    "./game/house-assets.js",
+    "./game/object-assets.js",
     "./game/state.js",
     "./game/scenario-layouts.js",
     "./game/utils.js",
@@ -64,6 +73,32 @@
 
   const personIds = [1, 2, 3, 4, 5, 6];
   const personFrameIds = [1, 2, 3, 4, 5, 6];
+  const houseAssets = [
+    // HOUSE_ASSETS_START
+    "assets/generated/houses/house1.png",
+    "assets/generated/houses/house2.png",
+    "assets/generated/houses/house3.png",
+    "assets/generated/houses/house4.png",
+    "assets/generated/houses/house5.png",
+    "assets/generated/houses/house6.png",
+    "assets/generated/houses/house8.png",
+    "assets/generated/houses/house9.png",
+    "assets/generated/houses/house10.png",
+    "assets/generated/houses/house11.png",
+    "assets/generated/houses/house12.png",
+    // HOUSE_ASSETS_END
+  ];
+  const objectAssets = [
+    // OBJECT_ASSETS_START
+    "assets/generated/objects/object1.png",
+    "assets/generated/objects/object2.png",
+    "assets/generated/objects/object3.png",
+    "assets/generated/objects/object4.png",
+    "assets/generated/objects/object5.png",
+    "assets/generated/objects/object6.png",
+    "assets/generated/objects/object7.png",
+    // OBJECT_ASSETS_END
+  ];
   const generatedSheets = [
     "assets/generated/player_walk/sheet.png",
     "assets/generated/player_throw/sheet.png",
@@ -73,7 +108,6 @@
     "assets/generated/villager_throw_types/type_3/sheet.png",
     "assets/generated/villager_throw_types/type_4/sheet.png",
     "assets/generated/turnip_piles/sheet.png",
-    "assets/generated/houses/sheet.png",
   ];
 
   function withDot(path) {
@@ -100,6 +134,8 @@
   const gameplayAssets = unique([
     ...scenarios,
     ...generatedSheets,
+    ...houseAssets,
+    ...objectAssets,
     ...jarramplasRoots.flatMap((root) => makeJarramplasFrames(root)),
     ...makePersonFrames(),
   ]);

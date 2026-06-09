@@ -127,12 +127,23 @@ test("los personajes mantienen escala visual al caminar y tirar", async ({ page 
   const measurements = await page.evaluate(async () => {
     const debug = window.__JARRAMPLAS_DEBUG__;
     const canvas = document.querySelector("#game");
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
     const frame = () => new Promise((resolve) => requestAnimationFrame(() => resolve()));
     const characterCount = document.querySelectorAll("[data-character]").length;
 
-    function captureDiffBox(baseline, left, top, size) {
-      const current = ctx.getImageData(left, top, size, size).data;
+    async function captureRegion(left, top, size) {
+      const image = new Image();
+      image.src = canvas.toDataURL("image/png");
+      await image.decode();
+      const sampleCanvas = document.createElement("canvas");
+      sampleCanvas.width = size;
+      sampleCanvas.height = size;
+      const sampleCtx = sampleCanvas.getContext("2d", { willReadFrequently: true });
+      sampleCtx.drawImage(image, left, top, size, size, 0, 0, size, size);
+      return sampleCtx.getImageData(0, 0, size, size).data;
+    }
+
+    async function captureDiffBox(baseline, left, top, size) {
+      const current = await captureRegion(left, top, size);
       let minX = size;
       let minY = size;
       let maxX = -1;
@@ -193,7 +204,7 @@ test("los personajes mantienen escala visual al caminar y tirar", async ({ page 
       state.player = null;
       await frame();
       await frame();
-      const baseline = ctx.getImageData(left, top, size, size).data.slice();
+      const baseline = await captureRegion(left, top, size);
 
       state.player = player;
       state.player.throwAnim = throwing ? 0.25 : 0;

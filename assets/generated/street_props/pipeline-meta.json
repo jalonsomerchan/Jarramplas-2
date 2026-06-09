@@ -1,0 +1,254 @@
+{
+  "target": "asset",
+  "mode": "sheet",
+  "prompt": "Clean HD top-down Spanish village street props: tree, flower pot, rustic fence, horizontal wide street planter, vertical wide street planter, classic lamppost; solid magenta background; one prop per cell.",
+  "role": "",
+  "input": "assets/generated/street_props/raw-sheet.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 200,
+  "rows": 2,
+  "cols": 3,
+  "cell_size": 128,
+  "fit_scale": 0.88,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "center",
+  "shared_scale": true,
+  "component_mode": "largest",
+  "component_padding": 5,
+  "min_component_area": 30,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "prop-1",
+    "prop-2",
+    "prop-3",
+    "prop-4",
+    "prop-5",
+    "prop-6"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 65071,
+      "selected_component_bbox": [
+        124,
+        86,
+        444,
+        424
+      ],
+      "crop_bbox": [
+        119,
+        81,
+        449,
+        429
+      ],
+      "edge_touch": false,
+      "output_size": [
+        92,
+        97
+      ],
+      "paste_position": [
+        18,
+        15
+      ]
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 46659,
+      "selected_component_bbox": [
+        128,
+        133,
+        360,
+        417
+      ],
+      "crop_bbox": [
+        123,
+        128,
+        365,
+        422
+      ],
+      "edge_touch": false,
+      "output_size": [
+        67,
+        81
+      ],
+      "paste_position": [
+        30,
+        23
+      ]
+    },
+    {
+      "grid": [
+        0,
+        2
+      ],
+      "source_box": [
+        1024,
+        0,
+        1536,
+        512
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 43123,
+      "selected_component_bbox": [
+        41,
+        199,
+        423,
+        394
+      ],
+      "crop_bbox": [
+        36,
+        194,
+        428,
+        399
+      ],
+      "edge_touch": false,
+      "output_size": [
+        109,
+        57
+      ],
+      "paste_position": [
+        9,
+        35
+      ]
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 76428,
+      "selected_component_bbox": [
+        101,
+        115,
+        494,
+        369
+      ],
+      "crop_bbox": [
+        96,
+        110,
+        499,
+        374
+      ],
+      "edge_touch": false,
+      "output_size": [
+        112,
+        73
+      ],
+      "paste_position": [
+        8,
+        27
+      ]
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 57533,
+      "selected_component_bbox": [
+        174,
+        11,
+        358,
+        402
+      ],
+      "crop_bbox": [
+        169,
+        6,
+        363,
+        407
+      ],
+      "edge_touch": false,
+      "output_size": [
+        54,
+        111
+      ],
+      "paste_position": [
+        37,
+        8
+      ]
+    },
+    {
+      "grid": [
+        1,
+        2
+      ],
+      "source_box": [
+        1024,
+        512,
+        1536,
+        1024
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 21216,
+      "selected_component_bbox": [
+        164,
+        0,
+        280,
+        399
+      ],
+      "crop_bbox": [
+        159,
+        0,
+        285,
+        404
+      ],
+      "edge_touch": true,
+      "output_size": [
+        35,
+        112
+      ],
+      "paste_position": [
+        46,
+        8
+      ]
+    }
+  ],
+  "edge_touch_frames": [
+    [
+      1,
+      2
+    ]
+  ]
+}

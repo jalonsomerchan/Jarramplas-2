@@ -1,7 +1,7 @@
 import { loadAssets } from "./game/assets.js";
 import { bindInput } from "./game/input.js";
 import { getSpawnCollisionReport } from "./game/physics.js";
-import { render } from "./game/render.js";
+import { getPixiDebugInfo, initPixiRenderer, render } from "./game/render.js";
 import { state } from "./game/state.js";
 import {
   bindUi,
@@ -36,10 +36,12 @@ async function boot() {
   window.__JARRAMPLAS_DEBUG__ = {
     state,
     getSpawnCollisionReport,
+    getPixiDebugInfo,
     startGame,
     updateRuntime,
   };
 
+  await initPixiRenderer();
   resize();
   window.addEventListener("resize", resize);
 

@@ -18,12 +18,10 @@ import {
   markTutorialSeen,
   savePlayerName,
 } from "../storage.js";
-import { DPR } from "./constants.js";
 import {
   canvas,
   characterOptions,
   comboEl,
-  ctx,
   gameVersionEl,
   hud,
   jarramplasCountdownEl,
@@ -42,6 +40,7 @@ import {
   statsLeaderboardType,
   timeEl,
 } from "./dom.js";
+import { resizePixiRenderer } from "./render.js";
 import { state } from "./state.js";
 
 export function showScreen(name) {
@@ -56,10 +55,7 @@ export function resize() {
   const rect = canvas.getBoundingClientRect();
   state.w = Math.max(1, Math.floor(rect.width));
   state.h = Math.max(1, Math.floor(rect.height));
-  canvas.width = Math.floor(state.w * DPR);
-  canvas.height = Math.floor(state.h * DPR);
-  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  ctx.imageSmoothingEnabled = false;
+  resizePixiRenderer(state.w, state.h);
 }
 
 export function updateHud() {
@@ -149,7 +145,15 @@ export function updateCountdown() {
   const hours = Math.floor((ms / 3600000) % 24);
   const minutes = Math.floor((ms / 60000) % 60);
   const seconds = Math.floor((ms / 1000) % 60);
-  jarramplasCountdownEl.textContent = `${days} días · ${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  const countdownParts = [
+    [days, "dias"],
+    [hours, "horas"],
+    [minutes, "minutos"],
+    [seconds, "segundos"],
+  ];
+  jarramplasCountdownEl.innerHTML = countdownParts.map(([value, label]) => (
+    `<span class="countdown-unit"><strong>${String(value).padStart(2, "0")}</strong><small>${label}</small></span>`
+  )).join("");
 }
 
 export function bindUi({ startGame }) {

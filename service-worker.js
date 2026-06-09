@@ -100,6 +100,7 @@ function isGameScript(request) {
 function isStaticAsset(request) {
   const pathname = requestPathname(request);
   return pathname.endsWith(".js")
+    || pathname.endsWith(".mjs")
     || pathname.endsWith(".css")
     || pathname.endsWith(".webmanifest");
 }

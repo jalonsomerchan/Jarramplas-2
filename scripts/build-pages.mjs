@@ -8,6 +8,7 @@ const entries = [
   ".nojekyll",
   "CNAME",
   "index.html",
+  "map-editor.html",
   "styles.css",
   "home-title.css",
   "game.js",
@@ -23,6 +24,9 @@ const entries = [
   "service-worker.js",
   "manifest.webmanifest",
   "assets",
+  "maps",
+  "tools",
+  "vendor",
 ];
 
 await rm(outDir, { recursive: true, force: true });

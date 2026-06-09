@@ -1,5 +1,4 @@
 export const canvas = document.getElementById("game");
-export const ctx = canvas.getContext("2d");
 export const hud = document.getElementById("hud");
 export const scoreEl = document.getElementById("score");
 export const timeEl = document.getElementById("time");
