@@ -86,6 +86,7 @@
     "assets/generated/houses/house10.png",
     "assets/generated/houses/house11.png",
     "assets/generated/houses/house12.png",
+    "assets/generated/houses/house13.png",
     // HOUSE_ASSETS_END
   ];
   const objectAssets = [
@@ -97,6 +98,8 @@
     "assets/generated/objects/object5.png",
     "assets/generated/objects/object6.png",
     "assets/generated/objects/object7.png",
+    "assets/generated/objects/object8.png",
+    "assets/generated/objects/object9.png",
     // OBJECT_ASSETS_END
   ];
   const generatedSheets = [

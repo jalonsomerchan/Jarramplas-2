@@ -64,5 +64,11 @@
     "label": "Casa 12",
     "w": 1254,
     "h": 1254
+  },
+  {
+    "src": "assets/generated/houses/house13.png",
+    "label": "Casa 13",
+    "w": 1044,
+    "h": 997
   }
 ]

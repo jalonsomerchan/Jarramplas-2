@@ -7,4 +7,6 @@ export const objectAssets = [
   { src: "assets/generated/objects/object5.png", label: "Objeto 5", w: 916, h: 968 },
   { src: "assets/generated/objects/object6.png", label: "Objeto 6", w: 976, h: 886 },
   { src: "assets/generated/objects/object7.png", label: "Objeto 7", w: 893, h: 931 },
+  { src: "assets/generated/objects/object8.png", label: "Objeto 8", w: 731, h: 1209 },
+  { src: "assets/generated/objects/object9.png", label: "Objeto 9", w: 1102, h: 785 },
 ];

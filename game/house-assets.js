@@ -11,4 +11,5 @@ export const houseAssets = [
   { src: "assets/generated/houses/house10.png", label: "Casa 10", w: 1166, h: 809 },
   { src: "assets/generated/houses/house11.png", label: "Casa 11", w: 1149, h: 771 },
   { src: "assets/generated/houses/house12.png", label: "Casa 12", w: 1254, h: 1254 },
+  { src: "assets/generated/houses/house13.png", label: "Casa 13", w: 1044, h: 997 },
 ];
