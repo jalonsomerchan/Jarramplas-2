@@ -1,7 +1,9 @@
+import { playerVariants } from "../config.js";
 import { houseAssets } from "../game/house-assets.js";
 import { objectAssets } from "../game/object-assets.js";
 
 const WORLD = { w: 3200, h: 2400 };
+const SCALE_ACTOR_HEIGHT = 74;
 const canvas = document.querySelector("#editorCanvas");
 const ctx = canvas.getContext("2d");
 const palette = document.querySelector("#palette");
@@ -10,6 +12,7 @@ const jsonOutput = document.querySelector("#jsonOutput");
 const statusLabel = document.querySelector("#statusLabel");
 const zoomLabel = document.querySelector("#zoomLabel");
 const mapNameInput = document.querySelector("#mapNameInput");
+const groundColorInput = document.querySelector("#groundColorInput");
 const importInput = document.querySelector("#importInput");
 const emptySelection = document.querySelector("#emptySelection");
 const selectionControls = document.querySelector("#selectionControls");
@@ -63,7 +66,10 @@ const terrainItems = [
 const assets = {
   houses: Promise.all(houseAssets.map((house) => loadImage(house.src))),
   objects: Promise.all(objectAssets.map((object) => loadImage(object.src))),
+  players: Promise.all(playerVariants.map((player) => loadImage(player.walk || player.preview))),
 };
+
+const scalePlayerIndex = Math.floor(Math.random() * Math.max(1, playerVariants.length));
 
 let camera = { x: 0, y: 0, zoom: 0.42 };
 let selectedId = null;
@@ -100,6 +106,21 @@ function defaultMap() {
       [2695, 100, 305, 210, 5, 0.76],
     ],
     spawn: { player: [1210, 1765], jarramplas: [1760, 930], target: [1450, 980] },
+  });
+}
+
+function emptyMap() {
+  return normalizeMap({
+    id: "editor-map",
+    name: "Mapa nuevo",
+    world: { ...WORLD },
+    ground: ["#a98258", "#96704c", "#b08a62"],
+    paths: "#615d58",
+    pathRects: [],
+    plazas: [],
+    objects: [],
+    houses: [],
+    spawn: { player: [1200, 1700], jarramplas: [1760, 930], target: [1450, 980] },
   });
 }
 
@@ -149,12 +170,21 @@ function normalizeMap(source) {
     id: source.id || "editor-map",
     name: source.name || source.id || "Mapa",
     world: source.world || { ...WORLD },
-    ground: source.ground || ["#a98258", "#96704c", "#b08a62"],
+    ground: normalizeGround(source.ground),
     paths: source.paths || "#615d58",
     terrain,
     spawn: source.spawn || { player: [1200, 1700], jarramplas: [1760, 930], target: [1450, 980] },
     items,
   };
+}
+
+function normalizeGround(ground) {
+  if (Array.isArray(ground) && ground.length) {
+    const colors = ground.filter(Boolean);
+    return [colors[0] || "#a98258", colors[1] || colors[0] || "#96704c", colors[2] || colors[0] || "#b08a62"];
+  }
+  if (typeof ground === "string") return groundPalette(ground);
+  return ["#a98258", "#96704c", "#b08a62"];
 }
 
 function makeId() {
@@ -219,12 +249,19 @@ function slugify(value) {
 }
 
 function itemRect(item) {
+  if (item.type === "spawn") return { x: item.x - 18, y: item.y - 18, w: 36, h: 36 };
   if (item.type === "pathRect" || item.type === "plaza") return { x: item.x, y: item.y, w: item.w, h: item.h };
   if (item.type === "house" || item.type === "object") return { x: item.x, y: item.y, w: item.w, h: item.h };
   return { x: item.x - item.w / 2, y: item.y - item.h, w: item.w, h: item.h };
 }
 
 function setItemRect(item, rect) {
+  if (item.type === "spawn") {
+    item.x = rect.x + rect.w / 2;
+    item.y = rect.y + rect.h / 2;
+    map.spawn[item.key] = [round(item.x), round(item.y)];
+    return;
+  }
   const w = Math.max(24, rect.w);
   const h = Math.max(24, rect.h);
   if (item.type === "house" || item.type === "object" || item.type === "pathRect" || item.type === "plaza") {
@@ -265,13 +302,14 @@ function render() {
   drawMapBase();
   drawTerrainSelection();
   drawItems();
+  drawScalePlayer();
   drawSpawns();
   drawSelection();
 
   ctx.restore();
   zoomLabel.textContent = `${Math.round(camera.zoom * 100)}%`;
   const selected = getSelected();
-  statusLabel.textContent = selected ? `${selected.type} · ${Math.round(selected.x)}, ${Math.round(selected.y)}` : `${map.items.length} objetos · ${map.terrain.length} suelos`;
+  statusLabel.textContent = selected ? `${selectionLabel(selected)} · ${Math.round(selected.x)}, ${Math.round(selected.y)}` : `${map.items.length} objetos · ${map.terrain.length} suelos`;
 }
 
 function drawMapBase() {
@@ -381,8 +419,30 @@ function getImageForItem(item) {
   return null;
 }
 
+function drawScalePlayer() {
+  const point = map.spawn.player;
+  const img = assets.playerImages?.[scalePlayerIndex] || assets.playerImages?.[0];
+  if (!point || !img) return;
+  const x = point[0] - SCALE_ACTOR_HEIGHT / 2;
+  const y = point[1] - SCALE_ACTOR_HEIGHT + 18;
+  drawSheetFrame(img, 4, 4, 0, x, y, SCALE_ACTOR_HEIGHT, SCALE_ACTOR_HEIGHT);
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.78)";
+  ctx.lineWidth = 3 / camera.zoom;
+  ctx.beginPath();
+  ctx.ellipse(point[0], point[1] + 14, 22, 8, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  if (selectedLayer === "spawns" && selectedId === "player") {
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 5 / camera.zoom;
+    ctx.beginPath();
+    ctx.arc(point[0], point[1], 32, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+}
+
 function drawSpawns() {
   Object.entries(map.spawn).forEach(([name, point]) => {
+    if (name === "player") return;
     const color = name === "player" ? "#3de68a" : name === "jarramplas" ? "#ff5950" : "#6cb7ff";
     ctx.fillStyle = color;
     ctx.beginPath();
@@ -392,12 +452,19 @@ function drawSpawns() {
     ctx.font = "700 24px system-ui";
     ctx.textAlign = "center";
     ctx.fillText(name[0].toUpperCase(), point[0], point[1] + 8);
+    if (selectedLayer === "spawns" && selectedId === name) {
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 5 / camera.zoom;
+      ctx.beginPath();
+      ctx.arc(point[0], point[1], 28, 0, Math.PI * 2);
+      ctx.stroke();
+    }
   });
 }
 
 function drawSelection() {
   const selected = getSelected();
-  if (!selected || selectedLayer === "terrain") return;
+  if (!selected || selectedLayer === "terrain" || selectedLayer === "spawns") return;
   const rect = itemRect(selected);
   ctx.strokeStyle = "#f0b94c";
   ctx.lineWidth = 4 / camera.zoom;
@@ -450,25 +517,42 @@ function hitTerrain(point) {
   return null;
 }
 
+function hitSpawn(point) {
+  const entries = Object.entries(map.spawn);
+  for (let i = entries.length - 1; i >= 0; i -= 1) {
+    const [key, spawnPoint] = entries[i];
+    const dx = point.x - spawnPoint[0];
+    const dy = point.y - spawnPoint[1];
+    if (Math.hypot(dx, dy) <= 28) return spawnSelection(key);
+  }
+  return null;
+}
+
 function hitHandle(point) {
   const selected = getSelected();
-  if (!selected) return null;
+  if (!selected || selected.type === "spawn") return null;
   return handles(itemRect(selected)).find((handle) => (
     Math.abs(point.x - handle.x) <= handle.size && Math.abs(point.y - handle.y) <= handle.size
   ));
 }
 
 function getSelected() {
+  if (selectedLayer === "spawns" && selectedId && map.spawn[selectedId]) return spawnSelection(selectedId);
   const list = selectedLayer === "terrain" ? map.terrain : map.items;
   return list.find((item) => item.id === selectedId) || null;
 }
 
 function selectItem(item, layer = "items") {
   selectedLayer = item ? layer : "items";
-  selectedId = item?.id || null;
+  selectedId = item?.type === "spawn" ? item.key : item?.id || null;
   syncSelectionPanel();
   updateJson();
   requestRender();
+}
+
+function spawnSelection(key) {
+  const point = map.spawn[key];
+  return { id: key, key, type: "spawn", x: point[0], y: point[1], w: 36, h: 36, aspect: 1 };
 }
 
 function addItem(template) {
@@ -509,6 +593,7 @@ function syncSelectionPanel() {
   const rect = itemRect(item);
   typeSelect.innerHTML = "";
   let options = [[item.type, item.type]];
+  if (item.type === "spawn") options = [[item.key, spawnLabel(item.key)]];
   if (item.type === "house") options = houseVariants.map(([frame, label]) => [String(frame), label]);
   if (item.type === "object") options = objectVariants.map(([frame, label]) => [String(frame), label]);
   if (item.type === "pathRect") options = [["pathRect", "Camino"]];
@@ -519,26 +604,36 @@ function syncSelectionPanel() {
     option.textContent = label;
     typeSelect.append(option);
   });
-  typeSelect.value = item.type === "house" ? String(houseIndex(item.variant)) : item.type === "object" ? String(objectIndex(item.variant)) : item.type;
-  xInput.value = Math.round(item.type === "house" ? item.x : item.x);
-  yInput.value = Math.round(item.type === "house" ? item.y : item.y);
+  typeSelect.value = item.type === "spawn" ? item.key : item.type === "house" ? String(houseIndex(item.variant)) : item.type === "object" ? String(objectIndex(item.variant)) : item.type;
+  xInput.value = Math.round(item.x);
+  yInput.value = Math.round(item.y);
   wInput.value = Math.round(rect.w);
   hInput.value = Math.round(rect.h);
   variantInput.value = item.variant || 0;
   scaleInput.value = item.scale ?? 1;
   colorInput.value = item.color || (item.type === "pathRect" ? map.paths : "#b88958");
   shapeSelect.value = item.shape || "rect";
-  variantLabel.hidden = item.type === "house" || item.type === "object" || item.type === "pathRect" || item.type === "plaza";
+  variantLabel.hidden = item.type === "house" || item.type === "object" || item.type === "pathRect" || item.type === "plaza" || item.type === "spawn";
   scaleLabel.hidden = item.type !== "house" && item.type !== "object";
   bringForwardButton.disabled = item.type !== "house" && item.type !== "object";
   sendBackwardButton.disabled = item.type !== "house" && item.type !== "object";
   colorLabel.hidden = item.type !== "pathRect" && item.type !== "plaza";
   shapeLabel.hidden = item.type !== "plaza";
+  wInput.closest("label").hidden = item.type === "spawn";
+  hInput.closest("label").hidden = item.type === "spawn";
+  document.querySelector("#deleteButton").hidden = item.type === "spawn";
 }
 
 function updateSelectedFromInputs() {
   const item = getSelected();
   if (!item) return;
+  if (item.type === "spawn") {
+    map.spawn[item.key] = [Number(xInput.value) || 0, Number(yInput.value) || 0];
+    syncSelectionPanel();
+    updateJson();
+    requestRender();
+    return;
+  }
   if (item.type === "house") {
     item.variant = Number(typeSelect.value) || 0;
   }
@@ -573,6 +668,11 @@ function updateSelectedFromInputs() {
 function updateJson() {
   map.name = mapNameInput.value || map.name;
   jsonOutput.value = JSON.stringify(exportMap(), null, 2);
+}
+
+function syncMapControls() {
+  mapNameInput.value = map.name;
+  groundColorInput.value = map.ground[1] || map.ground[0] || "#96704c";
 }
 
 function centerCamera() {
@@ -665,6 +765,12 @@ canvas.addEventListener("pointerdown", (event) => {
     drag = { mode: "move", start: point, rect: itemRect(item) };
     return;
   }
+  const spawn = hitSpawn(point);
+  if (spawn) {
+    selectItem(spawn, "spawns");
+    drag = { mode: "move", start: point, rect: itemRect(spawn) };
+    return;
+  }
   const terrain = hitTerrain(point);
   if (terrain) {
     selectItem(terrain, "terrain");
@@ -728,6 +834,14 @@ document.querySelector("#zoomOutButton").addEventListener("click", () => zoomAt(
 document.querySelector("#zoomInButton").addEventListener("click", () => zoomAt(1.16));
 document.querySelector("#centerButton").addEventListener("click", centerCamera);
 
+document.querySelector("#newMapButton").addEventListener("click", () => {
+  map = emptyMap();
+  syncMapControls();
+  selectItem(null);
+  centerCamera();
+  updateJson();
+});
+
 document.querySelector("#deleteButton").addEventListener("click", () => {
   deleteSelected();
 });
@@ -743,6 +857,7 @@ document.addEventListener("keydown", (event) => {
 
 function deleteSelected() {
   if (!selectedId) return;
+  if (selectedLayer === "spawns") return;
   if (selectedLayer === "terrain") {
     map.terrain = map.terrain.filter((item) => item.id !== selectedId);
   } else {
@@ -763,6 +878,11 @@ function moveSelectedLayer(delta) {
   input.addEventListener("input", updateSelectedFromInputs);
 });
 mapNameInput.addEventListener("input", updateJson);
+groundColorInput.addEventListener("input", () => {
+  map.ground = groundPalette(groundColorInput.value);
+  updateJson();
+  requestRender();
+});
 
 document.querySelector("#exportButton").addEventListener("click", () => {
   const blob = new Blob([jsonOutput.value], { type: "application/json" });
@@ -787,7 +907,7 @@ document.querySelector("#copyJsonButton").addEventListener("click", async () => 
 document.querySelector("#loadExampleButton").addEventListener("click", async () => {
   const response = await fetch("maps/piornal-editor-example.json");
   map = normalizeMap(await response.json());
-  mapNameInput.value = map.name;
+  syncMapControls();
   selectItem(null);
   centerCamera();
   updateJson();
@@ -797,18 +917,44 @@ importInput.addEventListener("change", async () => {
   const [file] = importInput.files;
   if (!file) return;
   map = normalizeMap(JSON.parse(await file.text()));
-  mapNameInput.value = map.name;
+  syncMapControls();
   selectItem(null);
   centerCamera();
   updateJson();
 });
 
+function groundPalette(color) {
+  return [adjustHexColor(color, 10), color, adjustHexColor(color, 22)];
+}
+
+function adjustHexColor(color, amount) {
+  const hex = color.replace("#", "");
+  const value = Number.parseInt(hex.length === 3 ? hex.split("").map((part) => part + part).join("") : hex, 16);
+  if (Number.isNaN(value)) return color;
+  const r = Math.max(0, Math.min(255, (value >> 16) + amount));
+  const g = Math.max(0, Math.min(255, ((value >> 8) & 255) + amount));
+  const b = Math.max(0, Math.min(255, (value & 255) + amount));
+  return `#${[r, g, b].map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
+}
+
+function spawnLabel(key) {
+  if (key === "player") return "Jugador";
+  if (key === "jarramplas") return "Jarramplas";
+  if (key === "target") return "Objetivo";
+  return key;
+}
+
+function selectionLabel(item) {
+  return item.type === "spawn" ? spawnLabel(item.key) : item.type;
+}
+
 async function boot() {
-  const [housesImages, objectsImages] = await Promise.all([assets.houses, assets.objects]);
+  const [housesImages, objectsImages, playerImages] = await Promise.all([assets.houses, assets.objects, assets.players]);
   assets.housesImages = housesImages;
   assets.objectsImages = objectsImages;
+  assets.playerImages = playerImages;
   createPalette();
-  mapNameInput.value = map.name;
+  syncMapControls();
   resizeCanvas();
   centerCamera();
   updateJson();

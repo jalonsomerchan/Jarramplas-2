@@ -8,8 +8,8 @@ export const PLAYER_MAX_TURNIPS = 14;
 export const MOBILE_CONTROL_BREAKPOINT = 760;
 export const keys = new Set();
 export const VILLAGER_THROW_TYPE_COUNT = 4;
-export const HOUSE_TOP_BLOCK_RATIO = 0.1;
-export const HOUSE_BOTTOM_PASSABLE_RATIO = 0.05;
+export const HOUSE_TOP_BLOCK_RATIO = 0.05;
+export const HOUSE_BOTTOM_PASSABLE_RATIO = 0;
 export const HOUSE_BASE_HEIGHTS = [450, 470, 300, 430, 440, 420, 400, 425, 440];
 export const HOUSE_BOUNDS = [
   { l: 84 / 384, t: 77 / 384, r: 300 / 384, b: 307 / 384 },

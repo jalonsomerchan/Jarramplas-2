@@ -7,6 +7,7 @@
     "serve": "python3 -m http.server 4173",
     "update:houses": "node scripts/update-house-assets.mjs",
     "update:objects": "node scripts/update-object-assets.mjs",
+    "update:maps": "node scripts/update-map-assets.mjs",
     "build:pages": "node scripts/build-pages.mjs",
     "test": "playwright test",
     "test:smoke": "playwright test tests/smoke.spec.js"

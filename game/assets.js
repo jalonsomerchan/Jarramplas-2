@@ -50,5 +50,5 @@ export async function loadAssets() {
     Array.from({ length: VILLAGER_THROW_TYPE_COUNT }, (_, index) => loadImage(`assets/generated/villager_throw_types/type_${index + 1}/sheet.png`)),
   );
   assets.jarramplas = await Promise.all(jarramplasVariants.map((variant) => Promise.all(variant.frames.map(loadImage))));
-  assets.backgrounds = await Promise.all(scenarios.map((scenario) => loadImage(scenario.path)));
+  assets.backgrounds = [];
 }

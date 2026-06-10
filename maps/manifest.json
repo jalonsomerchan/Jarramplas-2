@@ -1,0 +1,15 @@
+[
+  {
+    "id": "plaza",
+    "name": "Plaza",
+    "source": "maps/plaza.json",
+    "meta": "4 edificios · 2 objetos",
+    "ground": [
+      "#595959",
+      "#4f4f4f",
+      "#656565"
+    ],
+    "houses": 4,
+    "objects": 2
+  }
+]

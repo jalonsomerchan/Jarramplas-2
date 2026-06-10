@@ -176,15 +176,28 @@ export function getSpawnCollisionReport() {
 
 export function moveActor(actor, dx, dy, dt, radius = PLAYER_RADIUS) {
   const len = Math.hypot(dx, dy);
-  if (!len) return;
+  if (!len) {
+    actor.walking = false;
+    return { moved: false, dx: 0, dy: 0 };
+  }
   const nx = dx / len;
   const ny = dy / len;
   const stepX = nx * actor.speed * dt;
   const stepY = ny * actor.speed * dt;
   const nextX = actor.x + stepX;
   const nextY = actor.y + stepY;
+  const beforeX = actor.x;
+  const beforeY = actor.y;
   if (!actorBlocked(actor, nextX, actor.y, radius)) actor.x = nextX;
   if (!actorBlocked(actor, actor.x, nextY, radius)) actor.y = nextY;
-  actor.dir = Math.abs(nx) > Math.abs(ny) ? (nx > 0 ? "right" : "left") : (ny > 0 ? "down" : "up");
-  actor.walking = true;
+  const movedX = actor.x - beforeX;
+  const movedY = actor.y - beforeY;
+  const movedDistance = Math.hypot(movedX, movedY);
+  actor.walking = movedDistance > 0.25;
+  if (actor.walking) {
+    actor.dir = Math.abs(movedX) > Math.abs(movedY)
+      ? (movedX > 0 ? "right" : "left")
+      : (movedY > 0 ? "down" : "up");
+  }
+  return { moved: actor.walking, dx: movedX, dy: movedY };
 }

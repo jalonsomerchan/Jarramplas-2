@@ -72,8 +72,8 @@ const BYSTANDER_STARTS = [
   [1600, 1560], [2060, 1360], [2480, 1120], [1040, 1580], [520, 2040], [2880, 1900],
 ];
 
-function getEdgeBystanderStarts(layout) {
-  const starts = [...(layout.bystanders || [])];
+function getBystanderStarts(layout) {
+  const starts = [...BYSTANDER_STARTS, ...(layout.bystanders || [])];
   for (let x = 360; x <= WORLD.w - 360; x += 150) {
     starts.push([x, 515], [x, WORLD.h - 205]);
   }
@@ -141,6 +141,28 @@ function createAnimalActor(kind, x, y, index) {
   };
 }
 
+function randomHeading(seed = 0) {
+  const angle = Math.random() * Math.PI * 2 + seed;
+  return { vx: Math.cos(angle), vy: Math.sin(angle) };
+}
+
+function steerAwayFromObstruction(actor, seed = 0) {
+  const heading = randomHeading(seed);
+  actor.vx = heading.vx;
+  actor.vy = heading.vy;
+  actor.wander = 0.55 + Math.random() * 1.2;
+  actor.stuckTime = 0;
+}
+
+function rememberMovement(actor, movement, dt, seed = 0) {
+  if (movement?.moved) {
+    actor.stuckTime = Math.max(0, (actor.stuckTime || 0) - dt * 2);
+    return;
+  }
+  actor.stuckTime = (actor.stuckTime || 0) + dt;
+  if (actor.stuckTime > 0.22) steerAwayFromObstruction(actor, seed);
+}
+
 export function spawnAnimals() {
   const starts = [
     ["dog", 630, 705], ["cat", 1035, 650], ["dog", 1820, 780],
@@ -149,25 +171,18 @@ export function spawnAnimals() {
   state.animals = starts.map(([kind, x, y], index) => createAnimalActor(kind, x, y, index));
 }
 
-export function spawnBystanders(count = 24) {
+export function spawnBystanders(count = 36) {
   const characterIndexes = getNeighborCharacterIndexes();
   const scenario = scenarios[state.scenarioIndex] || scenarios[0];
-  const layout = scenarioLayouts[scenario.id] || scenarioLayouts["plaza-eras"];
-  const roamingBystanders = BYSTANDER_STARTS.slice(0, count).map(([x, y], index) => createPersonActor(x, y, index, characterIndexes, {
-    speed: 34 + (index % 5) * 4,
+  const layout = scenarioLayouts[scenario.id] || scenarioLayouts[scenarios[0]?.id];
+  const roamingBystanders = getBystanderStarts(layout).slice(0, count).map(([x, y], index) => createPersonActor(x, y, index, characterIndexes, {
+    speed: 46 + (index % 6) * 5,
     cooldown: Number.POSITIVE_INFINITY,
     wander: 0.3 + (index % 7) * 0.2,
-    lookTime: 0.8 + (index % 5) * 0.4,
-    mode: index % 3 === 0 ? "watch" : "stroll",
+    lookTime: 0,
+    mode: "stroll",
   }));
-  const edgeBystanders = getEdgeBystanderStarts(layout).map(([x, y], index) => createPersonActor(x, y, count + index, characterIndexes, {
-    speed: 0,
-    cooldown: Number.POSITIVE_INFINITY,
-    wander: 0,
-    lookTime: Number.POSITIVE_INFINITY,
-    mode: "watch",
-  }));
-  state.bystanders = [...roamingBystanders, ...edgeBystanders];
+  state.bystanders = roamingBystanders;
 }
 
 export function spawnPeople(count) {
@@ -186,7 +201,7 @@ export function startGame() {
   const gameType = gameTypeConfig[state.gameType] || gameTypeConfig.timed;
   createVillage((state.scenarioIndex + 1) * 97 + (state.jarramplasIndex + 3) * 131);
   const scenario = scenarios[state.scenarioIndex] || scenarios[0];
-  const layout = scenarioLayouts[scenario.id] || scenarioLayouts["plaza-eras"];
+  const layout = scenarioLayouts[scenario.id] || scenarioLayouts[scenarios[0]?.id];
   const [playerX, playerY] = layout.spawn.player;
   const [jarramplasX, jarramplasY] = layout.spawn.jarramplas;
   const [targetX, targetY] = layout.spawn.target;
@@ -367,12 +382,14 @@ export function updatePeople(dt) {
     person.wander -= dt;
     if (person.wander <= 0) {
       person.wander = 1 + Math.random() * 2.5;
-      const angle = Math.random() * Math.PI * 2;
-      person.vx = Math.cos(angle);
-      person.vy = Math.sin(angle);
+      const heading = randomHeading();
+      person.vx = heading.vx;
+      person.vy = heading.vy;
     }
-    if (dist(person, state.jarramplas) > 170) moveActor(person, state.jarramplas.x - person.x, state.jarramplas.y - person.y, dt, 19);
-    else moveActor(person, person.vx, person.vy, dt, 19);
+    const movement = dist(person, state.jarramplas) > 170
+      ? moveActor(person, state.jarramplas.x - person.x, state.jarramplas.y - person.y, dt, 19)
+      : moveActor(person, person.vx, person.vy, dt, 19);
+    rememberMovement(person, movement, dt);
     if (person.cooldown <= 0 && dist(person, state.player) < 620) {
       const attrs = getActorAttributes(person);
       person.cooldown = difficulty.crowdThrow * (1.65 + (attrs.throwCooldown || 0.42)) + Math.random() * 2.1;
@@ -404,22 +421,24 @@ export function updateBystanders(dt) {
 
     if (person.wander <= 0) {
       person.wander = 1.4 + Math.random() * 3.2;
-      person.lookTime = 1.0 + Math.random() * 2.4;
-      person.mode = Math.random() < 0.45 ? "watch" : "stroll";
-      const angle = Math.random() * Math.PI * 2;
-      person.vx = Math.cos(angle);
-      person.vy = Math.sin(angle);
+      person.lookTime = 0;
+      person.mode = "stroll";
+      const heading = randomHeading(index * 0.17);
+      person.vx = heading.vx;
+      person.vy = heading.vy;
     }
 
     const distanceHome = dist(person, { x: person.homeX, y: person.homeY });
+    let movement;
     if (distanceHome > 170) {
-      moveActor(person, person.homeX - person.x, person.homeY - person.y, dt, 19);
+      movement = moveActor(person, person.homeX - person.x, person.homeY - person.y, dt, 19);
     } else {
       const plazaDrift = index % 4 === 0 && state.jarramplas ? 0.18 : 0;
       const dx = person.vx + (state.jarramplas ? Math.sign(state.jarramplas.x - person.x) * plazaDrift : 0);
       const dy = person.vy + (state.jarramplas ? Math.sign(state.jarramplas.y - person.y) * plazaDrift : 0);
-      moveActor(person, dx, dy, dt, 19);
+      movement = moveActor(person, dx, dy, dt, 19);
     }
+    rememberMovement(person, movement, dt, index * 0.17);
   });
 }
 
@@ -431,7 +450,8 @@ export function updateAnimals(dt) {
     if (animal.mode === "angry") {
       animal.calmTimer -= dt;
       animal.speed = animal.chaseSpeed;
-      moveActor(animal, state.player.x - animal.x, state.player.y - animal.y, dt, animal.radius);
+      const movement = moveActor(animal, state.player.x - animal.x, state.player.y - animal.y, dt, animal.radius);
+      rememberMovement(animal, movement, dt, index * 0.35);
       if (dist(animal, state.player) < animal.radius + PLAYER_RADIUS + 8 && animal.biteCooldown <= 0) {
         animal.biteCooldown = animal.kind === "cat" ? 0.95 : 1.15;
         damagePlayer(animal.biteDamage, state.player.x, state.player.y - 64, animal.kind === "cat" ? "-6 vida" : "-9 vida");
@@ -448,14 +468,16 @@ export function updateAnimals(dt) {
     animal.speed = animal.kind === "cat" ? 112 : 98;
     if (animal.wander <= 0) {
       animal.wander = 1.2 + Math.random() * 2.8;
-      const angle = Math.random() * Math.PI * 2 + index * 0.35;
-      animal.vx = Math.cos(angle);
-      animal.vy = Math.sin(angle);
+      const heading = randomHeading(index * 0.35);
+      animal.vx = heading.vx;
+      animal.vy = heading.vy;
     }
 
     const distanceHome = dist(animal, { x: animal.homeX, y: animal.homeY });
-    if (distanceHome > 220) moveActor(animal, animal.homeX - animal.x, animal.homeY - animal.y, dt, animal.radius);
-    else moveActor(animal, animal.vx, animal.vy, dt, animal.radius);
+    const movement = distanceHome > 220
+      ? moveActor(animal, animal.homeX - animal.x, animal.homeY - animal.y, dt, animal.radius)
+      : moveActor(animal, animal.vx, animal.vy, dt, animal.radius);
+    rememberMovement(animal, movement, dt, index * 0.35);
   });
 }
 

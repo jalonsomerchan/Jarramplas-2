@@ -233,7 +233,7 @@ function drawPlazaShape(g, plaza) {
 
 export function drawMap() {
   const scenario = scenarios[state.scenarioIndex] || scenarios[0];
-  const layout = scenarioLayouts[scenario.id] || scenarioLayouts["plaza-eras"];
+  const layout = scenarioLayouts[scenario.id] || scenarioLayouts[scenarios[0]?.id];
   const ground = layout.ground;
   const bg = new PIXI.Graphics();
   bg.rect(0, 0, state.w, state.h);

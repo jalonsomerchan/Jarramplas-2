@@ -115,9 +115,17 @@ Editar `gameTypeConfig`:
 
 ### Mapas
 
-Editar `scenarios` en `config.js` para el selector visible.
+El selector visible sale de `game/map-assets.js`, generado desde los JSON creados en `maps/`.
 
-Editar `scenarioLayouts` en `game/scenario-layouts.js` para el mapa jugable:
+Para anadir o quitar mapas del selector, guardar/eliminar el JSON exportado por el editor en `maps/` y ejecutar:
+
+```sh
+npm run update:maps
+```
+
+`game/scenario-layouts.js` tambien se genera con `npm run update:maps`; no editarlo a mano.
+
+El JSON del mapa contiene:
 
 - `ground`: colores del suelo.
 - `paths`: color de caminos.
@@ -233,12 +241,13 @@ $generate2dsprite
 
 Despues de cambiar un mapa:
 
-1. Anadir/actualizar la entrada en `scenarios` de `config.js`.
-2. Crear/actualizar su `scenarioLayouts[scenario.id]` en `game/scenario-layouts.js`.
-3. Ajustar `houses`, `objects`, `plazas` y `spawn`.
-4. Comprobar colisiones. Obstaculos usan rectangulos `block`.
-5. Ejecutar `npm run test:smoke`.
-6. Probar en navegador en desktop y movil.
+1. Crear/actualizar el mapa en el editor.
+2. Guardar/exportar el JSON en `maps/`.
+3. Ajustar `houses`, `objects`, `plazas` y `spawn` en el editor si hace falta.
+4. Ejecutar `npm run update:maps`.
+5. Comprobar colisiones. Obstaculos usan rectangulos `block`.
+6. Ejecutar `npm run test:smoke`.
+7. Probar en navegador en desktop y movil.
 
 Para anadir objetos nuevos, guardar el PNG como `assets/generated/objects/objectN.png` y ejecutar:
 

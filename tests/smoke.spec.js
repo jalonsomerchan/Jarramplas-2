@@ -1,4 +1,7 @@
 import { expect, test } from "@playwright/test";
+import { mapAssets } from "../game/map-assets.js";
+
+const scenarioIndexes = mapAssets.map((_, index) => index);
 
 const ignoredConsolePatterns = [
   /Firebase/i,
@@ -87,7 +90,7 @@ test("permite navegar por el flujo básico de selección", async ({ page }) => {
 
   await page.locator("[data-level='day19Morning']").click();
   await expect(page.locator("#scenario")).toBeVisible();
-  await expect(page.locator("[data-scenario]")).toHaveCount(3);
+  await expect(page.locator("[data-scenario]")).toHaveCount(mapAssets.length);
 
   await page.locator("[data-scenario='0']").click();
   await expect(page.locator("#jarramplasSelect")).toBeVisible();
@@ -103,7 +106,7 @@ test("nadie empieza bloqueado por obstáculos en ningún mapa", async ({ page })
   const consoleErrors = collectUnexpectedConsoleErrors(page);
 
   await startMap(page, 0);
-  for (const scenarioIndex of [0, 1, 2]) {
+  for (const scenarioIndex of scenarioIndexes) {
     await page.evaluate((index) => {
       const debug = window.__JARRAMPLAS_DEBUG__;
       debug.state.scenarioIndex = index;
@@ -286,14 +289,19 @@ test("perros y gatos persiguen al jugador si reciben un nabo", async ({ page }) 
 test("los edificios mantienen una escala proporcional en todos los mapas", async ({ page }) => {
   const consoleErrors = collectUnexpectedConsoleErrors(page);
 
-  for (const scenarioIndex of [0, 1, 2]) {
-    await startMap(page, scenarioIndex);
+  await startMap(page, 0);
+  for (const scenarioIndex of scenarioIndexes) {
+    await page.evaluate((index) => {
+      const debug = window.__JARRAMPLAS_DEBUG__;
+      debug.state.scenarioIndex = index;
+      debug.startGame();
+    }, scenarioIndex);
     const houseSizes = await page.evaluate(() => window.__JARRAMPLAS_DEBUG__.state.obstacles
       .filter((obstacle) => obstacle.type === "house")
       .map((house) => ({
         variant: house.variant,
-        visualWidth: Math.round((house.block.w / 0.88) * 10) / 10,
-        visualHeight: Math.round((house.block.h / 0.85) * 10) / 10,
+        visualWidth: Math.round((house.block.w / 0.96) * 10) / 10,
+        visualHeight: Math.round((house.block.h / 0.95) * 10) / 10,
       })));
 
     const heights = houseSizes.map((house) => house.visualHeight);

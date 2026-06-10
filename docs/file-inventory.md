@@ -728,11 +728,12 @@ Regla de mantenimiento: cuando se anada, elimine o renombre un fichero versionad
 | `game/dom.js` | Referencias DOM para conectar la interfaz HTML con la logica y el canvas usado por PixiJS. |
 | `game/effects.js` | Efectos visuales o temporales del juego, como impactos, particulas o feedback. |
 | `game/house-assets.js` | Lista generada de casas oficiales en `assets/generated/houses/`, con ruta, etiqueta y dimensiones base. |
+| `game/map-assets.js` | Lista generada de mapas/fondos en `assets/fondos/`, con id, nombre, ruta y dimensiones base para el selector. |
 | `game/object-assets.js` | Lista generada de objetos oficiales en `assets/generated/objects/`, con ruta, etiqueta y dimensiones base. |
 | `game/input.js` | Gestion centralizada de teclado, puntero, tactil y controles moviles. |
 | `game/physics.js` | Utilidades de fisica simple, colisiones, movimiento y comprobaciones espaciales. |
 | `game/render.js` | Renderer PixiJS: inicializa la aplicacion, crea sprites/texturas, dibuja mapa, actores, efectos y controles. |
-| `game/scenario-layouts.js` | Definicion jugable de mapas: suelo, caminos, plazas, obstaculos, fuentes, casas y spawns. |
+| `game/scenario-layouts.js` | Layouts jugables generados desde `maps/*.json`: suelo, caminos, plazas, obstaculos, casas y spawns. |
 | `game/state.js` | Estado compartido de partida y helpers para inicializarlo o consultarlo. |
 | `game/ui.js` | Logica de pantallas, botones, selectores, modales y actualizacion de UI; delega el resize del canvas a PixiJS. |
 | `game/utils.js` | Utilidades generales reutilizadas por varios modulos del juego. |
@@ -742,7 +743,9 @@ Regla de mantenimiento: cuando se anada, elimine o renombre un fichero versionad
 
 | Fichero | Para que sirve |
 | --- | --- |
+| `maps/manifest.json` | Manifest generado de mapas creados desde JSON; alimenta el selector junto a `game/map-assets.js`. |
 | `maps/piornal-editor-example.json` | Mapa de ejemplo para el editor visual, exportado en formato compatible con `scenarioLayouts`. |
+| `maps/plaza.json` | Mapa creado con el editor y usado por el juego al regenerar con `npm run update:maps`. |
 
 ## Scripts
 
@@ -750,6 +753,7 @@ Regla de mantenimiento: cuando se anada, elimine o renombre un fichero versionad
 | --- | --- |
 | `scripts/build-pages.mjs` | Script de build/export para preparar la salida de GitHub Pages, copiando tambien vendor. |
 | `scripts/update-house-assets.mjs` | Escanea `assets/generated/houses/houseN.png` y regenera la lista de casas para juego, editor y PWA/cache. |
+| `scripts/update-map-assets.mjs` | Escanea `maps/*.json` y regenera la lista de mapas, layouts jugables, manifest y PWA/cache. |
 | `scripts/update-object-assets.mjs` | Escanea `assets/generated/objects/objectN.png` y regenera la lista de objetos para juego, editor y PWA/cache. |
 
 ## Herramientas

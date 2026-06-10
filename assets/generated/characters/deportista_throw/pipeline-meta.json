@@ -1,7 +1,7 @@
 {
   "target": "asset",
   "mode": "sheet",
-  "prompt": "Mujer deportista lanzando un nabo, pixel art top-down",
+  "prompt": "Mujer deportista lanzando un nabo, top-down clean pixel-art overworld, chandal rosa y zapatillas",
   "role": "",
   "input": "assets/generated/characters/deportista_throw/raw-sheet.png",
   "threshold": 100,
@@ -41,26 +41,26 @@
       ],
       "component_mode": "largest",
       "component_count": 1,
-      "selected_component_area": 40987,
+      "selected_component_area": 36192,
       "selected_component_bbox": [
-        154,
-        67,
-        348,
-        443
+        173,
+        91,
+        365,
+        427
       ],
       "crop_bbox": [
-        150,
-        63,
-        352,
-        447
+        169,
+        87,
+        369,
+        431
       ],
       "edge_touch": false,
       "output_size": [
-        57,
+        64,
         110
       ],
       "paste_position": [
-        35,
+        32,
         10
       ]
     },
@@ -77,27 +77,27 @@
       ],
       "component_mode": "largest",
       "component_count": 1,
-      "selected_component_area": 45625,
+      "selected_component_area": 35575,
       "selected_component_bbox": [
-        69,
-        92,
-        339,
-        443
+        76,
+        125,
+        304,
+        422
       ],
       "crop_bbox": [
-        65,
-        88,
-        343,
-        447
+        72,
+        121,
+        308,
+        426
       ],
       "edge_touch": false,
       "output_size": [
-        79,
-        102
+        75,
+        97
       ],
       "paste_position": [
-        24,
-        18
+        26,
+        23
       ]
     },
     {
@@ -112,28 +112,28 @@
         512
       ],
       "component_mode": "largest",
-      "component_count": 5,
-      "selected_component_area": 39238,
+      "component_count": 1,
+      "selected_component_area": 35500,
       "selected_component_bbox": [
-        41,
-        98,
-        350,
-        443
+        73,
+        128,
+        310,
+        420
       ],
       "crop_bbox": [
-        37,
-        94,
-        354,
-        447
+        69,
+        124,
+        314,
+        424
       ],
       "edge_touch": false,
       "output_size": [
-        90,
-        101
+        78,
+        96
       ],
       "paste_position": [
-        19,
-        19
+        25,
+        24
       ]
     },
     {
@@ -148,27 +148,27 @@
         1024
       ],
       "component_mode": "largest",
-      "component_count": 1,
-      "selected_component_area": 43786,
+      "component_count": 2,
+      "selected_component_area": 35294,
       "selected_component_bbox": [
-        85,
-        81,
-        389,
-        420
+        178,
+        70,
+        434,
+        374
       ],
       "crop_bbox": [
-        81,
-        77,
-        393,
-        424
+        174,
+        66,
+        438,
+        378
       ],
       "edge_touch": false,
       "output_size": [
-        89,
+        84,
         99
       ],
       "paste_position": [
-        19,
+        22,
         21
       ]
     },
@@ -185,27 +185,27 @@
       ],
       "component_mode": "largest",
       "component_count": 1,
-      "selected_component_area": 40058,
+      "selected_component_area": 35806,
       "selected_component_bbox": [
-        96,
-        69,
-        376,
-        421
+        76,
+        74,
+        326,
+        374
       ],
       "crop_bbox": [
-        92,
-        65,
-        380,
-        425
+        72,
+        70,
+        330,
+        378
       ],
       "edge_touch": false,
       "output_size": [
         82,
-        103
+        98
       ],
       "paste_position": [
         23,
-        17
+        22
       ]
     },
     {
@@ -221,27 +221,27 @@
       ],
       "component_mode": "largest",
       "component_count": 1,
-      "selected_component_area": 39802,
+      "selected_component_area": 33442,
       "selected_component_bbox": [
-        134,
-        54,
-        314,
-        424
+        115,
+        48,
+        274,
+        375
       ],
       "crop_bbox": [
-        130,
-        50,
-        318,
-        428
+        111,
+        44,
+        278,
+        379
       ],
       "edge_touch": false,
       "output_size": [
         53,
-        108
+        107
       ],
       "paste_position": [
         37,
-        12
+        13
       ]
     }
   ],

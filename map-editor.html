@@ -20,7 +20,8 @@
           Nombre
           <input id="mapNameInput" type="text" autocomplete="off">
         </label>
-        <div class="button-row">
+        <div class="button-row map-actions">
+          <button id="newMapButton" type="button">Nuevo</button>
           <button id="loadExampleButton" type="button">Ejemplo</button>
           <label class="file-button">
             Importar
@@ -37,6 +38,10 @@
 
       <section class="panel">
         <h2>Suelo</h2>
+        <label class="ground-color-control">
+          Color del suelo
+          <input id="groundColorInput" type="color">
+        </label>
         <div class="palette terrain-palette" id="terrainPalette"></div>
       </section>
 

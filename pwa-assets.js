@@ -32,6 +32,7 @@
     "./game/dom.js",
     "./game/constants.js",
     "./game/house-assets.js",
+    "./game/map-assets.js",
     "./game/object-assets.js",
     "./game/state.js",
     "./game/scenario-layouts.js",
@@ -47,17 +48,9 @@
   ];
 
   const scenarios = [
-    "assets/fondos/ayuntamiento.png",
-    "assets/fondos/casa_cultura.png",
-    "assets/fondos/campo_de_futbol.png",
-    "assets/fondos/estatua_jarramplas.png",
-    "assets/fondos/fondo2.png",
-    "assets/fondos/iglesia2.png",
-    "assets/fondos/mirador.png",
-    "assets/fondos/plaza_de_toros.png",
-    "assets/fondos/parada.png",
-    "assets/fondos/fachada_jarramplas.png",
-    "assets/fondos/nieve.png",
+    // MAP_ASSETS_START
+    "maps/plaza.json",
+    // MAP_ASSETS_END
   ];
 
   const jarramplasRoots = [
@@ -78,15 +71,23 @@
     "assets/generated/houses/house1.png",
     "assets/generated/houses/house2.png",
     "assets/generated/houses/house3.png",
-    "assets/generated/houses/house4.png",
     "assets/generated/houses/house5.png",
     "assets/generated/houses/house6.png",
     "assets/generated/houses/house8.png",
     "assets/generated/houses/house9.png",
     "assets/generated/houses/house10.png",
-    "assets/generated/houses/house11.png",
-    "assets/generated/houses/house12.png",
     "assets/generated/houses/house13.png",
+    "assets/generated/houses/house14.png",
+    "assets/generated/houses/house16.png",
+    "assets/generated/houses/house17.png",
+    "assets/generated/houses/house18.png",
+    "assets/generated/houses/house19.png",
+    "assets/generated/houses/house20.png",
+    "assets/generated/houses/house21.png",
+    "assets/generated/houses/house22.png",
+    "assets/generated/houses/house23.png",
+    "assets/generated/houses/house24.png",
+    "assets/generated/houses/house25.png",
     // HOUSE_ASSETS_END
   ];
   const objectAssets = [

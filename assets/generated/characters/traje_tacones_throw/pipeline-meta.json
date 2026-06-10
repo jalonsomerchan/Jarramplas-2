@@ -1,7 +1,7 @@
 {
   "target": "asset",
   "mode": "sheet",
-  "prompt": "Mujer con traje y tacones lanzando un nabo, pixel art top-down",
+  "prompt": "Mujer con traje y tacones lanzando un nabo, top-down clean pixel-art overworld",
   "role": "",
   "input": "assets/generated/characters/traje_tacones_throw/raw-sheet.png",
   "threshold": 100,
@@ -41,26 +41,26 @@
       ],
       "component_mode": "largest",
       "component_count": 1,
-      "selected_component_area": 42474,
+      "selected_component_area": 28159,
       "selected_component_bbox": [
-        184,
-        42,
-        393,
-        469
+        189,
+        99,
+        348,
+        409
       ],
       "crop_bbox": [
-        180,
-        38,
-        397,
-        473
+        185,
+        95,
+        352,
+        413
       ],
       "edge_touch": false,
       "output_size": [
-        54,
+        57,
         110
       ],
       "paste_position": [
-        37,
+        35,
         10
       ]
     },
@@ -77,27 +77,27 @@
       ],
       "component_mode": "largest",
       "component_count": 1,
-      "selected_component_area": 47535,
+      "selected_component_area": 29844,
       "selected_component_bbox": [
-        77,
-        54,
-        392,
-        466
+        120,
+        110,
+        337,
+        413
       ],
       "crop_bbox": [
-        73,
-        50,
-        396,
-        470
+        116,
+        106,
+        341,
+        417
       ],
       "edge_touch": false,
       "output_size": [
-        81,
-        106
+        77,
+        107
       ],
       "paste_position": [
-        23,
-        14
+        25,
+        13
       ]
     },
     {
@@ -112,28 +112,28 @@
         512
       ],
       "component_mode": "largest",
-      "component_count": 6,
-      "selected_component_area": 42535,
+      "component_count": 1,
+      "selected_component_area": 30263,
       "selected_component_bbox": [
-        0,
-        60,
-        327,
-        464
+        53,
+        113,
+        300,
+        413
       ],
       "crop_bbox": [
-        0,
-        56,
-        331,
-        468
+        49,
+        109,
+        304,
+        417
       ],
-      "edge_touch": true,
+      "edge_touch": false,
       "output_size": [
-        83,
-        104
+        88,
+        106
       ],
       "paste_position": [
-        22,
-        16
+        20,
+        14
       ]
     },
     {
@@ -148,28 +148,28 @@
         1024
       ],
       "component_mode": "largest",
-      "component_count": 1,
-      "selected_component_area": 41726,
+      "component_count": 5,
+      "selected_component_area": 25055,
       "selected_component_bbox": [
-        121,
-        26,
-        418,
-        447
+        206,
+        56,
+        385,
+        349
       ],
       "crop_bbox": [
-        117,
-        22,
-        422,
-        451
+        202,
+        52,
+        389,
+        353
       ],
       "edge_touch": false,
       "output_size": [
-        77,
-        108
+        64,
+        104
       ],
       "paste_position": [
-        25,
-        12
+        32,
+        16
       ]
     },
     {
@@ -184,28 +184,28 @@
         1024
       ],
       "component_mode": "largest",
-      "component_count": 1,
-      "selected_component_area": 39458,
+      "component_count": 2,
+      "selected_component_area": 23184,
       "selected_component_bbox": [
-        100,
-        26,
-        308,
-        450
+        154,
+        58,
+        325,
+        351
       ],
       "crop_bbox": [
-        96,
-        22,
-        312,
-        454
+        150,
+        54,
+        329,
+        355
       ],
       "edge_touch": false,
       "output_size": [
-        54,
-        109
+        61,
+        104
       ],
       "paste_position": [
-        37,
-        11
+        33,
+        16
       ]
     },
     {
@@ -221,34 +221,29 @@
       ],
       "component_mode": "largest",
       "component_count": 1,
-      "selected_component_area": 38718,
+      "selected_component_area": 25144,
       "selected_component_bbox": [
-        66,
-        26,
-        218,
-        449
+        113,
+        52,
+        235,
+        354
       ],
       "crop_bbox": [
-        62,
-        22,
-        222,
-        453
+        109,
+        48,
+        239,
+        358
       ],
       "edge_touch": false,
       "output_size": [
-        40,
-        109
+        45,
+        107
       ],
       "paste_position": [
-        44,
-        11
+        41,
+        13
       ]
     }
   ],
-  "edge_touch_frames": [
-    [
-      0,
-      2
-    ]
-  ]
+  "edge_touch_frames": []
 }

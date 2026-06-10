@@ -38,9 +38,9 @@ export function getHouseLayout(houseObstacle) {
 export function getHouseBlock(houseObstacle) {
   const layout = getHouseLayout(houseObstacle);
   return {
-    x: layout.left + layout.drawW * 0.06,
+    x: layout.left + layout.drawW * 0.02,
     y: layout.top + layout.drawH * HOUSE_TOP_BLOCK_RATIO,
-    w: layout.drawW * 0.88,
+    w: layout.drawW * 0.96,
     h: layout.drawH * (1 - HOUSE_TOP_BLOCK_RATIO - HOUSE_BOTTOM_PASSABLE_RATIO),
   };
 }
@@ -51,15 +51,26 @@ export function getHouseCollision(houseObstacle) {
 }
 
 export function getBuildingCollision(left, top, w, h) {
+  return getRectCollision(left, top, w, h, {
+    left: 0.02,
+    top: HOUSE_TOP_BLOCK_RATIO,
+    right: 0.02,
+    bottom: HOUSE_BOTTOM_PASSABLE_RATIO,
+  });
+}
+
+export function getRectCollision(left, top, w, h, inset) {
+  const x1 = left + w * inset.left;
+  const y1 = top + h * inset.top;
+  const x2 = left + w * (1 - inset.right);
+  const y2 = top + h * (1 - inset.bottom);
   return {
     type: "polygon",
     points: [
-      { x: left + w * 0.14, y: top + h * 0.74 },
-      { x: left + w * 0.86, y: top + h * 0.74 },
-      { x: left + w * 0.97, y: top + h * 0.84 },
-      { x: left + w * 0.9, y: top + h * 0.96 },
-      { x: left + w * 0.1, y: top + h * 0.96 },
-      { x: left + w * 0.03, y: top + h * 0.84 },
+      { x: x1, y: y1 },
+      { x: x2, y: y1 },
+      { x: x2, y: y2 },
+      { x: x1, y: y2 },
     ],
   };
 }
@@ -100,18 +111,23 @@ export function object(x, y, w, h, variant = 0, scale = 1, z = 0) {
     z,
     draw: { x: left, y: top, w: drawW, h: drawH },
     block: {
-      x: left + drawW * 0.03,
-      y: top + drawH * 0.74,
-      w: drawW * 0.94,
-      h: drawH * 0.22,
+      x: left + drawW * 0.08,
+      y: top + drawH * 0.1,
+      w: drawW * 0.84,
+      h: drawH * 0.86,
     },
-    collision: getBuildingCollision(left, top, drawW, drawH),
+    collision: getRectCollision(left, top, drawW, drawH, {
+      left: 0.08,
+      top: 0.1,
+      right: 0.08,
+      bottom: 0.04,
+    }),
   };
 }
 
 export function createVillage(seedValue = 1) {
   const scenario = scenarios[state.scenarioIndex] || scenarios[0];
-  const layout = scenarioLayouts[scenario.id] || scenarioLayouts["plaza-eras"];
+  const layout = scenarioLayouts[scenario.id] || scenarioLayouts[scenarios[0]?.id];
   const obstacles = [
     ...layout.houses.map((item) => house(...item)),
     ...(layout.objects || []).map((item) => object(...item)),

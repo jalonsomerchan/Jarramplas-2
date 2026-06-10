@@ -1,3 +1,5 @@
+import { mapAssets } from "./game/map-assets.js";
+
 export const APP_VERSION = "2.2.0";
 
 export const difficultyConfig = {
@@ -34,26 +36,7 @@ export const shareTextConfig = {
   resultTemplate: "He conseguido {points} puntos en el nivel {level} del tipo {type} del Juego de Jarramplas",
 };
 
-export const scenarios = [
-  {
-    id: "plaza-eras",
-    name: "Plaza de las Eras",
-    path: "assets/fondos/fondo2.png",
-    meta: "Fuente alta",
-  },
-  {
-    id: "puerta-iglesia",
-    name: "Puerta de la Iglesia",
-    path: "assets/fondos/iglesia2.png",
-    meta: "Piedra y sombra",
-  },
-  {
-    id: "plaza-ayuntamiento",
-    name: "Plaza del Ayuntamiento",
-    path: "assets/fondos/ayuntamiento.png",
-    meta: "Plaza abierta",
-  },
-];
+export const scenarios = mapAssets;
 
 export const defaultCharacterAttributes = {
   speed: 180,

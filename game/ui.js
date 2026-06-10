@@ -81,7 +81,9 @@ export function populateScenarioOptions() {
   )).join("");
   scenarioOptions.innerHTML = scenarios.map((scenario, index) => (
     `<button class="scenario-card" type="button" data-scenario="${index}">
-      <img src="${scenario.path}" alt="">
+      <span class="map-preview" style="--map-ground-a: ${scenario.ground?.[0] || "#a98258"}; --map-ground-b: ${scenario.ground?.[1] || "#96704c"}; --map-ground-c: ${scenario.ground?.[2] || "#b08a62"};">
+        <small>${scenario.houses || 0}</small>
+      </span>
       <strong>${scenario.name}</strong>
       <span>${scenario.meta}</span>
     </button>`
